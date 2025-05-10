@@ -243,29 +243,19 @@ static void env_swap_last(char **envp)
     }
 }
 
-void env_print(t_shell *mshell)
+void	env_print(char **envp)
 {
-    size_t i;
-    size_t len;
-    char **sorted_env;
+	int	i;
 
-    if (!mshell || !mshell->envp)
-        return;
-    len = 0;
-    while (mshell->envp[len])
-        len++;
-    sorted_env = env_dup(mshell->envp);
-    if (!sorted_env)
-        return;
-    env_sort(sorted_env, len);
-    i = 0;
-    while (i < len)
-    {
-        if (ft_strchr(sorted_env[i], '='))
-            printf("declare -x %s\n", sorted_env[i]);
-        i++;
-    }
-    ft_multi_free_null(&sorted_env);
+	i = 0;
+	while (envp && envp[i])
+	{
+		if (ft_strchr(envp[i], '='))
+		{
+			printf("%s\n", envp[i]);
+		}
+		i++;
+	}
 }
 
 int env_underscore(t_shell *mshell, char **cmd)
