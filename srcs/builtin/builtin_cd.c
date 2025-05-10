@@ -1,4 +1,4 @@
-```c
+
 #include "minishell.h"
 
 static void update_pwd(t_shell *mshell)
