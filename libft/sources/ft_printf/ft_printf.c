@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/ft_printf.h"
+#include "../../includes/libft.h"
 
 static int	ft_informat(char c);
 static int	ft_process(char c, va_list args, int fd);

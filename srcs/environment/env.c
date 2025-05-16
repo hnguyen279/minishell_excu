@@ -48,7 +48,7 @@ int init_env(t_shell *mshell, char **envp)
     mshell->envp = ft_calloc(len + 1, sizeof(char *));
     if (!mshell->envp)
     {
-        //ft_printf_fd(2, "minishell: init_env: malloc failed\n");
+        ft_printf_fd(2, "minishell: init_env: malloc failed\n");
         return (1);
     }
     i = 0;
@@ -58,7 +58,7 @@ int init_env(t_shell *mshell, char **envp)
         if (!mshell->envp[i])
         {
             env_free(mshell);
-            //ft_printf_fd(2, "minishell: init_env: malloc failed\n");
+            ft_printf_fd(2, "minishell: init_env: malloc failed\n");
             return (1);
         }
         i++;
@@ -178,7 +178,7 @@ int env_add(t_shell *mshell, const char *key, const char *value)
     tmp = ft_calloc(1, len);
     if (!tmp)
     {
-        //ft_printf_fd(2, "minishell: env_add: malloc failed\n");
+        ft_printf_fd(2, "minishell: env_add: malloc failed\n");
         return (1);
     }
     ft_strlcat(tmp, key, len);
@@ -202,7 +202,7 @@ int env_add(t_shell *mshell, const char *key, const char *value)
     if (!mshell->envp)
     {
         free(tmp);
-        //ft_printf_fd(2, "minishell: env_add: malloc failed\n");
+        ft_printf_fd(2, "minishell: env_add: malloc failed\n");
         return (1);
     }
     mshell->envp[env_len] = tmp;
@@ -319,7 +319,7 @@ int env_clone_underscore(t_shell *mshell)
         mshell->tokens->env_last_cmd = ft_strdup(underscore_val);
         if (!mshell->tokens->env_last_cmd)
         {
-            //ft_printf_fd(2, "minishell: env_clone_underscore: malloc failed\n");
+            ft_printf_fd(2, "minishell: env_clone_underscore: malloc failed\n");
             return (1);
         }
     }

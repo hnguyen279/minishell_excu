@@ -45,7 +45,7 @@ static int wait_command(t_shell *mshell, pid_t pid, int *status)
 {
     if (waitpid(pid, status, 0) == -1)
     {
-        //ft_printf_fd(2, "minishell: waitpid: %s\n", strerror(errno));
+        ft_printf_fd(2, "minishell: waitpid: %s\n", strerror(errno));
         mshell->exit_code = 1;
         return 1;
     }
@@ -62,7 +62,7 @@ static void run_command_child(t_ast *node, t_shell *mshell, char *cmd_path)
     setup_signals(MODE_CHILD);
     if (execve(cmd_path, node->cmd, mshell->envp) == -1)
     {
-        //ft_printf_fd(2, "minishell: %s: %s\n", node->cmd[0], strerror(errno));
+        ft_printf_fd(2, "minishell: %s: %s\n", node->cmd[0], strerror(errno));
         free(cmd_path);
         if (errno == ENOENT)
             exit(127);
@@ -81,7 +81,7 @@ static int fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
     if (pid == -1)
     {
         free(cmd_path);
-		//ft_printf_fd(2, "minishell: fork: %s\n", strerror(errno));
+		ft_printf_fd(2, "minishell: fork: %s\n", strerror(errno));
         mshell->exit_code = 1;
         return (mshell->exit_code);
     }

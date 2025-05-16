@@ -3,7 +3,7 @@
 static int	ft_error(t_shell *mshell, const char *msg)
 {
 	if (msg)
-		//ft_printf_fd(2, "minishell: %s\n", msg);
+		ft_printf_fd(2, "minishell: %s\n", msg);
 	if (mshell)
 		mshell->exit_code = 1;
 	return (1); 
@@ -13,7 +13,7 @@ static int  validate_heredoc_redirect(t_shell *mshell, t_redirect *redir)
 {
     if (!redir->file)
     {
-        //ft_printf_fd(2, "minishell: heredoc: no delimiter\n");
+        ft_printf_fd(2, "minishell: heredoc: no delimiter\n");
         mshell->exit_code = 1;
         return (1);
     }
@@ -84,7 +84,7 @@ static int  write_heredoc(t_shell *mshell,int fd, const char *delim, int expand)
         line = readline("> ");
         if (!line)
         {
-            //ft_printf_fd(2,"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",delim);
+            ft_printf_fd(2,"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",delim);
             break;
         }
         if (!strcmp(line, delim))

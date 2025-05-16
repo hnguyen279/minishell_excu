@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/get_next_line.h"
 #include "../../includes/libft.h"
 
 char	*read_file(char *buffer, int fd);

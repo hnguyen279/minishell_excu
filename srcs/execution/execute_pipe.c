@@ -2,7 +2,7 @@
 
 static void handle_dup2_error(int fd_to_close)
 {
-    //ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
+    ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
     close(fd_to_close);
     exit(1);
 }

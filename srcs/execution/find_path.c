@@ -74,19 +74,19 @@ static int	check_is_directory(t_shell *mshell, char *cmd)
 	{
 		if (stat(cmd, &statbuf) == 0 && S_ISDIR(statbuf.st_mode))
 		{
-			//ft_printf_fd(STDERR_FILENO, "minishell: %s: Is a directory\n", cmd);
+			ft_printf_fd(STDERR_FILENO, "minishell: %s: Is a directory\n", cmd);
 			mshell->exit_code = 126;
 			return (126);
 		}
 		else if (stat(cmd, &statbuf) == 0 && access(cmd, X_OK) != 0)
 		{
-			//ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n", cmd);
+			ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n", cmd);
 			mshell->exit_code = 126;
 			return (126);
 		}
 		else if (access(cmd, F_OK) != 0)
 		{
-			//ft_printf_fd(STDERR_FILENO, "minishell: %s: No such file or directory\n", cmd);
+			ft_printf_fd(STDERR_FILENO, "minishell: %s: No such file or directory\n", cmd);
 			mshell->exit_code = 127;
 			return (127);
 		}
@@ -115,7 +115,7 @@ char	*find_cmd_path(t_shell *mshell, char *cmd) //why not exit sotre mshell->exi
 	}
 	if (access(cmd_path, X_OK) != 0)
 	{
-		//ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n", cmd_path);
+		ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n", cmd_path);
 		mshell->exit_code = 126;
 		free(cmd_path);
 		return (NULL);

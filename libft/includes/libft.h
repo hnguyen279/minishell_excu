@@ -18,6 +18,13 @@
 # include <limits.h>
 # include <stdint.h>
 # include <unistd.h>
+# include <stdarg.h>
+# include <stdint.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+
+# endif
 
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
@@ -78,5 +85,19 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list	*lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+
+char	*get_next_line(int fd);
+char	*read_file(char *buffer, int fd);
+char	*extract_line(char	*buffer);
+char	*extract_remaining(char *buffer);
+char	*update_buffer(char **buffer, int fd);
+
+int	ft_printf_fd(int fd, const char	*str, ...);
+int	ft_putchar_printf(char c, int fd);
+int	ft_putstr_printf(char *s, int fd);
+int	ft_putnbr_printf(int n, int fd);
+int	ft_putnbr_unsigned(unsigned int n, int fd);
+int	ft_puthex_fd(unsigned long nbr, int fd, char b);
+int	ft_putptr_fd(void *ptr, int fd);
 
 #endif

@@ -6,14 +6,14 @@ static int redirect_input(t_redirect *redir)
     redir->fd = open(redir->file, O_RDONLY);
     if (redir->fd == -1)
     {
-        //ft_printf_fd(2, "minishell: failed to open '%s': %s\n",
-         //            redir->file, strerror(errno));
+        ft_printf_fd(2, "minishell: failed to open '%s': %s\n",
+                    redir->file, strerror(errno));
         return (1);
     }
     if (dup2(redir->fd, STDIN_FILENO) == -1)
     {
         close(redir->fd);
-        //ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
+        ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
         return (1);
     }
     close(redir->fd);
@@ -25,14 +25,14 @@ static int redirect_output(t_redirect *redir)
     redir->fd = open(redir->file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
     if (redir->fd == -1)
     {
-        //ft_printf_fd(2, "minishell: failed to open '%s': %s\n",
-        //    redir->file, strerror(errno));
+        ft_printf_fd(2, "minishell: failed to open '%s': %s\n",
+           redir->file, strerror(errno));
         return (1);
     }
     if (dup2(redir->fd, STDOUT_FILENO) == -1) 
     {
         close(redir->fd);
-        //ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
+        ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
         return (1);
     }
     close(redir->fd);
@@ -44,14 +44,14 @@ static int redirect_output_append(t_redirect *redir)
     redir->fd = open(redir->file, O_CREAT | O_WRONLY | O_APPEND, 0644);
     if (redir->fd == -1)
     {
-        //ft_printf_fd(2, "minishell: failed to open '%s': %s\n",
-        //             redir->file, strerror(errno));
+        ft_printf_fd(2, "minishell: failed to open '%s': %s\n",
+                    redir->file, strerror(errno));
         return (1);
     }
     if (dup2(redir->fd, STDOUT_FILENO) == -1)
     {
         close(redir->fd);
-        //ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
+        ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
         return (1);
     }
     close(redir->fd);
@@ -62,14 +62,14 @@ static int redirect_heredoc(t_redirect *redir)
 {
     if (redir->fd < 0)
     {
-        //ft_printf_fd(2, "minishell: heredoc was not processed\n");
+        ft_printf_fd(2, "minishell: heredoc was not processed\n");
         //mshell->exit_code = 1;
         return (1);
     }
     if (dup2(redir->fd, STDIN_FILENO) == -1)
     {
         close(redir->fd);
-        //ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
+        ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
         //mshell->exit_code = 1;
         return (1);
     }
@@ -101,7 +101,7 @@ int exe_redirection(t_redirect *redir, t_shell *mshell)
             mshell->exit_code = redirect_heredoc(redir);
         else
         {
-            //ft_printf_fd(2, "minishell: invalid redirection type\n"); // NOt sure
+            ft_printf_fd(2, "minishell: invalid redirection type\n"); // NOt sure
             mshell->exit_code = 1;
         }
         if (mshell->exit_code != 0)

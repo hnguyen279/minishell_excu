@@ -40,7 +40,6 @@ SRCS = $(SRCS_DIR)/parsing/main.c \
 		$(SRCS_DIR)/builtin/builtin_unset.c \
 		$(SRCS_DIR)/signals/handle_signal.c
 
-
 OBJS = $(SRCS:%.c=%.o)
 
 NAME = minishell
@@ -55,7 +54,7 @@ LDFLAGS = -lreadline
 	
 all: $(NAME)
 
-INCLUDES = -I$(LIBFT_DIR) 
+INCLUDES = -I$(LIBFT_DIR)
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
