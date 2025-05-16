@@ -1,41 +1,79 @@
-NAME 			:= minishell
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
+#    Updated: 2025/05/03 11:50:11 by trpham           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-CC 				:= cc
-CFLAGS 			:= -Wall -Wextra -Werror
+CC = cc 
+CFLAGS = -Wall -Wextra -Werror
 
-LIB_DIR			:= ./lib
-LIB				:= $(LIB_DIR)/lib.a
+SRCS_DIR = ./srcs/
+SRCS = $(SRCS_DIR)/parsing/main.c \
+		$(SRCS_DIR)/parsing/parser.c \
+		$(SRCS_DIR)/parsing/lexing_analyzer.c \
+		$(SRCS_DIR)/parsing/token_linked_list.c \
+		$(SRCS_DIR)/parsing/tokenization.c \
+		$(SRCS_DIR)/parsing/helper.c \
+		$(SRCS_DIR)/parsing/validate_input.c \
+		$(SRCS_DIR)/parsing/redirection.c \
+		$(SRCS_DIR)/parsing/history.c \
+		$(SRCS_DIR)/heredoc/process_heredoc.c \
+		$(SRCS_DIR)/heredoc/utils_heredoc.c \
+		$(SRCS_DIR)/heredoc/utils_heredoc2.c \
+		$(SRCS_DIR)/execution/execute_ast.c \
+		$(SRCS_DIR)/execution/execute_command.c \
+		$(SRCS_DIR)/execution/execute_pipe.c \
+		$(SRCS_DIR)/execution/execute_redirection.c \
+		$(SRCS_DIR)/execution/find_path.c \
+		$(SRCS_DIR)/execution/utils.c \
+		$(SRCS_DIR)/environment/env.c \
+		$(SRCS_DIR)/builtin/builtin_cd.c \
+		$(SRCS_DIR)/builtin/builtin_echo.c \
+		$(SRCS_DIR)/builtin/builtin_env.c \
+		$(SRCS_DIR)/builtin/builtin_pwd.c \
+		$(SRCS_DIR)/builtin/builtin_unset.c \
+		$(SRCS_DIR)/signals/handle_signal.c
 
-INCLUDES			:= -I $(LIB_DIR) -I ./includes
 
-MAN_DIR			:= ./srcs
-MAN_FILES		:= 
+OBJS = $(SRCS:%.c=%.o)
 
-MAN_SRC			:= main.c $(addprefix $(MAN_DIR)/, $(MAN_FILES))
+NAME = minishell
 
-MAN_OBJ			:= $(MAN_SRC:.c=.o)
+LIBFT_DIR = ./libft
+LIBFT_NAME = $(LIBFT_DIR)/libft.a
 
+HEADERS_DIR = ./includes
+HEADERS = $(HEADERS_DIR)/shell.h
+
+LDFLAGS = -lreadline
+	
 all: $(NAME)
 
-$(NAME): $(MAN_OBJ) $(LIB)
-	$(CC) $(MAN_OBJ) $(LIB) -o $(NAME)
+INCLUDES = -I$(LIBFT_DIR) 
 
-%.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $< $(INCLUDES)
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-$(LIB):
-	@make -C $(LIB_DIR)
+$(NAME): $(OBJS) $(LIBFT_NAME)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+
+$(LIBFT_NAME):
+	@make -C $(LIBFT_DIR)
 
 clean:
-	@echo "Cleaning object files..."
-	@rm -f $(MAN_OBJ)
-	@make -C $(LIB_DIR) clean
+	@make clean -C $(LIBFT_DIR)
+	rm -f $(OBJS)
 
-fclean:
-	@echo "Removing all compiled files..."
-	@rm -f $(MAN_OBJ) $(NAME)
-	@make -C $(LIB_DIR) fclean
-	
+fclean: clean
+	@make fclean -C $(LIBFT_DIR)
+	rm -f  $(NAME)
+
 re: fclean all
 
 .PHONY: all clean fclean re

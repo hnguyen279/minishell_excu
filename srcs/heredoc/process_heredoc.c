@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../../includes/shell.h"
 
 char *make_heredoc_filename_from_fd(int fd)
 {

@@ -1,6 +1,6 @@
-#include "minishell.h"
+#include "../../includes/shell.h"
 
-static char *env_find_value(const char *key, char **env)
+static char *env_find_value_heredoc(const char *key, char **env)
 {
     size_t key_len = ft_strlen(key);
     size_t i = 0;
@@ -24,7 +24,7 @@ static size_t exchange_variable(char *str, int fd, char **env)
         i++;
     tmp = str[i];
     str[i] = '\0';
-    var = env_find_value(str, env);
+    var = env_find_value_heredoc(str, env);
     str[i] = tmp;
     if (var)
     {
@@ -59,7 +59,7 @@ void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
                 char tmp = input[j];
                 input[j] = '\0';
                 const char *varname = &input[i + 2];
-                const char *val = env_find_value(varname, ms->env);
+                const char *val = env_find_value_heredoc(varname, ms->envp);
                 input[j] = tmp;
 
                 if (val)
@@ -84,7 +84,7 @@ void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
         }
         if (input[i] == '$' && (ft_isalnum(input[i + 1]) || input[i + 1] == '_'))
         {
-            len = exchange_variable(&input[i + 1], fd_write, ms->env);
+            len = exchange_variable(&input[i + 1], fd_write, ms->envp);
             i += 1 + len;
             continue;
         }
@@ -114,14 +114,14 @@ int inside_quotes(const char *str)
     i++;
     len = ft_strlen(str);
     end_i = len - 1;
-    while (end_i > i && (str[end_i] == ' ' || str[i] <=9  && str[i] >= 13))
+    while (end_i > i && (str[end_i] == ' ' || (str[i] <=9  && str[i] >= 13)))
         end_i--;
     if (end_i < i || str[end_i] != quote)
         return (0);
     return (1);
 }
 
-char *get_delimiter(const char *file)
+char *get_delimiter(char *file)
 {
     size_t i;
     size_t end_i;
@@ -145,7 +145,9 @@ char *get_delimiter(const char *file)
         end_i--;
     }
     if (end_i < i)
+    {
         return (ft_strdup(""));
-	delimiter = ft_substr(file, i, end_i - i + 1);
+    }
+    delimiter = ft_substr(file, i, end_i - i + 1);
     return (delimiter);
 }

@@ -1,12 +1,12 @@
-#include "minishell.h"
+#include "../../includes/shell.h"
 
 //note check cd --help or pwd --help or cd -- / pwd --help /pwd --/ pwd -
 
-int pwd_check_args(t_shell *mshell, char **token)
+static int pwd_check_args(t_shell *mshell, char **token)
 {
     if (!mshell || !token || !token[0])
     {
-        ft_putstr_fd(2, "minishell: pwd: internal error\n");
+        //ft_printf_fd(2, "minishell: pwd: internal error\n");
         mshell->exit_code = 1;
         return (0);
     }
@@ -14,14 +14,14 @@ int pwd_check_args(t_shell *mshell, char **token)
     {
         if (token[1][0] == '-' && token[1][1] != '\0')
         {
-            ft_printf_fd(2, "minishell: pwd: options aren't supported\n");
-            ft_printf_fd(2, "pwd: usage: pwd\n");
-            mshell->exit_code = 1;
+            //ft_printf_fd(2, "minishell: pwd: options aren't supported\n");
+            //ft_printf_fd(2, "pwd: usage: pwd\n");
+            mshell->exit_code = 2;
             return (0);
         }
         else if (token[2] != NULL)
         {
-            ft_printf_fd(2, "minishell: pwd: too many arguments\n");
+            //ft_printf_fd(2, "minishell: pwd: too many arguments\n");
             mshell->exit_code = 1;
             return (0);
         }
@@ -34,7 +34,7 @@ int builtin_pwd(t_shell *mshell, char **token)
     const char *pwd_value;
     char *current_pwd;
 
-    if (!pwd_check_args(token, mshell))
+    if (!pwd_check_args(mshell, token))
         return mshell->exit_code;
     pwd_value = env_find_value(mshell, "PWD");
     if (pwd_value)

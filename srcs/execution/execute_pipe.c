@@ -1,15 +1,15 @@
-#include "minishell.h"
+#include "../../includes/shell.h"
 
 static void handle_dup2_error(int fd_to_close)
 {
-    ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
+    //ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
     close(fd_to_close);
     exit(1);
 }
 
 static void execute_child(t_shell *shell, t_ast *ast, int *pipe_fd, int left)
 {
-    setup_signals(CHILD_STATE);
+    setup_signals(MODE_CHILD);
     if (!ast)
         exit(1);
     if (ast->redirects && exe_redirection(ast->redirects, shell) != 0)
@@ -20,7 +20,7 @@ static void execute_child(t_shell *shell, t_ast *ast, int *pipe_fd, int left)
         if (dup2(pipe_fd[FD_WRITE], STDOUT_FILENO) == -1)
             handle_dup2_error(pipe_fd[FD_WRITE]);
         close(pipe_fd[FD_WRITE]);
-        execute_ast(shell, ast->left);
+        execute_ast(ast->left, shell);
     }
     else
     {
@@ -28,7 +28,7 @@ static void execute_child(t_shell *shell, t_ast *ast, int *pipe_fd, int left)
         if (dup2(pipe_fd[FD_READ], STDIN_FILENO) == -1)
             handle_dup2_error(pipe_fd[FD_READ]);
         close(pipe_fd[FD_READ]);
-        execute_ast(shell, ast->right);
+        execute_ast(ast->right, shell);
     }
     exit(shell->exit_code);
 }
@@ -80,21 +80,4 @@ int execute_pipe(t_ast *ast, t_shell *shell)
         shell->exit_code = 1;
 
     return shell->exit_code;
-}
-#include "minishell.h"
-
-int execute_ast(t_ast *node, t_shell *mshell)
-{
-    if (!node)
-        return 0;
-    if (process_heredocs(mshell, node) != 0)
-        return mshell->exit_code;
-    if (node->type == NODE_PIPE)
-        return execute_pipe(node, mshell);
-    else if (node->type == NODE_CMD)
-        return execute_command(node, mshell);
-    else if (node->type >= REDIR_IN && node->type <= REDIR_HEREDOC)
-        return exe_redirection(node->redirects, mshell);
-    ft_printf_fd(2, "minishell: unsupported node type\n");
-    return (mshell->exit_code = 1);
 }

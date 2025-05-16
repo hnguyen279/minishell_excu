@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../../includes/shell.h"
 
 int execute_ast(t_ast *node, t_shell *mshell)
 {
@@ -10,8 +10,6 @@ int execute_ast(t_ast *node, t_shell *mshell)
         return execute_pipe(node, mshell);
     else if (node->type == NODE_CMD)
         return execute_command(node, mshell);
-    else if (node->type >= REDIR_IN && node->type <= REDIR_HEREDOC)
-        return exe_redirection(node->redirects, mshell);
-    ft_printf_fd(2, "minishell: unsupported node type\n");
+    //ft_printf_fd(2, "minishell: unsupported node type\n");
     return (mshell->exit_code = 1);
 }

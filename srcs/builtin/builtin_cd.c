@@ -1,5 +1,5 @@
 
-#include "minishell.h"
+#include "../../includes/shell.h"
 
 static void update_pwd(t_shell *mshell)
 {
@@ -25,13 +25,13 @@ static void cd_to_home(t_shell *mshell)
     home = env_find_value(mshell, "HOME");
     if (!home)
     {
-        ft_printf_fd(2, "minishell: cd: HOME not set\n");
+        //ft_printf_fd(2, "minishell: cd: HOME not set\n");
         mshell->exit_code = 1;
         return;
     }
     if (chdir(home) != 0)
     {
-        ft_printf_fd(2, "minishell: cd: %s: ", home);
+        //ft_printf_fd(2, "minishell: cd: %s: ", home);
         perror("");
         mshell->exit_code = 1;
         return;
@@ -47,20 +47,20 @@ static void cd_to_tilde_path(t_shell *mshell, char *token)
     home = env_find_value(mshell, "HOME");
     if (!home)
     {
-        ft_printf_fd(2, "minishell: cd: HOME not set\n");
+        //ft_printf_fd(2, "minishell: cd: HOME not set\n");
         mshell->exit_code = 1;
         return;
     }
     path = ft_strjoin(home, token + 1);
     if (!path)
     {
-        ft_printf_fd(2, "minishell: cd: memory allocation failed\n");
+        //ft_printf_fd(2, "minishell: cd: memory allocation failed\n");
         mshell->exit_code = 1;
         return;
     }
     if (chdir(path) != 0)
     {
-        ft_printf_fd(2, "minishell: cd: %s: ", path);
+        //ft_printf_fd(2, "minishell: cd: %s: ", path);
         perror("");
         mshell->exit_code = 1;
         free(path);
@@ -77,19 +77,18 @@ static void cd_to_oldpwd(t_shell *mshell)
     oldpwd = env_find_value(mshell, "OLDPWD");
     if (!oldpwd)
     {
-        ft_printf_fd(2, "minishell: cd: OLDPWD not set\n");
+        //ft_printf_fd(2, "minishell: cd: OLDPWD not set\n");
         mshell->exit_code = 1;
         return;
     }
     if (chdir(oldpwd) != 0)
     {
-        ft_printf_fd(2, "minishell: cd: %s: ", oldpwd);
+        //ft_printf_fd(2, "minishell: cd: %s: ", oldpwd);
         perror("");
         mshell->exit_code = 1;
-        free(path);
         return;
     }
-    ft_printf_fd(1, "%s\n", oldpwd);
+    //ft_printf_fd(1, "%s\n", oldpwd);
     update_pwd(mshell);
 }
 
@@ -102,7 +101,7 @@ static void cd_to_path(t_shell *mshell, char *path)
 
     if (chdir(path) != 0)
     {
-        ft_printf_fd(2, "minishell: cd: %s: ", path);
+        //ft_printf_fd(2, "minishell: cd: %s: ", path);
         perror("");
         mshell->exit_code = 1;
         return;
@@ -110,7 +109,7 @@ static void cd_to_path(t_shell *mshell, char *path)
     cwd = getcwd(NULL, 0);
     if (!cwd)
     {
-        ft_printf_fd(2, "minishell: getcwd: cannot access parent directories: ");
+        //ft_printf_fd(2, "minishell: getcwd: cannot access parent directories: ");
         perror("");
         temp = ft_strjoin("/", path);
         if (!temp)
@@ -144,7 +143,7 @@ int builtin_cd(t_shell *mshell, char **token)
         return 1;
     if (token[1] && token[2])
     {
-        ft_printf_fd(2, "minishell: cd: too many arguments\n");
+        //ft_printf_fd(2, "minishell: cd: too many arguments\n");
         return 1;
     }
     if (!token[1] || token[1][0] == '\0' || ft_strcmp(token[1], "~") == 0 || ft_strcmp(token[1], "--") == 0)

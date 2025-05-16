@@ -1,5 +1,5 @@
 
-#include "minishell.h"
+#include "../../includes/shell.h"
 
 volatile sig_atomic_t g_signum = 0;
 
@@ -33,7 +33,7 @@ int	reset_heredoc_prompt(void)
 	return (0);
 }
 
-static int signal_error(const char *signal_name)
+int signal_error(const char *signal_name)
 {
     perror(signal_name);
     return -1;
@@ -60,33 +60,41 @@ int setup_signal_handlers(void (*sigint_handler)(int), void (*sigquit_handler)(i
     return (0);
 }
 
-int setup_signal_handlers(void (*sigint_handler)(int), void (*sigquit_handler)(int))
-{
-    struct sigaction sa_int;
-    struct sigaction sa_quit;
+// int setup_signal_handlers(void (*sigint_handler)(int), void (*sigquit_handler)(int))
+// {
+//     struct sigaction sa_int;
+//     struct sigaction sa_quit;
 
-    sa_int.sa_handler = sigint_handler;
-    sa_int.sa_flags = SA_RESTART | SA_NOCLDSTOP;
-    if (sigemptyset(&sa_int.sa_mask) == -1 || sigaction(SIGINT, &sa_int, NULL) == -1)
-    {
-        perror("minishell: sigaction(SIGINT)");
-        return (-1);
-    }
-    sa_quit.sa_handler = sigquit_handler;
-    sa_quit.sa_flags = SA_RESTART | SA_NOCLDSTOP;
-    if (sigemptyset(&sa_quit.sa_mask) == -1 || sigaction(SIGQUIT, &sa_quit, NULL) == -1)
-    {
-        perror("minishell: sigaction(SIGQUIT)");
-        return (-1);
-    }
-    return (0);
+//     sa_int.sa_handler = sigint_handler;
+//     sa_int.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+//     if (sigemptyset(&sa_int.sa_mask) == -1 || sigaction(SIGINT, &sa_int, NULL) == -1)
+//     {
+//         perror("minishell: sigaction(SIGINT)");
+//         return (-1);
+//     }
+//     sa_quit.sa_handler = sigquit_handler;
+//     sa_quit.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+//     if (sigemptyset(&sa_quit.sa_mask) == -1 || sigaction(SIGQUIT, &sa_quit, NULL) == -1)
+//     {
+//         perror("minishell: sigaction(SIGQUIT)");
+//         return (-1);
+//     }
+//     return (0);
+// }
+
+static void heredoc_sigint(int sig)
+{
+    (void)sig;
+    write(STDOUT_FILENO, "\n", 1);
+    rl_done = 1;
+    g_signum = 128 + SIGINT;
 }
 
-void setup_signals(t_signal_state mode)
+void setup_signals(int mode)
 {
-    if (mode == INTERACTIVE_STATE)
+    if (mode == MODE_INTERACTIVE)
         setup_signal_handlers(set_sigint_flag, SIG_IGN);
-    else if (mode == HEREDOC_STATE)
+    else if (mode == MODE_HEREDOC)
         setup_signal_handlers(heredoc_sigint, SIG_IGN);
     else // CHILD_STATE
         setup_signal_handlers(SIG_DFL, SIG_DFL);
@@ -94,9 +102,9 @@ void setup_signals(t_signal_state mode)
 
 void	sig_exit_code(t_shell *mshell)
 {
-	if (g_status == 128 + SIGINT)
-		ms->exit_code = 130;
-	else if (g_status != 0)
-		ms->exit_code = g_status + 128;
-	g_status = 0;
+	if (g_signum == 128 + SIGINT)
+		mshell->exit_code = 130;
+	else if (g_signum != 0)
+        mshell->exit_code = g_signum + 128;
+    g_signum = 0;
 }

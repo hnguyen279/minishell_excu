@@ -1,5 +1,5 @@
 
-#include "minishell.h"
+#include "../../includes/shell.h"
 
 void	free_split(char **tab)
 {
@@ -17,13 +17,17 @@ void	free_split(char **tab)
 int	display_error(char *cmd)
 {
 	if (!cmd || cmd[0] == '\0')
-		ft_printf_fd(STDERR_FILENO, "minishell: '%s': command '%s' not found\n", cmd);
+		//ft_printf_fd(STDERR_FILENO, "minishell: '%s': command '%s' not found\n", cmd);
+		printf("//wrong");
 	else if (!ft_strcmp(cmd, "."))
-		ft_printf_fd(STDERR_FILENO, "minishell: .: filename argument required\n.: usage: . filename [arguments]\n");
+		//ft_printf_fd(STDERR_FILENO, "minishell: .: filename argument required\n.: usage: . filename [arguments]\n");
+		printf("wrong");
 	else if (!ft_strcmp(cmd, ".."))
-		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
+		//ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
+		printf("wrong");
 	else
-		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
+		//ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
+		printf("wrong");
 	return (1);
 }
 int check_white_spaces_cmd(char *cmd)
@@ -41,15 +45,15 @@ int check_white_spaces_cmd(char *cmd)
 
 int check_ambiguous_redir(t_shell *mshell, t_redirect *redir)
 {
-	if (!redir || !redir->filename || redir->filename[0] == '\0')
+	if (!redir || !redir->file || redir->file[0] == '\0')
 	{
-		ft_printf_fd(2, "minishell: ambiguous redirect\n");
+		//ft_printf_fd(2, "minishell: ambiguous redirect\n");
 		mshell->exit_code = 1;
 		return (1);
 	}
-	if (ft_strchr(redir->filename, ' ') && !check_white_spaces_cmd(redir->filename))
+	if (ft_strchr(redir->file, ' ') && !check_white_spaces_cmd(redir->file))
 	{
-		ft_printf_fd(2, "minishell: ambiguous redirect: `%s`\n", redir->filename);
+		//ft_printf_fd(2, "minishell: ambiguous redirect: `%s`\n", redir->filename);
 		mshell->exit_code = 1;
 		return (1);
 	}

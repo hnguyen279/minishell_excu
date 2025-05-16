@@ -1,5 +1,39 @@
 
-#include "minishell.h"
+#include "../../includes/shell.h"
+
+static void	ft_multi_free_null(char ***array)
+{
+	size_t	i;
+
+	if (!array || !*array)
+		return;
+	i = 0;
+	while ((*array)[i])
+	{
+		free((*array)[i]);
+		(*array)[i] = NULL;
+		i++;
+	}
+	free(*array);
+	*array = NULL;
+}
+
+void env_free(t_shell *mshell)
+{
+    size_t i;
+
+    if (!mshell || !mshell->envp)
+        return;
+    i = 0;
+    while (mshell->envp[i])
+    {
+        free(mshell->envp[i]);
+        mshell->envp[i] = NULL;
+        i++;
+    }
+    free(mshell->envp);
+    mshell->envp = NULL;
+}
 
 int init_env(t_shell *mshell, char **envp)
 {
@@ -13,33 +47,23 @@ int init_env(t_shell *mshell, char **envp)
         len++;
     mshell->envp = ft_calloc(len + 1, sizeof(char *));
     if (!mshell->envp)
-        return (ft_printf_fd(2, "minishell: init_env: malloc failed\n"), 1);
+    {
+        //ft_printf_fd(2, "minishell: init_env: malloc failed\n");
+        return (1);
+    }
     i = 0;
     while (i < len)
     {
         mshell->envp[i] = ft_strdup(envp[i]);
         if (!mshell->envp[i])
-            return (env_free(mshell), ft_printf_fd(2, "minishell: init_env: malloc failed\n"), 1);
+        {
+            env_free(mshell);
+            //ft_printf_fd(2, "minishell: init_env: malloc failed\n");
+            return (1);
+        }
         i++;
     }
     return (0);
-}
-
-void env_free(t_shell *mshell)
-{
-    size_t i;
-
-    if (!mshell || !mshell->env)
-        return;
-    i = 0;
-    while (mshell->env[i])
-    {
-        free(mshell->env[i]);
-        mshell->env[i] = NULL;
-        i++;
-    }
-    free(mshell->env);
-    mshell->env = NULL;
 }
 char **env_dup(char **envp)
 {
@@ -79,7 +103,7 @@ static size_t strlen_until_char(const char *s, const char ch)
     return (len);
 }
 
-static char *env_find_variable(t_shell *mshell, const char *key, size_t *i) //found key and value
+char *env_find_variable(t_shell *mshell, const char *key, size_t *i) //found key and value
 {
     size_t key_len;
     size_t env_key_len;
@@ -98,7 +122,7 @@ static char *env_find_variable(t_shell *mshell, const char *key, size_t *i) //fo
     return (NULL);
 }
 
-const char *env_find_value(t_shell *mshell, const char *key) // found value
+char *env_find_value(t_shell *mshell, const char *key) // found value
 {
     size_t i;
     size_t key_len;
@@ -153,7 +177,10 @@ int env_add(t_shell *mshell, const char *key, const char *value)
     len += 1; //for null terminal
     tmp = ft_calloc(1, len);
     if (!tmp)
-        return (ft_printf_fd(2, "minishell: env_add: malloc failed\n"), 1);
+    {
+        //ft_printf_fd(2, "minishell: env_add: malloc failed\n");
+        return (1);
+    }
     ft_strlcat(tmp, key, len);
     if (value)
     {
@@ -173,7 +200,11 @@ int env_add(t_shell *mshell, const char *key, const char *value)
         env_len++;
     mshell->envp = realloc_env(mshell->envp, env_len);
     if (!mshell->envp)
-        return (free(tmp), ft_printf_fd(2, "minishell: env_add: malloc failed\n"), 1);
+    {
+        free(tmp);
+        //ft_printf_fd(2, "minishell: env_add: malloc failed\n");
+        return (1);
+    }
     mshell->envp[env_len] = tmp;
     mshell->envp[env_len + 1] = NULL;
     env_swap_last(mshell->envp);
@@ -181,7 +212,7 @@ int env_add(t_shell *mshell, const char *key, const char *value)
 }
 
 
-int env_remove(t_shell *mshell, const char *key)
+int env_remove(t_shell *mshell, const char *key) //unset
 {
     size_t i;
     size_t j;
@@ -225,7 +256,7 @@ void env_sort(char **envp, size_t len)
     }
 }
 
-static void env_swap_last(char **envp)
+void env_swap_last(char **envp)
 {
     char *tmp;
     size_t len;
@@ -287,7 +318,10 @@ int env_clone_underscore(t_shell *mshell)
     {
         mshell->tokens->env_last_cmd = ft_strdup(underscore_val);
         if (!mshell->tokens->env_last_cmd)
-            return (ft_printf_fd(2, "minishell: env_clone_underscore: malloc failed\n"), 1);
+        {
+            //ft_printf_fd(2, "minishell: env_clone_underscore: malloc failed\n");
+            return (1);
+        }
     }
     return (0);
 }
