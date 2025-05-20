@@ -26,6 +26,9 @@ void free_array(char **arr, int i)
 	int	j;
 
 	j = 0;
+
+	if (!arr)
+        return;
 	while (j < i)
 	{
 		free_string(arr[j]);

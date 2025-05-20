@@ -171,7 +171,7 @@ static void shell_interactive(t_shell *mshell)
                 }
                 if (validate_token(tokenized_input_list) == TRUE)
                 {
-                    cmd_list = parse_tokens_to_commands(mshell, tokenized_input_list); // Sửa: thêm mshell
+                    cmd_list = parse_tokens_to_commands(tokenized_input_list); // Sửa: thêm mshell
                     if (!cmd_list)
                     {
                         mshell->exit_code = 2;

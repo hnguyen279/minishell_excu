@@ -17,7 +17,7 @@ void	free_split(char **tab)
 int	display_error(char *cmd)
 {
 	if (!cmd || cmd[0] == '\0')
-		ft_printf_fd(STDERR_FILENO, "minishell: '%s': command '%s' not found\n", cmd);
+		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
 	else if (!ft_strcmp(cmd, "."))
 		ft_printf_fd(STDERR_FILENO, "minishell: .: filename argument required\n.: usage: . filename [arguments]\n");
 	else if (!ft_strcmp(cmd, ".."))

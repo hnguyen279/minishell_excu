@@ -59,7 +59,8 @@ typedef enum e_redirect_type
     REDIR_IN,
     REDIR_OUT,
     REDIR_APPEND,
-    REDIR_HEREDOC
+    REDIR_HEREDOC,
+    REDIR_INVALID
 } t_redirect_type;
 
 typedef struct s_redirect
@@ -136,13 +137,14 @@ int validate_quote(char *line);
 int is_operator(t_token *token);
 
 /* Parsing */
-t_cmd *parse_tokens_to_commands(t_shell *mshell, t_token *tokenized_input_list); // Sửa: thêm t_shell *
+t_cmd   *parse_tokens_to_commands(t_token *tokenized_input_list);
 t_cmd *create_cmd(void);
 int update_command_node(t_cmd **new_cmd, t_token **temp_token_list);
 int count_args(t_token *tokenized_input_list);
 char **fill_args(t_token **token_list);
-int parse_redirection(t_cmd **new_cmd, t_token **token_list);
 int add_redirects(t_redirect **redir_list, t_redirect_type type, char *file);
+t_redirect_type token_to_redirect_type(t_token_type token_type);  
+int parse_redirection(t_cmd **new_cmd, t_token **token_list);
 void print_cmd_list(t_cmd *head);
 void print_redirect_list(t_redirect *redir_list);
 void free_cmd_list(t_cmd *head);

@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 CC = cc 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -g -Wall -Wextra -Werror
 
 SRCS_DIR = ./srcs/
 SRCS = $(SRCS_DIR)/main.c \
