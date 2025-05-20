@@ -2,10 +2,14 @@
 
 char *make_heredoc_filename_from_fd(int fd)
 {
-    char *fd_str = ft_itoa(fd);
+    char *fd_str;
     char *path;
-    int i = 0, j = 0;
-
+    int i;
+    int j;
+    
+    i = 0;
+    j = 0;
+    fd_str = ft_itoa(fd);
     if (!fd_str)
         return (NULL);
     path = malloc(16 + 10); // "/tmp/.heredoc_" + max 10 digit

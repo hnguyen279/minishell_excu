@@ -55,7 +55,7 @@ static int  prepare_delimiter(t_shell *mshell, t_redirect *redir,char **delim, i
     if (!*delim)
         return (ft_error(mshell, "heredoc: memory allocation failed"));
     *expand = !inside_quotes(redir->file);
-    setup_signals(MODE_HEREDOC);
+    setup_signals(mshell, MODE_HEREDOC);
     return (0);
 }
 static int  process_heredoc_line(t_shell *mshell, int fd,char *line, int expand)
@@ -73,18 +73,76 @@ static int  process_heredoc_line(t_shell *mshell, int fd,char *line, int expand)
     return (status);
 }
 
-static int  write_heredoc(t_shell *mshell,int fd, const char *delim, int expand)
+// static int  write_heredoc(t_shell *mshell,int fd, const char *delim, int expand)
+// {
+//     char *line;
+//     int  status;
+    
+//     status = 0;
+//     while (1)
+//     {
+//         line = readline("> ");
+//         if (!line)
+//         {
+//             ft_printf_fd(2,"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",delim);
+//             break;
+//         }
+//         if (!strcmp(line, delim))
+//         {
+//             free(line);
+//             break;
+//         }
+//         status = process_heredoc_line(mshell, fd, line, expand);
+//         if (status)
+//             break;
+//     }
+//     free((void *)delim);
+//     return (status);
+// }
+
+// int  open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
+// {
+//     char    *path;
+//     char    *delim;
+//     int     fd;
+//     int     expand;
+
+//     if (validate_heredoc_redirect(mshell, redir))
+//         return (1);
+//     if (create_tmp_file(mshell, redir, &path, &fd))
+//         return (1);
+//     if (prepare_delimiter(mshell, redir, &delim, &expand))
+//         return (1);
+//     if (write_heredoc(mshell, fd, delim, expand))
+//     {
+//         close(fd);
+//         unlink(path);
+//         free(redir->tmp_file);
+//         return (1);
+//     }
+//     setup_signals(MODE_HEREDOC);
+//     close(fd);
+//     redir->fd = open(path, O_RDONLY);
+//     if (redir->fd < 0)
+//         return (ft_error(mshell, "heredoc: open"));
+//     mshell->exit_code = 0;
+//     return (0);
+// }
+
+// #include "../../includes/shell.h"
+
+static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
 {
     char *line;
-    int  status;
-    
+    int status;
+
     status = 0;
-    while (1)
+    while (g_signum != 128 + SIGINT)
     {
         line = readline("> ");
         if (!line)
         {
-            ft_printf_fd(2,"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",delim);
+            ft_printf_fd(2, "minishell: warning: here-document delimited by end-of-file (wanted `%s')\n", delim);
             break;
         }
         if (!strcmp(line, delim))
@@ -97,34 +155,37 @@ static int  write_heredoc(t_shell *mshell,int fd, const char *delim, int expand)
             break;
     }
     free((void *)delim);
-    return (status);
+    return (status || g_signum == 128 + SIGINT);
 }
 
-int  open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
+int open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
 {
-    char    *path;
-    char    *delim;
-    int     fd;
-    int     expand;
+    char *path;
+    char *delim;
+    int fd;
+    int expand;
 
     if (validate_heredoc_redirect(mshell, redir))
         return (1);
     if (create_tmp_file(mshell, redir, &path, &fd))
         return (1);
     if (prepare_delimiter(mshell, redir, &delim, &expand))
-        return (1);
-    if (write_heredoc(mshell, fd, delim, expand))
     {
         close(fd);
         unlink(path);
         free(redir->tmp_file);
         return (1);
     }
-    setup_signals(MODE_HEREDOC);
+    if (write_heredoc(mshell, fd, delim, expand))
+    {
+        close(fd);
+        unlink(path);
+        free(redir->tmp_file);
+        setup_signals(mshell, MODE_INTERACTIVE);
+        return (1);
+    }
     close(fd);
-    redir->fd = open(path, O_RDONLY);
-    if (redir->fd < 0)
-        return (ft_error(mshell, "heredoc: open"));
+    setup_signals(mshell, MODE_INTERACTIVE);
     mshell->exit_code = 0;
     return (0);
 }

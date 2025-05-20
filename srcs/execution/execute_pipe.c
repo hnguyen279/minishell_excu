@@ -9,7 +9,7 @@ static void handle_dup2_error(int fd_to_close)
 
 static void execute_child(t_shell *shell, t_ast *ast, int *pipe_fd, int left)
 {
-    setup_signals(MODE_CHILD);
+    setup_signals(shell, MODE_CHILD);
     if (!ast)
         exit(1);
     if (ast->redirects && exe_redirection(ast->redirects, shell) != 0)
@@ -56,28 +56,26 @@ int execute_pipe(t_ast *ast, t_shell *shell)
         return (shell->exit_code = 1);
     if (pipe(pipe_fd) == -1)
         return (perror("minishell: pipe"), shell->exit_code = 1);
-
     if (init_child(pipe_fd, &pid[0]) == -1)
         return shell->exit_code;
     if (pid[0] == 0)
         execute_child(shell, ast, pipe_fd, 1);
-
     if (init_child(pipe_fd, &pid[1]) == -1)
         return shell->exit_code;
     if (pid[1] == 0)
         execute_child(shell, ast, pipe_fd, 0);
-
     close(pipe_fd[FD_READ]);
     close(pipe_fd[FD_WRITE]);
     waitpid(pid[0], &status[0], 0);
     waitpid(pid[1], &status[1], 0);
-
     if (WIFEXITED(status[1]))
         shell->exit_code = WEXITSTATUS(status[1]);
     else if (WIFSIGNALED(status[1]))
         shell->exit_code = 128 + WTERMSIG(status[1]);
     else
         shell->exit_code = 1;
-
     return shell->exit_code;
 }
+
+
+

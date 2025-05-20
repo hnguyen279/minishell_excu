@@ -24,7 +24,7 @@ static size_t exchange_variable(char *str, int fd, char **env)
         i++;
     tmp = str[i];
     str[i] = '\0';
-    var = env_find_value_heredoc(str, env);
+    var = env_find_value_heredoc(str, env); //env_find_value_heredoc
     str[i] = tmp;
     if (var)
     {
@@ -34,64 +34,60 @@ static size_t exchange_variable(char *str, int fd, char **env)
     return (i);
 }
 
-void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
-{
-    size_t i = 0;
-    size_t len;
+// void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
+// {
+//     size_t i = 0;
+//     size_t len;
 
-    while (input[i] != '\0')
-    {
-        if (input[i] == '$' && input[i + 1] == '{')
-        {
-            size_t j = i + 2;
-            while (input[j] && input[j] != '}')
-                j++;
-
-            if (input[j] == '}')
-            {
-                if (j == i + 2)
-                {
-                    write(fd_write, "$", 1);
-                    i = j + 1;
-                    continue;
-                }
-
-                char tmp = input[j];
-                input[j] = '\0';
-                const char *varname = &input[i + 2];
-                const char *val = env_find_value_heredoc(varname, ms->envp);
-                input[j] = tmp;
-
-                if (val)
-                    write(fd_write, val, strlen(val));
-
-                i = j + 1;
-                continue;
-            }
-            else
-            {
-                write(fd_write, "$", 1);
-                i++;
-                continue;
-            }
-        }
-        if (input[i] == '$' && (ft_isdigit(input[i + 1]) || input[i + 1] == '?'))
-        {
-            if (input[i + 1] == '?')
-                ft_putnbr_fd(ms->exit_code, fd_write);
-            i += 2;
-            continue;
-        }
-        if (input[i] == '$' && (ft_isalnum(input[i + 1]) || input[i + 1] == '_'))
-        {
-            len = exchange_variable(&input[i + 1], fd_write, ms->envp);
-            i += 1 + len;
-            continue;
-        }
-        write(fd_write, &input[i], 1);
-        i++;
-    }
-}
+//     while (input[i] != '\0')
+//     {
+//         if (input[i] == '$' && input[i + 1] == '{')
+//         {
+//             size_t j = i + 2;
+//             while (input[j] && input[j] != '}')
+//                 j++;
+//             if (input[j] == '}')
+//             {
+//                 if (j == i + 2)
+//                 {
+//                     write(fd_write, "$", 1);
+//                     i = j + 1;
+//                     continue;
+//                 }
+//                 char tmp = input[j];
+//                 input[j] = '\0';
+//                 const char *varname = &input[i + 2];
+//                 const char *val = env_find_value_heredoc(varname, ms->envp);
+//                 input[j] = tmp;
+//                 if (val)
+//                     write(fd_write, val, strlen(val));
+//                 i = j + 1;
+//                 continue;
+//             }
+//             else
+//             {
+//                 write(fd_write, "$", 1);
+//                 i++;
+//                 continue;
+//             }
+//         }
+//         if (input[i] == '$' && (ft_isdigit(input[i + 1]) || input[i + 1] == '?'))
+//         {
+//             if (input[i + 1] == '?')
+//                 ft_putnbr_fd(ms->exit_code, fd_write);
+//             i += 2;
+//             continue;
+//         }
+//         if (input[i] == '$' && (ft_isalnum(input[i + 1]) || input[i + 1] == '_'))
+//         {
+//             len = exchange_variable(&input[i + 1], fd_write, ms->envp);
+//             i += 1 + len;
+//             continue;
+//         }
+//         write(fd_write, &input[i], 1);
+//         i++;
+//     }
+// }
 
 
 int inside_quotes(const char *str)
@@ -104,7 +100,7 @@ int inside_quotes(const char *str)
     i = 0;
     if (!str || !str[0])
         return (0);
-    while (str[i] && (str[i] == ' ' || (str[i] >=9  && str[i] >= 13)))
+    while (str[i] && (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13)))
         i++;
     if (!str[i])
         return (0);
@@ -114,7 +110,7 @@ int inside_quotes(const char *str)
     i++;
     len = ft_strlen(str);
     end_i = len - 1;
-    while (end_i > i && (str[end_i] == ' ' || (str[i] <=9  && str[i] >= 13)))
+    while (end_i > i && (str[end_i] == ' ' || (str[end_i] >= 9 && str[end_i] <= 13)))
         end_i--;
     if (end_i < i || str[end_i] != quote)
         return (0);
@@ -151,3 +147,84 @@ char *get_delimiter(char *file)
     delimiter = ft_substr(file, i, end_i - i + 1);
     return (delimiter);
 }
+
+
+//// new check
+void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
+{
+    size_t i = 0;
+    size_t len;
+
+    while (input[i] != '\0')
+    {
+        if (input[i] == '$' && input[i + 1] == '{')
+        {
+            size_t j = i + 2;
+            while (input[j] && input[j] != '}')
+                j++;
+            if (input[j] == '}')
+            {
+                if (j == i + 2)
+                {
+                    write(fd_write, "$", 1);
+                    i = j + 1;
+                    continue;
+                }
+                char tmp = input[j];
+                input[j] = '\0';
+                const char *varname = &input[i + 2];
+                const char *val = env_find_value(ms, varname);
+                input[j] = tmp;
+                if (val)
+                {
+                    size_t val_len = strlen(val);
+                    write(fd_write, val, val_len);
+                }
+                i = j + 1;
+                continue;
+            }
+            else
+            {
+                write(fd_write, "$", 1);
+                i++;
+                continue;
+            }
+        }
+        if (input[i] == '$' && (ft_isdigit(input[i + 1]) || input[i + 1] == '?'))
+        {
+            if (input[i + 1] == '?')
+                ft_putnbr_fd(ms->exit_code, fd_write);
+            i += 2;
+            continue;
+        }
+        if (input[i] == '$' && (ft_isalnum(input[i + 1]) || input[i + 1] == '_'))
+        {
+            len = exchange_variable(&input[i + 1], fd_write, ms->envp);
+            i += 1 + len;
+            continue;
+        }
+        write(fd_write, &input[i], 1);
+        i++;
+    }
+}
+
+// static size_t exchange_variable(char *str, int fd, t_shell *ms)
+// {
+//     size_t i;
+//     char tmp;
+//     const char *var;
+
+//     i = 0;
+//     while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+//         i++;
+//     tmp = str[i];
+//     str[i] = '\0';
+//     var = env_find_value(ms, str);
+//     str[i] = tmp;
+//     if (var)
+//     {
+//         size_t var_len = ft_strlen(var);
+//         write(fd, var, var_len);
+//     }
+//     return (i);
+// }

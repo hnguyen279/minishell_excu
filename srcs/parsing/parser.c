@@ -1,181 +1,240 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/15 17:43:41 by trpham           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../includes/shell.h"
 
-t_cmd	*parse_tokens_to_commands(t_token *tokenized_input_list)
+t_cmd *create_cmd(void)
 {
-	t_token *temp_token_list = NULL;
-	t_cmd	*cmd_list = NULL;
-	t_cmd	*new_cmd;
-	t_cmd	*current;
+    t_cmd *cmd = malloc(sizeof(t_cmd));
+    if (!cmd)
+    {
+        get_error_msg(ERR_MALLOC);
+        return (NULL);
+    }
+    cmd->cmd_name = NULL;
+    cmd->args = NULL;
+    cmd->redirects = NULL;
+    cmd->next = NULL;
+    return (cmd);
+}
 
-	temp_token_list = tokenized_input_list;
-	while (temp_token_list)
-	{
-		new_cmd = create_cmd();
-		if (!new_cmd)
-		{
-			free_cmd_list(cmd_list);
-			return (NULL);
-		}
-		if (update_command_node(&new_cmd, &temp_token_list) == FALSE)
-		{
-			free_cmd_list(cmd_list);
-			return (NULL);
-		}
-		if (cmd_list == NULL)
-			cmd_list = new_cmd;
-		else
-			current->next = new_cmd;
-		current = new_cmd;
-		if (temp_token_list)
-			temp_token_list = temp_token_list->next;
-	}
-	return (cmd_list);	
+int add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
+{
+    t_redirect *new_redir = malloc(sizeof(t_redirect));
+    if (!new_redir)
+    {
+        get_error_msg(ERR_MALLOC);
+        return (FALSE);
+    }
+    new_redir->file = ft_strdup(file);
+    if (!new_redir->file)
+    {
+        free(new_redir);
+        get_error_msg(ERR_MALLOC);
+        return (FALSE);
+    }
+    new_redir->type = type;
+    new_redir->fd = (type == REDIR_IN || type == REDIR_HEREDOC) ? 0 : 1;
+    new_redir->ori_path = NULL;
+    new_redir->tmp_file = NULL;
+    new_redir->next = NULL;
+
+    if (!*redir_list)
+        *redir_list = new_redir;
+    else
+    {
+        t_redirect *current = *redir_list;
+        while (current->next)
+            current = current->next;
+        current->next = new_redir;
+    }
+    return (TRUE);
+}
+
+int count_args(t_token *token_list)
+{
+    int count = 0;
+
+    while (token_list && token_list->type != PIPE)
+    {
+        if (token_list->type == WORD && !is_redirection(token_list))
+        {
+            count++;
+            token_list = token_list->next;
+        }
+        else if (is_redirection(token_list))
+        {
+            token_list = token_list->next; // skip redirection operator
+            if (token_list) // skip file
+                token_list = token_list->next;
+        }
+        else
+        {
+            token_list = token_list->next;
+        }
+    }
+    return count;
 }
 
 
-int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
+char **fill_args(t_token **token_list)
 {
-	(*new_cmd)->args = fill_args(temp_token_list);
-	// print_array((*new_cmd)->args);
-	if (!(*new_cmd)->args)
-	{
-		// printf("failed here \n");
-		return (FALSE);
-	}
-	// printf("failed here \n");
-	(*new_cmd)->cmd_name = ft_strdup(((*new_cmd)->args)[0]);
-	if (!(*new_cmd)->cmd_name)
-		return (FALSE);
-	// printf("cmd name succeed \n");
-	if (parse_redirection(new_cmd, temp_token_list) == FALSE)
-		return (FALSE);	
-	return (TRUE);
+    int count = count_args(*token_list);
+    char **args = malloc(sizeof(char *) * (count + 1));
+    if (!args)
+    {
+        get_error_msg(ERR_MALLOC);
+        return (NULL);
+    }
+    int i = 0;
+    while (*token_list && (*token_list)->type != PIPE)
+    {
+        if ((*token_list)->type == WORD && !is_redirection(*token_list))
+        {
+            args[i] = ft_strdup((*token_list)->value);
+            if (!args[i])
+            {
+                free_array(args, i);
+                get_error_msg(ERR_MALLOC);
+                return (NULL);
+            }
+            i++;
+        }
+        else if (is_redirection(*token_list))
+        {
+            *token_list = (*token_list)->next;
+            if (*token_list)
+                *token_list = (*token_list)->next;
+            continue;
+        }
+        if (*token_list)
+            *token_list = (*token_list)->next;
+    }
+    args[i] = NULL;
+    return (args);
 }
 
-int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
+int parse_redirection(t_cmd **new_cmd, t_token **token_list)
 {
-	while (*token_list && (*token_list)->type != PIPE)
-	{
-		// printf("Redirection ? %s\n", token_list->value);
-		if ((*token_list)->type == IN || (*token_list)->type == HEREDOC)
-		{
-			// printf("Redirection IN or HEREDOC\n");
-			(*token_list) = (*token_list)->next;			
-			if ((*token_list) && (*token_list)->type == WORD)
-				(*new_cmd)->infile = ft_strdup((*token_list)->value);
-			if (!(*new_cmd)->infile)
-			{
-				get_error_msg(ERR_MALLOC);
-				return (FALSE);
-			}
-		}
-		else if ((*token_list)->type == OUT || (*token_list)->type == APPEND)
-		{
-			(*token_list) = (*token_list)->next;
-			if ((*token_list) && (*token_list)->type == WORD)
-				(*new_cmd)->outfile = ft_strdup((*token_list)->value);	
-			if (!(*new_cmd)->outfile)
-			{
-				get_error_msg(ERR_MALLOC);
-				return (FALSE);
-			}
-		}
-		(*token_list) = (*token_list)->next;
-	}
-	return (TRUE);
+    t_redirect_type redir_type;
+
+    while (*token_list && (*token_list)->type != PIPE)
+    {
+        if (is_redirection(*token_list))
+        {
+            if ((*token_list)->type == REDIR_IN_token)
+                redir_type = REDIR_IN;
+            else if ((*token_list)->type == REDIR_OUT_token)
+                redir_type = REDIR_OUT;
+            else if ((*token_list)->type == REDIR_APPEND_token)
+                redir_type = REDIR_APPEND;
+            else if ((*token_list)->type == REDIR_HEREDOC_token)
+                redir_type = REDIR_HEREDOC;
+            else
+                return (FALSE);
+
+            *token_list = (*token_list)->next;
+            if (!*token_list || (*token_list)->type != WORD)
+            {
+                get_error_msg(ERR_REDIR);
+                return (FALSE);
+            }
+            if (!add_redirects(&(*new_cmd)->redirects, redir_type, (*token_list)->value))
+                return (FALSE);
+        }
+        *token_list = (*token_list)->next;
+    }
+    return (TRUE);
 }
 
-char	**fill_args(t_token **token_list)
+int update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 {
-	int		count;
-	char	**args;
-
-	count = count_args(*token_list);
-	// printf("count args %d\n", count);
-	args = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!args)
-	{
-		get_error_msg(ERR_MALLOC);
-		return (NULL);
-	}
-	count = 0;
-	while (*token_list && (*token_list)->type != PIPE)
-	{
-		if ((*token_list)->type == WORD)
-		{
-			args[count] = ft_strdup((*token_list)->value);
-			if (!args[count])
-			{
-				get_error_msg(ERR_MALLOC);
-				return (NULL);
-			}
-		}
-		else if (is_redirection(*token_list) == TRUE)
-			return (args);
-		count++;
-		*token_list = (*token_list)->next;
-	}
-	args[count] = NULL;
-	return (args);
+    (*new_cmd)->args = fill_args(temp_token_list);
+    if (!(*new_cmd)->args)
+        return (FALSE);
+    if ((*new_cmd)->args[0])
+    {
+        (*new_cmd)->cmd_name = ft_strdup((*new_cmd)->args[0]);
+        if (!(*new_cmd)->cmd_name)
+        {
+            free_array((*new_cmd)->args, array_size((*new_cmd)->args));
+            get_error_msg(ERR_MALLOC);
+            return (FALSE);
+        }
+    }
+    if (!parse_redirection(new_cmd, temp_token_list))
+    {
+        free_array((*new_cmd)->args, array_size((*new_cmd)->args));
+        free((*new_cmd)->cmd_name);
+        return (FALSE);
+    }
+    return (TRUE);
 }
 
-int	count_args(t_token *tokenized_input_list)
+t_cmd *parse_tokens_to_commands(t_shell *mshell, t_token *tokenized_input_list)
 {
-	t_token	*temp;
-	int		count;
-	
-	temp = tokenized_input_list;
-	count = 0;
-	while (temp && temp->type != PIPE)
-	{
-		if (temp->type == WORD)
-			count++;
-		temp = temp->next;
-	}
-	return (count);
+    t_cmd *cmd_list = NULL;
+    t_cmd *current = NULL;
+    t_token *temp_token_list = tokenized_input_list;
+
+    mshell->has_pipe = 0;
+    while (temp_token_list)
+    {
+        t_cmd *new_cmd = create_cmd();
+        if (!new_cmd)
+        {
+            free_cmd_list(cmd_list);
+            get_error_msg(ERR_MALLOC);
+            return (NULL);
+        }
+        if (!cmd_list)
+            cmd_list = new_cmd;
+        else
+            current->next = new_cmd;
+        current = new_cmd;
+
+        if (!update_command_node(&new_cmd, &temp_token_list))
+        {
+            free_cmd_list(cmd_list);
+            return (NULL);
+        }
+        if (!new_cmd->args || !new_cmd->args[0])
+        {
+            get_error_msg(ERR_SYNTAX);
+            free_cmd_list(cmd_list);
+            return (NULL);
+        }
+        if (temp_token_list && temp_token_list->type == PIPE)
+        {
+            mshell->has_pipe = 1;
+            temp_token_list = temp_token_list->next;
+            if (!temp_token_list)
+            {
+                get_error_msg(ERR_SYNTAX);
+                free_cmd_list(cmd_list);
+                return (NULL);
+            }
+        }
+    }
+    return (cmd_list);
 }
-
-t_cmd	*create_cmd(void)
-{
-	t_cmd	*new_cmd;
-
-	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
-	if (!new_cmd)
-	{
-		get_error_msg(ERR_MALLOC);
-		return (NULL);
-	}
-	new_cmd->args = NULL;
-	new_cmd->cmd_name = NULL;
-	new_cmd->infile = NULL;
-	new_cmd->outfile = NULL;
-	new_cmd->next = NULL;
-	return (new_cmd);
-}
-
-
 
 void free_cmd_list(t_cmd *head)
 {
-	t_cmd	*temp;
-
-	while (head)
-	{
-		temp = head;
-		head = head->next;
-		free(temp);
-	}
-	
+    t_cmd *temp;
+    while (head)
+    {
+        temp = head;
+        head = head->next;
+        free_array(temp->args, array_size(temp->args));
+        free(temp->cmd_name);
+        t_redirect *redir = temp->redirects;
+        while (redir)
+        {
+            t_redirect *next = redir->next;
+            free(redir->file);
+            free(redir->tmp_file);
+            free(redir->ori_path);
+            free(redir);
+            redir = next;
+        }
+        free(temp);
+    }
 }

@@ -1,7 +1,7 @@
 
 #include "../../includes/shell.h"
 
-static void	ft_multi_free_null(char ***array)
+void	ft_free_null(char ***array) //same with void ft_free_null(char ***array);
 {
 	size_t	i;
 
@@ -41,7 +41,10 @@ int init_env(t_shell *mshell, char **envp)
     size_t i;
 
     if (!mshell || !envp)
+    {
+        mshell->exit_code = 1;
         return (1);
+    }
     len = 0;
     while (envp[len])
         len++;
@@ -49,6 +52,7 @@ int init_env(t_shell *mshell, char **envp)
     if (!mshell->envp)
     {
         ft_printf_fd(2, "minishell: init_env: malloc failed\n");
+        mshell->exit_code = 1;
         return (1);
     }
     i = 0;
@@ -59,12 +63,16 @@ int init_env(t_shell *mshell, char **envp)
         {
             env_free(mshell);
             ft_printf_fd(2, "minishell: init_env: malloc failed\n");
+            mshell->exit_code = 1;
             return (1);
         }
         i++;
     }
+    mshell->exit_code = 0;
     return (0);
 }
+
+
 char **env_dup(char **envp)
 {
     char **res;
@@ -84,7 +92,7 @@ char **env_dup(char **envp)
     {
         res[i] = ft_strdup(envp[i]);
         if (!res[i])
-            return (ft_multi_free_null(&res), NULL);
+            return (ft_free_null(&res), NULL);
         i++;
     }
     return (res);
@@ -162,54 +170,54 @@ static char **realloc_env(char **envp, size_t len)
     return (res);
 }
 
-int env_add(t_shell *mshell, const char *key, const char *value)
-{
-    char *tmp;
-    size_t i;
-    size_t len;
-    size_t env_len;
+// int env_add(t_shell *mshell, const char *key, const char *value)
+// {
+//     char *tmp;
+//     size_t i;
+//     size_t len;
+//     size_t env_len;
 
-    if (!mshell || !key)
-        return (1);
-    len = ft_strlen(key);
-    if (value)
-        len += ft_strlen(value) + 1; // + 1 for '='
-    len += 1; //for null terminal
-    tmp = ft_calloc(1, len);
-    if (!tmp)
-    {
-        ft_printf_fd(2, "minishell: env_add: malloc failed\n");
-        return (1);
-    }
-    ft_strlcat(tmp, key, len);
-    if (value)
-    {
-        ft_strlcat(tmp, "=", len);
-        ft_strlcat(tmp, value, len);
-    }
-    i = 0;
-    if (env_find_variable(mshell, key, &i))
-    {
-        free(mshell->envp[i]);
-        mshell->envp[i] = tmp;
-        env_swap_last(mshell->envp);
-        return (0);
-    }
-    env_len = 0;
-    while (mshell->envp[env_len])
-        env_len++;
-    mshell->envp = realloc_env(mshell->envp, env_len);
-    if (!mshell->envp)
-    {
-        free(tmp);
-        ft_printf_fd(2, "minishell: env_add: malloc failed\n");
-        return (1);
-    }
-    mshell->envp[env_len] = tmp;
-    mshell->envp[env_len + 1] = NULL;
-    env_swap_last(mshell->envp);
-    return (0);
-}
+//     if (!mshell || !key)
+//         return (1);
+//     len = ft_strlen(key);
+//     if (value)
+//         len += ft_strlen(value) + 1; // + 1 for '='
+//     len += 1; //for null terminal
+//     tmp = ft_calloc(1, len);
+//     if (!tmp)
+//     {
+//         ft_printf_fd(2, "minishell: env_add: malloc failed\n");
+//         return (1);
+//     }
+//     ft_strlcat(tmp, key, len);
+//     if (value)
+//     {
+//         ft_strlcat(tmp, "=", len);
+//         ft_strlcat(tmp, value, len);
+//     }
+//     i = 0;
+//     if (env_find_variable(mshell, key, &i))
+//     {
+//         free(mshell->envp[i]);
+//         mshell->envp[i] = tmp;
+//         env_swap_last(mshell->envp);
+//         return (0);
+//     }
+//     env_len = 0;
+//     while (mshell->envp[env_len])
+//         env_len++;
+//     mshell->envp = realloc_env(mshell->envp, env_len);
+//     if (!mshell->envp)
+//     {
+//         free(tmp);
+//         ft_printf_fd(2, "minishell: env_add: malloc failed\n");
+//         return (1);
+//     }
+//     mshell->envp[env_len] = tmp;
+//     mshell->envp[env_len + 1] = NULL;
+//     env_swap_last(mshell->envp);
+//     return (0);
+// }
 
 
 int env_remove(t_shell *mshell, const char *key) //unset
@@ -299,7 +307,7 @@ int env_underscore(t_shell *mshell, char **cmd)
     i = 0;
     while (cmd[i])
         i++;
-    if (i > 0 && !mshell->tokens->has_pipe)
+    if (i > 0 && !mshell->has_pipe)
     {
         last_cmd = cmd[i - 1];
         return (env_add(mshell, "_", last_cmd));
@@ -311,17 +319,70 @@ int env_clone_underscore(t_shell *mshell)
 {
     const char *underscore_val;
 
-    if (!mshell || !mshell->tokens)
+    if (!mshell)
         return (1);
     underscore_val = env_find_value(mshell, "_");
     if (underscore_val && *underscore_val)
     {
-        mshell->tokens->env_last_cmd = ft_strdup(underscore_val);
-        if (!mshell->tokens->env_last_cmd)
+        mshell->env_last_cmd = ft_strdup(underscore_val);
+        if (!mshell->env_last_cmd)
         {
             ft_printf_fd(2, "minishell: env_clone_underscore: malloc failed\n");
+            mshell->exit_code = 1;
             return (1);
         }
     }
+    return (0);
+}
+//// new
+
+int env_add(t_shell *mshell, const char *key, const char *value)
+{
+    char *tmp;
+    size_t i;
+    size_t len;
+    size_t env_len;
+
+    if (!mshell || !key)
+        return (1);
+    len = ft_strlen(key);
+    if (value)
+        len += ft_strlen(value) + 1;
+    len += 1;
+    tmp = ft_calloc(1, len);
+    if (!tmp)
+    {
+        ft_printf_fd(2, "minishell: env_add: malloc failed\n");
+        mshell->exit_code = 1;
+        return (1);
+    }
+    ft_strlcat(tmp, key, len);
+    if (value)
+    {
+        ft_strlcat(tmp, "=", len);
+        ft_strlcat(tmp, value, len);
+    }
+    i = 0;
+    if (env_find_variable(mshell, key, &i))
+    {
+        free(mshell->envp[i]);
+        mshell->envp[i] = tmp;
+        env_swap_last(mshell->envp);
+        return (0);
+    }
+    env_len = 0;
+    while (mshell->envp[env_len])
+        env_len++;
+    mshell->envp = realloc_env(mshell->envp, env_len);
+    if (!mshell->envp)
+    {
+        free(tmp);
+        ft_printf_fd(2, "minishell: env_add: realloc failed\n");
+        mshell->exit_code = 1;
+        return (1);
+    }
+    mshell->envp[env_len] = tmp;
+    mshell->envp[env_len + 1] = NULL;
+    env_swap_last(mshell->envp);
     return (0);
 }

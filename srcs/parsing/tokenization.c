@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/12 06:56:39 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/16 06:27:08 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ t_token	*convert_user_input_to_token(char *line)
 		{
 			if (line[i + 1] == '<')
 			{
-				new_token = create_token("<<", HEREDOC);
+				new_token = create_token("<<", REDIR_HEREDOC_token);
 				i += 2;
 			}
 			else
 			{
-				new_token = create_token("<", IN);
+				new_token = create_token("<", REDIR_IN_token);
 				i++;
 			}
 			add_token(&tokenized_input_list, new_token);
@@ -59,12 +59,12 @@ t_token	*convert_user_input_to_token(char *line)
 		{
 			if (line[i + 1] == '>')
 			{
-				new_token = create_token(">>", APPEND);
+				new_token = create_token(">>", REDIR_APPEND_token);
 				i += 2;
 			}
 			else
 			{
-				new_token = create_token(">", OUT);
+				new_token = create_token(">", REDIR_OUT_token);
 				i++;
 			}
 			add_token(&tokenized_input_list, new_token);

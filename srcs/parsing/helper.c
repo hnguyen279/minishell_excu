@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/15 12:21:15 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/17 07:07:32 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,10 +132,31 @@ void	print_cmd_list(t_cmd *head)
 		print_array(temp->args);
 		// printf(" } \n");
 		printf("cmd_name: %s\n", temp->cmd_name);
-		printf("infile: %s\n", temp->infile);
-		printf("outfile: %s\n", temp->outfile);
-		printf("next: %p\n", temp->next);		
+		print_redirect_list(temp->redirects);
+		// printf("infile: %s\n", temp->infile);
+		// printf("outfile: %s\n", temp->outfile);
+		printf("next: %p\n", temp->next);
+		// printf("redirect type :%d\n", temp->redirect_type);
 		temp = temp->next;
 	}
+}
+
+void	print_redirect_list(t_redirect *redir_list)
+{
+	t_redirect	*temp;
+	int			i = 0;
+
+	temp = redir_list;
+	while (temp)
+	{
+		printf("redirect : %d\n", ++i);
+		printf("fd : %d\n", redir_list->fd);
+		printf("file : %s\n", redir_list->file);
+		printf("original path : %s\n", redir_list->ori_path);
+		printf("temp file : %s\n", redir_list->tmp_file);
+		printf("redirect type : %d\n", redir_list->type);
+		temp = temp->next;
+	}
+	
 }
 
