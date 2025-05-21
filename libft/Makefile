@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/30 15:05:22 by trpham            #+#    #+#              #
-#    Updated: 2025/01/17 13:29:35 by trpham           ###   ########.fr        #
+#    Updated: 2025/05/21 12:11:26 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -86,7 +86,7 @@ BONUS_NAME = .bonus
 # If -o is not specified, the default is to put an executable file in a.out
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D) 
-	$(CC) $(CFLAGS) -I$(SRC_DIR) -c $< -o $@
+	@$(CC) $(CFLAGS) -I$(SRC_DIR) -c $< -o $@
 	
 # Uses the ar command to create the archive ($@) from the object files $^
 # Create the actual library
@@ -99,21 +99,21 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 #  -rcs rcs can be seen to mean replace, create, sort
 # $^ prequisite files, which mean the OBJECT
 $(NAME): $(OBJS)
-	ar rcs $(NAME) $^
+	@ar rcs $(NAME) $^
 
 all: $(NAME)
 
 bonus: $(OBJ_DIR) $(BONUS_NAME) 
 
 $(BONUS_NAME): $(OBJS) $(OBJS_BONUS)
-	ar rcs $(NAME) $^
+	@ar rcs $(NAME) $^
 	touch $(BONUS_NAME)
 
 clean:
-	rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR)
 
 fclean: clean
-	rm -f $(NAME) $(BONUS_NAME)
+	@rm -f $(NAME) $(BONUS_NAME)
 
 re: fclean all
 
