@@ -38,8 +38,7 @@ int check_white_spaces_cmd(char *cmd)
     }
     return 1;
 }
-
-int check_ambiguous_redir(t_shell *mshell, t_redirect *redir)
+int is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 {
 	if (!redir || !redir->file || redir->file[0] == '\0')
 	{

@@ -35,43 +35,6 @@ void env_free(t_shell *mshell)
     mshell->envp = NULL;
 }
 
-int init_env(t_shell *mshell, char **envp)
-{
-    size_t len;
-    size_t i;
-
-    if (!mshell || !envp)
-    {
-        mshell->exit_code = 1;
-        return (1);
-    }
-    len = 0;
-    while (envp[len])
-        len++;
-    mshell->envp = ft_calloc(len + 1, sizeof(char *));
-    if (!mshell->envp)
-    {
-        ft_printf_fd(2, "minishell: init_env: malloc failed\n");
-        mshell->exit_code = 1;
-        return (1);
-    }
-    i = 0;
-    while (i < len)
-    {
-        mshell->envp[i] = ft_strdup(envp[i]);
-        if (!mshell->envp[i])
-        {
-            env_free(mshell);
-            ft_printf_fd(2, "minishell: init_env: malloc failed\n");
-            mshell->exit_code = 1;
-            return (1);
-        }
-        i++;
-    }
-    mshell->exit_code = 0;
-    return (0);
-}
-
 
 char **env_dup(char **envp)
 {
@@ -163,61 +126,18 @@ static char **realloc_env(char **envp, size_t len)
     i = 0;
     while (i < len)
     {
-        res[i] = envp[i];
+        res[i] = ft_strdup(envp[i]);
+        if (!res[i])
+        {
+            ft_free_null(&res);
+            return (NULL);
+        }
         i++;
     }
-    free(envp);
+    ft_free_null(&envp);
     return (res);
 }
 
-// int env_add(t_shell *mshell, const char *key, const char *value)
-// {
-//     char *tmp;
-//     size_t i;
-//     size_t len;
-//     size_t env_len;
-
-//     if (!mshell || !key)
-//         return (1);
-//     len = ft_strlen(key);
-//     if (value)
-//         len += ft_strlen(value) + 1; // + 1 for '='
-//     len += 1; //for null terminal
-//     tmp = ft_calloc(1, len);
-//     if (!tmp)
-//     {
-//         ft_printf_fd(2, "minishell: env_add: malloc failed\n");
-//         return (1);
-//     }
-//     ft_strlcat(tmp, key, len);
-//     if (value)
-//     {
-//         ft_strlcat(tmp, "=", len);
-//         ft_strlcat(tmp, value, len);
-//     }
-//     i = 0;
-//     if (env_find_variable(mshell, key, &i))
-//     {
-//         free(mshell->envp[i]);
-//         mshell->envp[i] = tmp;
-//         env_swap_last(mshell->envp);
-//         return (0);
-//     }
-//     env_len = 0;
-//     while (mshell->envp[env_len])
-//         env_len++;
-//     mshell->envp = realloc_env(mshell->envp, env_len);
-//     if (!mshell->envp)
-//     {
-//         free(tmp);
-//         ft_printf_fd(2, "minishell: env_add: malloc failed\n");
-//         return (1);
-//     }
-//     mshell->envp[env_len] = tmp;
-//     mshell->envp[env_len + 1] = NULL;
-//     env_swap_last(mshell->envp);
-//     return (0);
-// }
 
 
 int env_remove(t_shell *mshell, const char *key) //unset
@@ -237,7 +157,7 @@ int env_remove(t_shell *mshell, const char *key) //unset
         j++;
     }
     mshell->envp[i] = NULL;
-    return (0);
+    return (1);
 }
 
 void env_sort(char **envp, size_t len)
@@ -362,14 +282,21 @@ int env_add(t_shell *mshell, const char *key, const char *value)
         ft_strlcat(tmp, "=", len);
         ft_strlcat(tmp, value, len);
     }
+
+    // Nếu key đã tồn tại → ghi đè
     i = 0;
     if (env_find_variable(mshell, key, &i))
     {
         free(mshell->envp[i]);
         mshell->envp[i] = tmp;
-        env_swap_last(mshell->envp);
+
+        if (ft_strncmp(tmp, "_=", 2) == 0) // chỉ swap nếu đúng key "_="
+            env_swap_last(mshell->envp);
+
         return (0);
     }
+
+    // Nếu chưa có key → thêm mới
     env_len = 0;
     while (mshell->envp[env_len])
         env_len++;
@@ -383,6 +310,10 @@ int env_add(t_shell *mshell, const char *key, const char *value)
     }
     mshell->envp[env_len] = tmp;
     mshell->envp[env_len + 1] = NULL;
-    env_swap_last(mshell->envp);
+
+    if (ft_strncmp(tmp, "_=", 2) == 0)
+        env_swap_last(mshell->envp);
+
     return (0);
 }
+

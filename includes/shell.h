@@ -183,7 +183,7 @@ int process_heredocs(t_shell *mshell, t_ast *node);
 void free_split(char **tab);
 int display_error(char *cmd);
 int check_white_spaces_cmd(char *cmd);
-int check_ambiguous_redir(t_shell *mshell, t_redirect *redir);
+int is_ambiguous_redirect(t_shell *mshell, t_redirect *redir);
 char *find_cmd_path(t_shell *mshell, char *cmd);
 int exe_redirection(t_redirect *redir, t_shell *mshell);
 int execute_pipe(t_ast *ast, t_shell *shell);
@@ -191,7 +191,6 @@ int execute_command(t_ast *node, t_shell *mshell);
 int execute_ast(t_ast *node, t_shell *mshell);
 
 /* Env functions */
-int init_env(t_shell *mshell, char **envp);
 void env_free(t_shell *mshell);
 char **env_dup(char **envp);
 char *env_find_variable(t_shell *mshell, const char *key, size_t *i);

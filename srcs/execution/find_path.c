@@ -6,7 +6,7 @@ static char **find_path(char **env)
 	int		i = 0;
 	char	**paths;
 
-	while (env[i] && ft_strcmp(env[i], "PATH=") != 0)
+	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
 	if (!env[i] || env[i][5] == '\0')
 	{
@@ -51,10 +51,6 @@ static char	*build_cmd_path(char *first_cmd, char **env_paths)
 			free_split(env_paths);
 			printf("cmd path in %s\n", cmd_path);
 			return (cmd_path);
-		}
-		else
-		{
-			print_error("cannot access cmd_path");
 		}
 		free(cmd_path);
 		i++;
@@ -106,35 +102,6 @@ static int	check_is_directory(t_shell *mshell, char *cmd)
 	}
 	return (EXIT_SUCCESS);
 }
-
-// char	*find_cmd_path(t_shell *mshell, char *cmd) //why not exit sotre mshell->exitcode
-// {
-// 	char	*cmd_path;
-
-// 	if (!cmd || !cmd[0] || !ft_strcmp(cmd, ".") || !ft_strcmp(cmd, ".."))
-// 	{
-// 		mshell->exit_code = display_error(cmd);
-// 		return (NULL);
-// 	}
-// 	if (check_is_directory(mshell, cmd) != EXIT_SUCCESS)
-// 		return (NULL);
-// 	if (ft_strchr(cmd, '/') && access(cmd, F_OK) == 0)
-// 		return (ft_strdup(cmd));
-// 	cmd_path = get_path(cmd, mshell->envp);
-// 	if (!cmd_path)
-// 	{
-// 		mshell->exit_code = 127;
-// 		return (NULL);
-// 	}
-// 	if (access(cmd_path, X_OK) != 0)
-// 	{
-// 		ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n", cmd_path);
-// 		mshell->exit_code = 126;
-// 		free(cmd_path);
-// 		return (NULL);
-// 	}
-// 	return (cmd_path);
-// }
 
 char *find_cmd_path(t_shell *mshell, char *cmd)
 {
