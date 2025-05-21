@@ -6,14 +6,11 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:38:32 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/17 07:10:10 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/21 16:25:36 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
-
-
-
 
 void free_ast(t_ast *node, t_shell *mshell)
 {

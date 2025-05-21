@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/17 06:57:44 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/21 16:47:48 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ t_cmd	*parse_tokens_to_commands(t_token *tokenized_input_list)
 {
 	t_token *temp_token_list = NULL;
 	t_cmd	*cmd_list = NULL;
-	t_cmd	*new_cmd;
-	t_cmd	*current;
+	t_cmd	*new_cmd = NULL;
+	t_cmd	*current = NULL;
 
 	temp_token_list = tokenized_input_list;
 	while (temp_token_list)
@@ -51,10 +51,9 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 	// print_array((*new_cmd)->args);
 	if (!(*new_cmd)->args)
 	{
-		// printf("failed here \n");
+		print_error("Fail to update command node");
 		return (FALSE);
 	}
-	// printf("failed here \n");
 	(*new_cmd)->cmd_name = ft_strdup(((*new_cmd)->args)[0]);
 	if (!(*new_cmd)->cmd_name)
 		return (FALSE);
@@ -68,13 +67,16 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 // H add
 int add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
 {
+	t_redirect	*new_redir;
+	t_redirect	*current;
+	
     if (!file || !*file)
     {
-        ft_printf_fd(STDERR_FILENO, "minishell: empty file name in redirection\n");
+		print_error("empty file name in redirection");
         return (FALSE);
     }
 
-    t_redirect *new_redir = malloc(sizeof(t_redirect));
+    new_redir = malloc(sizeof(t_redirect));
     if (!new_redir)
     {
         get_error_msg(ERR_MALLOC);
@@ -84,13 +86,17 @@ int add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
     new_redir->file = ft_strdup(file);
     if (!new_redir->file)
     {
-        free(new_redir);
+        // free(new_redir);
         get_error_msg(ERR_MALLOC);
         return (FALSE);
     }
 
     new_redir->type = type;
-    new_redir->fd = (type == REDIR_IN || type == REDIR_HEREDOC) ? 0 : 1;
+	
+	if (type == REDIR_IN)
+		new_redir->fd = 0;
+	else if (type == REDIR_HEREDOC)
+		new_redir->fd = 1;
     new_redir->ori_path = NULL;
     new_redir->tmp_file = NULL;
     new_redir->next = NULL;
@@ -99,7 +105,7 @@ int add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
         *redir_list = new_redir;
     else
     {
-        t_redirect *current = *redir_list;
+        current = *redir_list;
         while (current->next)
             current = current->next;
         current->next = new_redir;
@@ -124,7 +130,10 @@ t_redirect_type token_to_redirect_type(t_token_type token_type)
 
 int parse_redirection(t_cmd **new_cmd, t_token **token_list)
 {
-    if (!new_cmd || !*new_cmd || !token_list || !*token_list)
+	t_redirect_type	redir_type;
+	
+    // if (!new_cmd || !*new_cmd || !token_list || !*token_list)
+	if (!new_cmd  || !token_list)
     {
         ft_printf_fd(STDERR_FILENO, "minishell: invalid args in parse_redirection\n");
         return (FALSE);
@@ -132,9 +141,9 @@ int parse_redirection(t_cmd **new_cmd, t_token **token_list)
 
     while (*token_list && (*token_list)->type != PIPE)
     {
-        if (is_redirection(*token_list))
+        if (is_redirection(*token_list)==TRUE)
         {
-            t_redirect_type redir_type = token_to_redirect_type((*token_list)->type);
+            redir_type = token_to_redirect_type((*token_list)->type);
             if (redir_type == REDIR_INVALID)
             {
                 ft_printf_fd(STDERR_FILENO, "minishell: invalid redirection token type\n");
@@ -163,46 +172,6 @@ int parse_redirection(t_cmd **new_cmd, t_token **token_list)
     return (TRUE);
 }
 
-// H hide
-// void	add_redirects(t_redirect **redir_list, t_token_type type, char *file)
-// {
-// 	t_redirect	*new_redir;
-// 	t_redirect	*current;
-
-// 	new_redir = malloc(sizeof(t_redirect));
-// 	if (!new_redir)
-// 	{
-// 		get_error_msg(ERR_MALLOC);
-// 		return ;
-// 	}
-// 	if (type == REDIR_IN)
-// 		new_redir->fd = 0;
-// 	else if (type == REDIR_HEREDOC)
-// 		new_redir->fd = 1;
-// 	new_redir->type = type;
-// 	new_redir->file = ft_strdup(file);
-// 	if (!new_redir->file)
-// 	{
-// 		get_error_msg(ERR_MALLOC);
-// 		return ;
-// 	}
-// 	new_redir->ori_path = NULL;
-// 	new_redir->tmp_file = NULL;
-// 	new_redir->next = NULL;
-// 	if (!*redir_list)
-// 		*redir_list = new_redir;
-// 	else
-// 	{
-// 		current = *redir_list;
-// 		while (current)
-// 		{
-// 			current = current->next;
-// 		}
-// 		current->next = new_redir;
-// 		// (*redir_list)->next = new_redir;
-// 		// current = new_redir;
-// 	}
-// }
 
 // int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 // {
@@ -220,32 +189,6 @@ int parse_redirection(t_cmd **new_cmd, t_token **token_list)
 // 			else
 // 				return (FALSE);
 // 		}
-// 		// printf("Redirection ? %s\n", token_list->value);
-// 		// if ((*token_list)->type == REDIR_IN || (*token_list)->type == REDIR_HEREDOC)
-// 		// {
-// 		// 	// (*new_cmd)->redirect_type = (*token_list)->type;
-// 		// 	// printf("Redirection IN or HEREDOC\n");
-// 		// 	(*token_list) = (*token_list)->next;			
-// 		// 	if ((*token_list) && (*token_list)->type == WORD)
-// 		// 		(*new_cmd)->infile = ft_strdup((*token_list)->value);
-// 		// 	if (!(*new_cmd)->infile)
-// 		// 	{
-// 		// 		get_error_msg(ERR_MALLOC);
-// 		// 		return (FALSE);
-// 		// 	}
-// 		// }
-// 		// else if ((*token_list)->type == REDIR_OUT || (*token_list)->type == REDIR_APPEND)
-// 		// {
-// 		// 	// (*new_cmd)->redirect_type = (*token_list)->type;
-// 		// 	(*token_list) = (*token_list)->next;
-// 		// 	if ((*token_list) && (*token_list)->type == WORD)
-// 		// 		(*new_cmd)->outfile = ft_strdup((*token_list)->value);	
-// 		// 	if (!(*new_cmd)->outfile)
-// 		// 	{
-// 		// 		get_error_msg(ERR_MALLOC);
-// 		// 		return (FALSE);
-// 		// 	}
-// 		// }
 // 		(*token_list) = (*token_list)->next;
 // 	}
 // 	return (TRUE);

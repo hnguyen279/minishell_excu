@@ -179,6 +179,7 @@ static void shell_interactive(t_shell *mshell)
                     }
                     else
                     {
+                        print_cmd_list(cmd_list);
                         tree = convert_cmd_to_ast(cmd_list);
                         if (!tree)
                         {
@@ -187,6 +188,7 @@ static void shell_interactive(t_shell *mshell)
                         }
                         else
                         {
+                            printf("ast tree is successfully created\n");
                             if (process_heredocs(mshell, tree))
                                 mshell->exit_code = 1;
                             else
@@ -209,10 +211,10 @@ static void shell_interactive(t_shell *mshell)
         free_string(line);
         free_token_list(tokenized_input_list);
         tokenized_input_list = NULL;
-        free_cmd_list(cmd_list);
-        cmd_list = NULL;
-        free_ast(tree, mshell);
-        tree = NULL;
+        // free_cmd_list(cmd_list);
+        // cmd_list = NULL;
+        // free_ast(tree, mshell);
+        // tree = NULL;
     }
     clear_working_history(&history_head);
 }
@@ -237,3 +239,4 @@ int main(int ac, char *av[], char *env[])
     shell_cleanup(&mshell);
     return (mshell.exit_code);
 }
+
