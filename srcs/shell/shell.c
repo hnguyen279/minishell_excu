@@ -22,29 +22,15 @@ void shell_cleanup(t_shell *mshell)
     // add more
 }
 
-//////
 int init_shell(t_shell *mshell, char **envp)
 {
-    if (!mshell)
-        return (1);
-    mshell->exit_code = 0;
-    mshell->heredoc_index = 0;
-    mshell->has_pipe = 0;
-    mshell->env_last_cmd = NULL;
-
-    // If no envp passed, add defaults FIRST
-    if (!envp || !envp[0])
+    ft_memset(mshell, 0, sizeof(t_shell));
+    mshell->envp = env_dup(envp);
+    if (!mshell->envp)
     {
-        if (env_add(mshell, "PATH", "/usr/local/bin:/usr/bin:/bin"))
-            return (1);
-        if (env_add(mshell, "HOME", "/home/user"))
-            return (1);
-    }
-
-    if (init_env(mshell, envp)) // safe now
+        ft_printf_fd(2, "init_shell: failed to duplicate env\n");
         return (1);
-
-    // Now SHLVL logic
+    }
     char *shlvl_val = env_find_value(mshell, "SHLVL");
     int shlvl = 1;
     if (shlvl_val && shlvl_val[0] != '\0')
@@ -53,23 +39,82 @@ int init_shell(t_shell *mshell, char **envp)
         while (shlvl_val[i] && ft_isdigit(shlvl_val[i]))
             i++;
         if (shlvl_val[i] == '\0')
-            shlvl = atoi(shlvl_val) + 1;
+            shlvl = ft_atoi(shlvl_val) + 1;
     }
-
     if (shlvl < 0 || shlvl > 999)
         shlvl = 1;
-
     char *shlvl_str = ft_itoa(shlvl);
     if (!shlvl_str)
+    {
+        ft_printf_fd(2, "init_shell: malloc failed (SHLVL)\n");
         return (1);
-    if (env_add(mshell, "SHLVL", shlvl_str))
+    }
+    if (env_add(mshell, "SHLVL", shlvl_str) != 0)
     {
         free(shlvl_str);
-        env_free(mshell);
+        ft_printf_fd(2, "init_shell: failed to set SHLVL\n");
         return (1);
     }
     free(shlvl_str);
-
+    char *cwd = getcwd(NULL, 0);
+    if (!cwd)
+    {
+        perror("minishell: getcwd");
+        return (1);
+    }
+    if (env_add(mshell, "PWD", cwd) != 0)
+    {
+        free(cwd);
+        ft_printf_fd(2, "init_shell: failed to set PWD\n");
+        return (1);
+    }
+    free(cwd);
+    env_remove(mshell, "OLDPWD");
     return (0);
 }
+
+
+
+// int init_shell(t_shell *mshell, char **envp)
+// {
+//     ft_memset(mshell, 0, sizeof(t_shell));
+//     mshell->envp = env_dup(envp);
+//     if (!mshell->envp)
+//     {
+//         ft_printf_fd(2, "init_shell: failed to duplicate env\n");
+//         return (1);
+//     }
+//     // SHLVL
+//     char *shlvl_val = env_get(mshell->envp, "SHLVL", 0);
+//     int shlvl = ft_atoi(shlvl_val);
+//     shlvl++; 
+//     char *shlvl_str = ft_itoa(shlvl);
+//     if (!shlvl_str)
+//     {
+//         ft_printf_fd(2, "init_shell: malloc failed\n");
+//         return (1);
+//     }
+//     if (env_set(mshell, "SHLVL", shlvl_str) != 0)
+//     {
+//         free(shlvl_str);
+//         ft_printf_fd(2, "init_shell: failed to set SHLVL\n");
+//         return (1);
+//     }
+//     free(shlvl_str);
+//     char *cwd = getcwd(NULL, 0);
+//     if (!cwd)
+//     {
+//         perror("minishell: getcwd");
+//         return (1);
+//     }
+//     if (env_add(mshell, "PWD", cwd) != 0)
+//     {
+//         free(cwd);
+//         ft_printf_fd(2, "init_shell: failed to set PWD\n");
+//         return (1);
+//     }
+//     free(cwd);
+//     env_remove(mshell, "OLDPWD");
+//     return (0);
+// }
 

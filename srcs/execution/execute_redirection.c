@@ -104,7 +104,7 @@ int exe_redirection(t_redirect *redir, t_shell *mshell)
     }
     while (current)
     {
-        if (check_ambiguous_redir(mshell, current) != 0)
+        if (is_ambiguous_redirect(mshell, current) != 0)
         {
             mshell->exit_code = 1;
             return (mshell->exit_code);

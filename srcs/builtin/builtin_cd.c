@@ -94,11 +94,6 @@ static void cd_to_oldpwd(t_shell *mshell)
 
 static void cd_to_path(t_shell *mshell, char *path)
 {
-    char *cwd;
-    char *new_pwd;
-    char *temp;
-    char *pwd_value;
-
     if (chdir(path) != 0)
     {
         ft_printf_fd(2, "minishell: cd: %s: ", path);
@@ -106,34 +101,8 @@ static void cd_to_path(t_shell *mshell, char *path)
         mshell->exit_code = 1;
         return;
     }
-    cwd = getcwd(NULL, 0);
-    if (!cwd)
-    {
-        ft_printf_fd(2, "minishell: getcwd: cannot access parent directories: ");
-        perror("");
-        temp = ft_strjoin("/", path);
-        if (!temp)
-        {
-            mshell->exit_code = 1;
-            return;
-        }
-        pwd_value = env_find_value(mshell, "PWD");
-        if (pwd_value)
-            new_pwd = ft_strjoin(pwd_value, temp);
-        else
-            new_pwd = ft_strjoin("", temp);
-        free(temp);
-        if (!new_pwd)
-        {
-            mshell->exit_code = 1;
-            return;
-        }
-        env_add(mshell, "PWD", new_pwd);
-        free(new_pwd);
-        mshell->exit_code = 0;
-        return;
-    }
-    free(cwd);
+
+    // update PWD and OLDPWD
     update_pwd(mshell);
 }
 
