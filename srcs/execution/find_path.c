@@ -34,17 +34,27 @@ static char	*build_cmd_path(char *first_cmd, char **env_paths)
 	while (env_paths[i])
 	{
 		one_path = ft_strjoin(env_paths[i], "/");
+		printf("one path in %s\n", one_path);
+
 		cmd_path = ft_strjoin(one_path, first_cmd);
+		printf("cmd path in %s\n", cmd_path);
+
 		free(one_path);
 		if (!cmd_path)
 		{
+			print_error("no cmd path from build cmd path");
 			free_split(env_paths);
 			return (NULL);
 		}
 		if (access(cmd_path, F_OK | X_OK) == 0)
 		{
 			free_split(env_paths);
+			printf("cmd path in %s\n", cmd_path);
 			return (cmd_path);
+		}
+		else
+		{
+			print_error("cannot access cmd_path");
 		}
 		free(cmd_path);
 		i++;
@@ -62,7 +72,10 @@ static char *get_path(char *first_cmd, char **env)
 		return (NULL);
 	cmd_path = build_cmd_path(first_cmd, paths);
 	if (!cmd_path)
+	{
+		print_error("no cmd_path from get_path function");
 		return (NULL);
+	}
 	return (cmd_path);
 }
 

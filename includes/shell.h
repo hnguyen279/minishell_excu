@@ -167,6 +167,9 @@ void print_error(char *msg);
 void get_error_msg(t_error_type err);
 int ft_isspace(char c);
 void print_array(char **arr);
+// void print_ast(t_ast *root);
+// void print_ast_recursive(t_ast *node, int depth);
+
 
 /* Heredoc functions */
 int open_heredoc_pipe(t_shell *mshell, t_redirect *redir);

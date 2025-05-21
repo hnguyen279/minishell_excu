@@ -29,10 +29,10 @@ typedef enum e_token_type
     NONE = 0,
     PIPE = 1,
     WORD = 2,
-    REDIR_IN = 3, >
-    REDIR_OUT = 4, <
-    REDIR_APPEND = 5, >>
-    REDIR_HEREDOC = 6
+    REDIR_IN = 3, //>
+    REDIR_OUT = 4, //<
+    REDIR_APPEND = 5, // >>
+    REDIR_HEREDOC = 6 // <<
 } t_token_type;
 
 typedef enum e_error_type
