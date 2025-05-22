@@ -110,13 +110,13 @@ int execute_command(t_ast *node, t_shell *mshell)
     {
         mshell->exit_code = execute_builtin(mshell, node->cmd);
         env_backup_last_argument(mshell, node->cmd); // store $_
-        free(cmd_path);
+        // free(cmd_path);
     }
     else
     {
         mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
         env_backup_last_argument(mshell, node->cmd);  // $_ work for external command
-        free(cmd_path);
+        // free(cmd_path);
     }
     return (mshell->exit_code);
 }
