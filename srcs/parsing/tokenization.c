@@ -122,7 +122,7 @@ char	*extract_word(char *line, int *i)
 	while (line[*i])
 	{
 		if (ft_isspace(line[*i]) == TRUE || line[*i] == '\'' || line[*i] == '\"'
-			|| line[*i] == '<' || line[*i] == '>')
+			|| line[*i] == '<' || line[*i] == '>'|| line[*i] == '|') //add | pipe
 			break;
 		(*i)++;
 	}

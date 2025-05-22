@@ -13,26 +13,32 @@ static void setup_pipe_redirection(int *pipe_fd, int std_fd, int fd_to_close)
 
 static void execute_child(t_shell *shell, t_ast *ast, int *pipe_fd, int left)
 {
+    t_ast *child;
+
     setup_signals(shell, MODE_CHILD);
     if (!ast)
         exit(1);
-    if (ast->redirects && exe_redirection(ast->redirects, shell) != 0)
+    if (left)
+        child = ast->left;
+    else
+        child = ast->right;  
+    if (!child)
+        exit(1);
+    if (child->redirects && exe_redirection(child->redirects, shell) != 0)
         exit(shell->exit_code);
     if (left)
     {
         close(pipe_fd[FD_READ]);
         setup_pipe_redirection(pipe_fd, FD_WRITE, pipe_fd[FD_WRITE]);
-        execute_ast(ast->left, shell);
     }
     else
     {
         close(pipe_fd[FD_WRITE]);
         setup_pipe_redirection(pipe_fd, FD_READ, pipe_fd[FD_READ]);
-        execute_ast(ast->right, shell);
     }
+    execute_ast(child, shell);
     exit(shell->exit_code);
 }
-
 
 static int init_child(int *pipe_fd, pid_t *pid)
 {
@@ -53,10 +59,16 @@ int execute_pipe(t_ast *ast, t_shell *shell)
     pid_t pid[2];
     int status[2];
 
-    if (!ast->left || !ast->right)
+    if (!ast || !ast->left || !ast->right)
+    {
+        ft_printf_fd(2, "minishell: syntax error near unexpected token `|'\n");
         return (shell->exit_code = 1);
+    }
     if (pipe(pipe_fd) == -1)
-        return (perror("minishell: pipe"), shell->exit_code = 1);
+    {
+        perror("minishell: pipe");
+        return (shell->exit_code = 1);
+    }
     if (init_child(pipe_fd, &pid[0]) == -1)
         return shell->exit_code;
     if (pid[0] == 0)
@@ -77,6 +89,3 @@ int execute_pipe(t_ast *ast, t_shell *shell)
         shell->exit_code = 1;
     return shell->exit_code;
 }
-
-
-

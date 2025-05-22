@@ -73,8 +73,8 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 	
 	(*new_cmd)->args = fill_args(temp_token_list);
 	// print_array((*new_cmd)->args);
-	if (*temp_token_list)
-		print_linked_list(*temp_token_list);
+	// if (*temp_token_list)
+	// 	print_linked_list(*temp_token_list);
 	if (!(*new_cmd)->args)
 	{
 		print_error("Fail to update command node");
@@ -243,13 +243,17 @@ char	**fill_args(t_token **token_list)
 			args[count] = ft_strdup((*token_list)->value);
 			if (!args[count])
 			{
-				get_error_msg(ERR_MALLOC);
+				get_error_msg(ERR_MALLOC); 
+				free_array(args, count); // free 
 				return (NULL);
 			}
+			count++; // only increase if args[count] 
 		}
 		else if (is_redirection(*token_list) == TRUE)
+		{
+			args[count] = NULL; // reset count
 			return (args);
-		count++;
+		}
 		*token_list = (*token_list)->next;
 	}
 	args[count] = NULL;

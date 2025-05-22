@@ -37,7 +37,6 @@ void free_ast(t_ast *node, t_shell *mshell)
         redir = next;
     }
     free(node);
-    node = NULL;
 }
 
 // t_ast *convert_cmd_to_ast(t_cmd *cmd_list)
