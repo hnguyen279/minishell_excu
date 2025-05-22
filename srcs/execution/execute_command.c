@@ -85,10 +85,8 @@ static int fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
     }
     if (pid == 0)
         run_command_child(node, mshell, cmd_path);
-    free(cmd_path);
     return (wait_command(mshell, pid, &status));
 }
-
 
 int execute_command(t_ast *node, t_shell *mshell)
 {
@@ -107,9 +105,16 @@ int execute_command(t_ast *node, t_shell *mshell)
     if (is_builtin(node->cmd[0]))
     {
         mshell->exit_code = execute_builtin(mshell, node->cmd);
+        env_backup_last_argument(mshell, node->cmd); // store $_
         free(cmd_path);
-        return (mshell->exit_code);
     }
-    return (fork_and_exec(node, mshell, cmd_path));
+    else
+    {
+        mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
+        env_backup_last_argument(mshell, node->cmd);  // $_ work for external command
+        free(cmd_path);
+    }
+    return (mshell->exit_code);
 }
+
 

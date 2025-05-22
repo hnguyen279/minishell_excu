@@ -97,12 +97,12 @@ typedef struct s_ast
     struct s_ast *right;
 } t_ast;
 
-typedef struct s_tokens
-{
-    int has_pipe;
-    char *env_last_cmd;
-    char **token;
-} t_tokens;
+// typedef struct s_tokens
+// {
+//     int has_pipe;
+//     char *env_last_cmd;
+//     char **token;
+// } t_tokens;
 
 typedef struct s_shell
 {
@@ -202,7 +202,7 @@ void env_sort(char **envp, size_t len);
 void env_swap_last(char **envp);
 void env_print(char **envp);
 int env_set_last_argument(t_shell *mshell, char **cmd);
-int env_backup_last_argument(t_shell *mshell);
+int env_backup_last_argument(t_shell *mshell, char **cmd);
 void ft_free_null(char ***array);
 
 /* Built-in functions */
