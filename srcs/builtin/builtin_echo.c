@@ -7,6 +7,10 @@ int builtin_echo(t_shell *mshell, char **token)
     int newline;
     int j;
 
+    // Debug builtin
+    printf("builtin_echo\n");
+    for (int i = 0; token[i]; i++)
+        printf("token[%d] = [%s]\n", i, token[i]);
     newline = 1;
     i = 1;
     if (token[i] && ft_strncmp(token[i], "-n", 2) == 0)
