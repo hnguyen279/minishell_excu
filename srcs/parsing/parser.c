@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/22 15:25:16 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/22 17:10:56 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,11 +244,16 @@ char	**fill_args(t_token **token_list)
 			if (!args[count])
 			{
 				get_error_msg(ERR_MALLOC);
+				free_array(args, count);
 				return (NULL);
 			}
+		// count++;
 		}
 		else if (is_redirection(*token_list) == TRUE)
+		{
+			args[count] = NULL;
 			return (args);
+		}
 		count++;
 		*token_list = (*token_list)->next;
 	}

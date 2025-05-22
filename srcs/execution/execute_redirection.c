@@ -59,7 +59,19 @@ static int redirect_output_append(t_redirect *redir)
     printf("redirect append work 1\n");
 
     // if (fcntl(STDOUT_FILENO, F_GETFD) == -1)
+    // {
     //     printf("STDOUT is closed or invalid\n");
+    //     close(fd);
+    //     return (1);
+    // }
+    printf("check before checking fd open");
+
+    if (fcntl(fd, F_GETFD) == -1) {
+        ft_printf_fd(2, "minishell: file descriptor %d is invalid: %s\n", fd, strerror(errno));
+        close(fd);
+        return (1);
+    }
+    printf("check before dup2 not failed");
 
     if (dup2(fd, STDOUT_FILENO) == -1)
     {
