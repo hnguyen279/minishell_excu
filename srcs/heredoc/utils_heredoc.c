@@ -21,19 +21,21 @@ static size_t exchange_variable(char *str, int fd, t_shell *ms)
 
     while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
         i++;
-
     tmp = str[i];
     str[i] = '\0';
-
-    val = env_find_value(ms, str);  // use ms chang env
-    str[i] = tmp;
-
-    if (val)
+    if (ft_strcmp(str, "_") == 0)
     {
-        size_t len = ft_strlen(val);
-        write(fd, val, len);
+        if (ms->env_last_cmd != NULL)
+            val = ms->env_last_cmd;
+        else
+            val = "";
     }
-    return (i);
+    else
+        val = env_find_value(ms, str);
+    str[i] = tmp;
+    if (val)
+        write(fd, val, ft_strlen(val));
+    return i;
 }
 
 int is_fully_quoted(const char *str)
@@ -94,8 +96,6 @@ char *get_delimiter(char *file)
     return (delimiter);
 }
 
-
-//// new check
 void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
 {
     size_t i = 0;
@@ -103,6 +103,7 @@ void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
 
     while (input[i] != '\0')
     {
+        // ${VAR} expansion
         if (input[i] == '$' && input[i + 1] == '{')
         {
             size_t j = i + 2;
@@ -110,7 +111,7 @@ void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
                 j++;
             if (input[j] == '}')
             {
-                if (j == i + 2)
+                if (j == i + 2) // "${}" 
                 {
                     write(fd_write, "$", 1);
                     i = j + 1;
@@ -118,31 +119,27 @@ void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
                 }
                 char tmp = input[j];
                 input[j] = '\0';
-                const char *varname = &input[i + 2];
-                const char *val = env_find_value(ms, varname);
+                len = exchange_variable(&input[i + 2], fd_write, ms);
                 input[j] = tmp;
-                if (val)
-                {
-                    size_t val_len = strlen(val);
-                    write(fd_write, val, val_len);
-                }
                 i = j + 1;
                 continue;
             }
             else
             {
+                // if not '}' close → print '$' 
                 write(fd_write, "$", 1);
                 i++;
                 continue;
             }
         }
-        if (input[i] == '$' && (ft_isdigit(input[i + 1]) || input[i + 1] == '?'))
+        // special case: $?
+        if (input[i] == '$' && input[i + 1] == '?')
         {
-            if (input[i + 1] == '?')
-                ft_putnbr_fd(ms->exit_code, fd_write);
+            ft_putnbr_fd(ms->exit_code, fd_write);
             i += 2;
             continue;
         }
+        // $VAR or $_ (no braces)
         if (input[i] == '$' && (ft_isalnum(input[i + 1]) || input[i + 1] == '_'))
         {
             len = exchange_variable(&input[i + 1], fd_write, ms);
