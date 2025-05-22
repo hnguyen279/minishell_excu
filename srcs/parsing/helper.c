@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/17 07:07:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/22 07:10:14 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	print_linked_list(t_token *head)
 	t_token	*temp;
 
 	temp = head;
+	printf("PRINT TOKEN START\n");
 	while (temp)
 	{
 		if (temp)

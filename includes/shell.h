@@ -150,6 +150,7 @@ void print_redirect_list(t_redirect *redir_list);
 void free_cmd_list(t_cmd *head);
 
 /* Abstract Syntax Tree */
+t_ast	*create_ast_node(int type);
 t_ast *convert_cmd_to_ast(t_cmd *cmd_list);
 void free_ast(t_ast *node, t_shell *mshell);
 

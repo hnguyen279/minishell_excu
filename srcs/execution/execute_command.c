@@ -86,6 +86,7 @@ static int fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
     if (pid == 0)
         run_command_child(node, mshell, cmd_path);
     free(cmd_path);
+    printf("execute here in fork and exec worked\n");
     return (wait_command(mshell, pid, &status));
 }
 
