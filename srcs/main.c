@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/17 07:09:45 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/22 09:58:26 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,14 @@ static void shell_interactive(t_shell *mshell)
                     cmd_list = parse_tokens_to_commands(tokenized_input_list);
                     if (!cmd_list)
                     {
+                        print_error("Failed to parse token to cmd");
                         mshell->exit_code = 2;
                         get_error_msg(ERR_SYNTAX);
                     }
                     else
                     {
-                        print_cmd_list(cmd_list);
+                        // printf("parse token to cmds succeed\n");
+                        // print_cmd_list(cmd_list);
                         tree = convert_cmd_to_ast(cmd_list);
                         if (!tree)
                         {
@@ -85,11 +87,17 @@ static void shell_interactive(t_shell *mshell)
                         }
                         else
                         {
-                            printf("ast tree is successfully created\n");
+                            // printf("ast tree is successfully created\n");
                             if (process_heredocs(mshell, tree))
+                            {
+                                printf("execute process heredocts\n");
                                 mshell->exit_code = 1;
+                            }
                             else
+                            {
+                                printf("execute ast\n");
                                 execute_ast(tree, mshell);
+                            }
                         }
                     }
                 }
@@ -108,11 +116,12 @@ static void shell_interactive(t_shell *mshell)
         free_string(line);
         free_token_list(tokenized_input_list);
         tokenized_input_list = NULL;
-        // free_cmd_list(cmd_list);
-        // cmd_list = NULL;
-        // free_ast(tree, mshell);
-        // tree = NULL;
+        // free_cmd_list(cmd_list); // double free error, need to fix
+        // cmd_list = NULL; // double free error, need to fix
+        // free_ast(tree, mshell); // double free error, need to fix
+        // tree = NULL; // double free error, need to fix
     }
+    printf("before clear working history\n");
     clear_working_history(&history_head);
 }
 
