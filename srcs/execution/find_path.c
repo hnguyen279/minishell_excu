@@ -34,10 +34,10 @@ static char	*build_cmd_path(char *first_cmd, char **env_paths)
 	while (env_paths[i])
 	{
 		one_path = ft_strjoin(env_paths[i], "/");
-		printf("one path in %s\n", one_path);
+		// printf("one path in %s\n", one_path);
 
 		cmd_path = ft_strjoin(one_path, first_cmd);
-		printf("cmd path in %s\n", cmd_path);
+		// printf("cmd path in %s\n", cmd_path);
 
 		free(one_path);
 		if (!cmd_path)
@@ -49,7 +49,7 @@ static char	*build_cmd_path(char *first_cmd, char **env_paths)
 		if (access(cmd_path, F_OK | X_OK) == 0)
 		{
 			free_split(env_paths);
-			printf("cmd path in %s\n", cmd_path);
+			// printf("cmd path in %s\n", cmd_path);
 			return (cmd_path);
 		}
 		free(cmd_path);

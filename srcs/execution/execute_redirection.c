@@ -55,6 +55,7 @@ static int redirect_output_append(t_redirect *redir)
         return (1);
     }
     close(fd);
+    printf("redirect append worked\n");
     return (0);
 }
 
@@ -88,6 +89,7 @@ int exe_redirection(t_redirect *redir, t_shell *mshell)
         ft_printf_fd(2, "minishell: internal error: null shell pointer\n");
         return (1);
     }
+    printf("exe_redirection worked\n");
     while (current)
     {
         if (is_ambiguous_redirect(mshell, current) != 0)

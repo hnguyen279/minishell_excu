@@ -97,13 +97,6 @@ typedef struct s_ast
     struct s_ast *right;
 } t_ast;
 
-// typedef struct s_tokens
-// {
-//     int has_pipe;
-//     char *env_last_cmd;
-//     char **token;
-// } t_tokens;
-
 typedef struct s_shell
 {
     int exit_code;
@@ -115,11 +108,12 @@ typedef struct s_shell
 } t_shell;
 
 /* Shell initialization */
-int init_shell(t_shell *mshell, char **envp);
-void shell_cleanup(t_shell *mshell);
+int     init_shell(t_shell *mshell, char **envp);
+void    shell_interactive(t_shell *mshell);
+void    shell_cleanup(t_shell *mshell);
 
 /* Tokenization */
-int is_comment(char *s);
+int     is_comment(char *s);
 t_token *create_token(char *s, t_token_type i);
 char *extract_quoted_token(char *line, int *i);
 char *extract_word(char *line, int *i);
@@ -150,6 +144,7 @@ void print_redirect_list(t_redirect *redir_list);
 void free_cmd_list(t_cmd *head);
 
 /* Abstract Syntax Tree */
+t_ast	*create_ast_node(int type);
 t_ast *convert_cmd_to_ast(t_cmd *cmd_list);
 void free_ast(t_ast *node, t_shell *mshell);
 
@@ -161,6 +156,8 @@ void clear_working_history(t_token **history_head);
 /* Helper functions */
 void free_string(char *s);
 void free_array(char **arr, int i);
+void free_token_list(t_token *tokens);
+
 int array_size(char **arr);
 void print_linked_list(t_token *head);
 void print_error(char *msg);
