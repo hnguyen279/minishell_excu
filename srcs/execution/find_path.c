@@ -109,7 +109,7 @@ char *find_cmd_path(t_shell *mshell, char *cmd)
 
     if (!cmd || !cmd[0] || !ft_strcmp(cmd, ".") || !ft_strcmp(cmd, ".."))
     {
-        mshell->exit_code = display_error(cmd);
+        mshell->exit_code = display_error_cmd(cmd);
         return (NULL);
     }
     if (check_is_directory(mshell, cmd) != EXIT_SUCCESS)

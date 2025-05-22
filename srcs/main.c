@@ -40,6 +40,11 @@ static void shell_interactive(t_shell *mshell)
             printf("exit\n");
             break;
         }
+        if (line[0] == '\0')
+        {
+            free(line);
+            continue;
+        }
         if (line[0] != '\0')
         {
             store_history(line, &history_head);

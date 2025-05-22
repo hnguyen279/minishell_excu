@@ -40,11 +40,7 @@ int builtin_unset(t_shell *mshell, char **token)
     size_t i = 1;
 
     if (!mshell || !token || !token[0])
-    {
-        ft_printf_fd(2, "minishell: unset: internal error\n");
-        mshell->exit_code = 1;
-        return (1);
-    }
+        return display_error_errno(mshell, "unset: internal error", 0);
     if (!token[1])
     {
         mshell->exit_code = 0;
@@ -69,3 +65,4 @@ int builtin_unset(t_shell *mshell, char **token)
     }
     return (mshell->exit_code);
 }
+

@@ -44,15 +44,13 @@ static int execute_builtin(t_shell *mshell, char **token)
 static int wait_command(t_shell *mshell, pid_t pid, int *status)
 {
     if (waitpid(pid, status, 0) == -1)
-    {
-        ft_printf_fd(2, "minishell: waitpid: %s\n", strerror(errno));
-        mshell->exit_code = 1;
-        return 1;
-    }
+        return display_error_errno(mshell, "waitpid", 1);
+
     if (WIFEXITED(*status))
         mshell->exit_code = WEXITSTATUS(*status);
     else if (WIFSIGNALED(*status))
         mshell->exit_code = 128 + WTERMSIG(*status);
+
     return mshell->exit_code;
 }
 
@@ -98,7 +96,7 @@ int execute_command(t_ast *node, t_shell *mshell)
 
     if (!node->cmd || !node->cmd[0])
     {
-        mshell->exit_code = display_error(NULL);
+        mshell->exit_code = display_error_cmd(NULL);
         return (mshell->exit_code);
     }
     if (node->redirects && exe_redirection(node->redirects, mshell) != 0)

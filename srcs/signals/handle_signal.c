@@ -3,41 +3,23 @@
 
 volatile sig_atomic_t g_signum = 0;
 
-void	set_sigint_flag(int sig)
+static void sigint_interactive(int sig)
 {
-	if (sig == SIGINT)
-        g_signum = sig;
+	(void)sig;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
+	rl_done = 1;
+	g_signum = 128 + SIGINT;
 }
 
-int	reset_shell_prompt(void)
+static void sigint_heredoc(int sig)
 {
-	if (g_signum == SIGINT)
-	{
-		g_signum = 128 + SIGINT;
-		write(STDOUT_FILENO, "\n", 1);
-		rl_replace_line("", 0);
-        rl_on_new_line();
-		rl_redisplay();
-	}
-	return (0);
-}
-
-int	reset_heredoc_prompt(void)
-{
-	if (g_signum == SIGINT)
-	{
-		g_signum = 128 + SIGINT;
-		write(STDOUT_FILENO, "^C\n", 3);
-		rl_done = 1;
-	}
-	return (0);
-}
-
-int signal_error(t_shell *mshell, const char *message)
-{
-    ft_printf_fd(2, "%s: %s\n", message, strerror(errno));
-    mshell->exit_code = 1;
-    return (-1);
+	(void)sig;
+	write(STDOUT_FILENO, "^C\n", 3);
+	rl_done = 1;
+	g_signum = 128 + SIGINT;
 }
 
 
@@ -49,34 +31,25 @@ int setup_signal_handlers(t_shell *mshell, void (*sigint_handler)(int), void (*s
     sa_int.sa_handler = sigint_handler;
     sa_int.sa_flags = SA_RESTART | SA_NOCLDSTOP;
     if (sigemptyset(&sa_int.sa_mask) == -1)
-        signal_error(mshell, "minishell: sigemptyset");
+        display_error_errno(mshell, "sigemptyset", 1);
     if (sigaction(SIGINT, &sa_int, NULL) == -1)
-        signal_error(mshell, "minishell: sigaction(SIGINT)");
+        display_error_errno(mshell, "sigaction(SIGINT)", 1);
     sa_quit.sa_handler = sigquit_handler;
     sa_quit.sa_flags = SA_RESTART | SA_NOCLDSTOP;
     if (sigemptyset(&sa_quit.sa_mask) == -1)
-        signal_error(mshell, "minishell: sigemptyset");
+        display_error_errno(mshell, "sigemptyset", 1);
     if (sigaction(SIGQUIT, &sa_quit, NULL) == -1)
-        signal_error(mshell, "minishell: sigaction(SIGQUIT)");
+        display_error_errno(mshell, "sigaction(SIGQUIT)", 1);
     return (0);
 }
 
 
-
-static void heredoc_sigint(int sig)
-{
-    (void)sig;
-    write(STDOUT_FILENO, "\n", 1);
-    rl_done = 1;
-    g_signum = 128 + SIGINT;
-}
-
 void setup_signals(t_shell *mshell, int mode)
 {
     if (mode == MODE_INTERACTIVE)
-        setup_signal_handlers(mshell, set_sigint_flag, SIG_IGN);
+        setup_signal_handlers(mshell, sigint_interactive, SIG_IGN);
     else if (mode == MODE_HEREDOC)
-        setup_signal_handlers(mshell, heredoc_sigint, SIG_IGN);
+        setup_signal_handlers(mshell, sigint_heredoc, SIG_IGN);
     else // CHILD_STATE
         setup_signal_handlers(mshell, SIG_DFL, SIG_DFL);
 }
