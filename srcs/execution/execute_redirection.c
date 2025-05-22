@@ -38,7 +38,7 @@ static int redirect_output(t_redirect *redir)
     close(fd);
     return (0);
 }
-
+// debuging
 static int redirect_output_append(t_redirect *redir)
 {
     if (!redir || !redir->file)
@@ -87,6 +87,28 @@ static int redirect_output_append(t_redirect *redir)
     printf("redirect append work 3\n");
     return (0);
 }
+
+// original function
+
+// static int redirect_output_append(t_redirect *redir)
+// {
+//     int fd = open(redir->file, O_CREAT | O_WRONLY | O_APPEND, 0644);
+//     if (fd == -1)
+//     {
+//         ft_printf_fd(2, "minishell: failed to open '%s': %s\n",
+//                     redir->file, strerror(errno));
+//         return (1);
+//     }
+//     if (dup2(fd, STDOUT_FILENO) == -1)
+//     {
+//         printf("dup2 failed\n");
+//         close(fd);
+//         // ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
+//         return (1);
+//     }
+//     close(fd);
+//     return (0);
+// }
 
 static int redirect_heredoc(t_redirect *redir, t_shell *mshell)
 {
