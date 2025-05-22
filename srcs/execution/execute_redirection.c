@@ -41,21 +41,38 @@ static int redirect_output(t_redirect *redir)
 
 static int redirect_output_append(t_redirect *redir)
 {
+    if (!redir || !redir->file)
+    {
+        printf("redir or redir->file is NULL!\n");
+        return (1);
+    }
+    printf("Trying to redirect to file: %s\n", redir->file);
+
     int fd = open(redir->file, O_CREAT | O_WRONLY | O_APPEND, 0644);
+    printf("open fd return %d\n", fd);
     if (fd == -1)
     {
         ft_printf_fd(2, "minishell: failed to open '%s': %s\n",
                     redir->file, strerror(errno));
         return (1);
     }
+    printf("redirect append work 1\n");
+
+    // if (fcntl(STDOUT_FILENO, F_GETFD) == -1)
+    //     printf("STDOUT is closed or invalid\n");
+
     if (dup2(fd, STDOUT_FILENO) == -1)
     {
+        printf("dup2 failed\n");
         close(fd);
-        ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
+        // ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
         return (1);
     }
+    
+    printf("dup2 not failed");
+
     close(fd);
-    printf("redirect append worked\n");
+    printf("redirect append work 3\n");
     return (0);
 }
 
@@ -89,11 +106,11 @@ int exe_redirection(t_redirect *redir, t_shell *mshell)
         ft_printf_fd(2, "minishell: internal error: null shell pointer\n");
         return (1);
     }
-    printf("exe_redirection worked\n");
     while (current)
     {
         if (is_ambiguous_redirect(mshell, current) != 0)
         {
+            printf("ambiguous redirect");
             mshell->exit_code = 1;
             return (mshell->exit_code);
         }
@@ -102,7 +119,10 @@ int exe_redirection(t_redirect *redir, t_shell *mshell)
         else if (current->type == REDIR_OUT)
             mshell->exit_code = redirect_output(current);
         else if (current->type == REDIR_APPEND)
+        {
+            printf("APPEND redirect\n");
             mshell->exit_code = redirect_output_append(current);
+        }
         else if (current->type == REDIR_HEREDOC)
             mshell->exit_code = redirect_heredoc(current, mshell);
         else

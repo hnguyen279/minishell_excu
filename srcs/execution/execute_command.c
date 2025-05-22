@@ -86,7 +86,7 @@ static int fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
     if (pid == 0)
         run_command_child(node, mshell, cmd_path);
 
-    free(cmd_path);
+    // free(cmd_path); // double free
     printf("execute here in fork and exec worked\n");
 
     return (wait_command(mshell, pid, &status));
@@ -102,21 +102,31 @@ int execute_command(t_ast *node, t_shell *mshell)
         return (mshell->exit_code);
     }
     if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
+    {
+        print_error("redirection failed");
         return (mshell->exit_code);
+    }
     cmd_path = find_cmd_path(mshell, node->cmd[0]);
+    
     if (!cmd_path)
+    {
+        print_error("full binary path not found");
         return (mshell->exit_code);
+    }
+    printf("cmd path %s\n", cmd_path);
     if (is_builtin(node->cmd[0]))
     {
+        printf("shell builtin command");
         mshell->exit_code = execute_builtin(mshell, node->cmd);
         env_backup_last_argument(mshell, node->cmd); // store $_
-        // free(cmd_path);
+        free(cmd_path);
     }
     else
     {
+        printf("handle external command");
         mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
         env_backup_last_argument(mshell, node->cmd);  // $_ work for external command
-        // free(cmd_path);
+        free(cmd_path);
     }
     return (mshell->exit_code);
 }

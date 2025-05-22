@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/22 15:19:20 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/22 15:25:16 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 	
 	(*new_cmd)->args = fill_args(temp_token_list);
 	// print_array((*new_cmd)->args);
-	if (*temp_token_list)
-		print_linked_list(*temp_token_list);
+	// if (*temp_token_list)
+	// 	print_linked_list(*temp_token_list); // for debugging
 	if (!(*new_cmd)->args)
 	{
 		print_error("Fail to update command node");
