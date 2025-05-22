@@ -76,3 +76,8 @@ cmd path /usr/bin/echo
 shell builtin commandhoa
 [?2004hminishell$ [?2004l
 exit
+check before checking fd opencheck before dup2 not faileddup2 not failedredirect append work 3
+cmd path /usr/bin/echo
+shell builtin commandtest
+[?2004hminishell$ [?2004l
+exit
