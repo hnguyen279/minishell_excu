@@ -35,6 +35,11 @@ static char	*build_cmd_path(char *first_cmd, char **env_paths)
 	{
 		one_path = ft_strjoin(env_paths[i], "/");
 		// printf("one path in %s\n", one_path);
+		if (!one_path)
+		{
+			free_split(env_paths);
+			return (NULL);
+		}
 
 		cmd_path = ft_strjoin(one_path, first_cmd);
 		// printf("cmd path in %s\n", cmd_path);
