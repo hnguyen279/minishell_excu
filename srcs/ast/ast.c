@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:38:32 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/22 09:58:57 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/22 15:08:43 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void free_ast(t_ast *node, t_shell *mshell)
         redir = next;
     }
     free(node);
+    node = NULL;
 }
 
 // t_ast *convert_cmd_to_ast(t_cmd *cmd_list)

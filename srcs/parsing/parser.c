@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/22 12:30:56 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/22 15:19:20 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,11 +284,8 @@ t_cmd	*create_cmd(void)
 	}
 	new_cmd->args = NULL;
 	new_cmd->cmd_name = NULL;
-	// new_cmd->infile = NULL;
-	// new_cmd->outfile = NULL;
 	new_cmd->redirects = NULL;
 	new_cmd->next = NULL;
-	// new_cmd->redirect_type = 0;
 	return (new_cmd);
 }
 
@@ -302,7 +299,9 @@ void free_cmd_list(t_cmd *head)
 	{
 		temp = head;
 		head = head->next;
+		// free(temp->args);
+		free(temp->cmd_name);
 		free(temp);
 	}
-	
+	head = NULL;	
 }
