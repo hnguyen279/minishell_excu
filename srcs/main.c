@@ -6,25 +6,34 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/17 07:09:45 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/22 15:20:49 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/shell.h"
 
-static void free_token_list(t_token *tokens)
+int main(int ac, char *av[], char *env[])
 {
-    t_token *tmp;
-    while (tokens)
+    t_shell mshell;
+
+    if (ac != 1)
     {
-        tmp = tokens->next;
-        free(tokens->value);
-        free(tokens);
-        tokens = tmp;
+        print_error("No arguments required");
+        return (EXIT_FAILURE);
     }
+    if (init_shell(&mshell, env))
+    {
+        shell_cleanup(&mshell);
+        return (EXIT_FAILURE);
+    }
+    (void)av;
+    setup_signals(&mshell, MODE_INTERACTIVE);
+    shell_interactive(&mshell);
+    shell_cleanup(&mshell);
+    return (mshell.exit_code);
 }
 
-static void shell_interactive(t_shell *mshell)
+void shell_interactive(t_shell *mshell)
 {
     char *line;
     t_token *history_head = NULL;
@@ -71,25 +80,34 @@ static void shell_interactive(t_shell *mshell)
                     cmd_list = parse_tokens_to_commands(tokenized_input_list);
                     if (!cmd_list)
                     {
+                        print_error("Failed to parse token to cmd");
                         mshell->exit_code = 2;
                         get_error_msg(ERR_SYNTAX);
                     }
                     else
                     {
-                        print_cmd_list(cmd_list);
+                        // printf("parse token to cmds succeed\n");
+                        // print_cmd_list(cmd_list);
                         tree = convert_cmd_to_ast(cmd_list);
                         if (!tree)
                         {
+                            // free_cmd_list(cmd_list);
                             mshell->exit_code = 2;
                             get_error_msg(ERR_MALLOC);
                         }
                         else
                         {
-                            printf("ast tree is successfully created\n");
+                            // printf("ast tree is successfully created\n");
                             if (process_heredocs(mshell, tree))
+                            {
+                                printf("execute process heredocts\n");
                                 mshell->exit_code = 1;
+                            }
                             else
+                            {
+                                printf("execute ast\n");
                                 execute_ast(tree, mshell);
+                            }
                         }
                     }
                 }
@@ -108,32 +126,11 @@ static void shell_interactive(t_shell *mshell)
         free_string(line);
         free_token_list(tokenized_input_list);
         tokenized_input_list = NULL;
-        // free_cmd_list(cmd_list);
-        // cmd_list = NULL;
-        // free_ast(tree, mshell);
-        // tree = NULL;
+        free_cmd_list(cmd_list);
+        free_ast(tree, mshell);
     }
+    // printf("before clear working history\n");
     clear_working_history(&history_head);
 }
 
-int main(int ac, char *av[], char *env[])
-{
-    t_shell mshell;
-
-    if (ac != 1)
-    {
-        print_error("minishell: no arguments required");
-        return (EXIT_FAILURE);
-    }
-    if (init_shell(&mshell, env))
-    {
-        shell_cleanup(&mshell);
-        return (EXIT_FAILURE);
-    }
-    (void)av;
-    setup_signals(&mshell, MODE_INTERACTIVE);
-    shell_interactive(&mshell);
-    shell_cleanup(&mshell);
-    return (mshell.exit_code);
-}
 
