@@ -174,21 +174,22 @@ void print_array(char **arr);
 /* Heredoc functions */
 int open_heredoc_pipe(t_shell *mshell, t_redirect *redir);
 void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms);
-int inside_quotes(const char *str);
+int is_fully_quoted(const char *str);
 char *get_delimiter(char *file);
 char *make_heredoc_filename_from_fd(int fd);
 int process_heredocs(t_shell *mshell, t_ast *node);
 
 /* Execution functions */
 void free_split(char **tab);
-int display_error(char *cmd);
-int check_white_spaces_cmd(char *cmd);
+int display_error_cmd(char *cmd);
+int is_white_spaces_cmd(char *cmd);
 int is_ambiguous_redirect(t_shell *mshell, t_redirect *redir);
 char *find_cmd_path(t_shell *mshell, char *cmd);
 int exe_redirection(t_redirect *redir, t_shell *mshell);
 int execute_pipe(t_ast *ast, t_shell *shell);
 int execute_command(t_ast *node, t_shell *mshell);
 int execute_ast(t_ast *node, t_shell *mshell);
+int display_error_errno(t_shell *mshell, const char *msg, int use_errno);
 
 /* Env functions */
 void env_free(t_shell *mshell);
@@ -200,8 +201,8 @@ int env_remove(t_shell *mshell, const char *key);
 void env_sort(char **envp, size_t len);
 void env_swap_last(char **envp);
 void env_print(char **envp);
-int env_underscore(t_shell *mshell, char **cmd);
-int env_clone_underscore(t_shell *mshell);
+int env_set_last_argument(t_shell *mshell, char **cmd);
+int env_backup_last_argument(t_shell *mshell);
 void ft_free_null(char ***array);
 
 /* Built-in functions */
@@ -212,10 +213,7 @@ int builtin_pwd(t_shell *mshell, char **token);
 int builtin_unset(t_shell *mshell, char **token);
 
 /* Signal functions */
-void set_sigint_flag(int sig);
-int reset_shell_prompt(void);
-int reset_heredoc_prompt(void);
-int signal_error(t_shell *mshell, const char *message);
+//void set_sigint_flag(int sig);
 int setup_signal_handlers(t_shell *mshell, void (*sigint_handler)(int), void (*sigquit_handler)(int));
 void setup_signals(t_shell *mshell, int mode);
 void sig_exit_code(t_shell *mshell);

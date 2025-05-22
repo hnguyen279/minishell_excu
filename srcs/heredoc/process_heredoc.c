@@ -6,7 +6,9 @@ char *make_heredoc_filename_from_fd(int fd)
     char *path;
     int i;
     int j;
-    
+    const char *prefix;
+
+    prefix  = "/tmp/.heredoc_";
     i = 0;
     j = 0;
     fd_str = ft_itoa(fd);
@@ -15,9 +17,9 @@ char *make_heredoc_filename_from_fd(int fd)
     path = malloc(16 + 10); // "/tmp/.heredoc_" + max 10 digit
     if (!path)
         return (free(fd_str), NULL);
-    while ("/tmp/.heredoc_"[i])
+    while (prefix[i])
     {
-        path[i] = "/tmp/.heredoc_"[i];
+        path[i] = prefix[i];
         i++;
     }
     while (fd_str[j])

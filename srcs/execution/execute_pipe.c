@@ -1,10 +1,14 @@
 #include "../../includes/shell.h"
 
-static void handle_dup2_error(int fd_to_close)
+static void setup_pipe_redirection(int *pipe_fd, int std_fd, int fd_to_close)
 {
-    ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
-    close(fd_to_close);
-    exit(1);
+    if (dup2(pipe_fd[std_fd], std_fd) == -1)
+    {
+        ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
+        close(fd_to_close);
+        exit(1);
+    }
+    close(pipe_fd[std_fd]);
 }
 
 static void execute_child(t_shell *shell, t_ast *ast, int *pipe_fd, int left)
@@ -17,21 +21,18 @@ static void execute_child(t_shell *shell, t_ast *ast, int *pipe_fd, int left)
     if (left)
     {
         close(pipe_fd[FD_READ]);
-        if (dup2(pipe_fd[FD_WRITE], STDOUT_FILENO) == -1)
-            handle_dup2_error(pipe_fd[FD_WRITE]);
-        close(pipe_fd[FD_WRITE]);
+        setup_pipe_redirection(pipe_fd, FD_WRITE, pipe_fd[FD_WRITE]);
         execute_ast(ast->left, shell);
     }
     else
     {
         close(pipe_fd[FD_WRITE]);
-        if (dup2(pipe_fd[FD_READ], STDIN_FILENO) == -1)
-            handle_dup2_error(pipe_fd[FD_READ]);
-        close(pipe_fd[FD_READ]);
+        setup_pipe_redirection(pipe_fd, FD_READ, pipe_fd[FD_READ]);
         execute_ast(ast->right, shell);
     }
     exit(shell->exit_code);
 }
+
 
 static int init_child(int *pipe_fd, pid_t *pid)
 {

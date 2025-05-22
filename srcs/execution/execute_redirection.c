@@ -58,40 +58,26 @@ static int redirect_output_append(t_redirect *redir)
     return (0);
 }
 
-
 static int redirect_heredoc(t_redirect *redir, t_shell *mshell)
 {
     int fd;
 
     if (!redir->tmp_file)
-    {
-        ft_printf_fd(2, "minishell: heredoc: no temporary file\n");
-        mshell->exit_code = 1;
-        return (1);
-    }
+        return display_error_errno(mshell, "heredoc: no temporary file", 0);
     fd = open(redir->tmp_file, O_RDONLY);
     if (fd == -1)
-    {
-        ft_printf_fd(2, "minishell: failed to open '%s': %s\n",
-                    redir->tmp_file, strerror(errno));
-        mshell->exit_code = 1;
-        return (1);
-    }
+        return display_error_errno(mshell, redir->tmp_file, 1);
     if (dup2(fd, STDIN_FILENO) == -1)
     {
         close(fd);
-        ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
-        mshell->exit_code = 1;
-        return (1);
+        return display_error_errno(mshell, "dup2", 1);
     }
     close(fd);
     unlink(redir->tmp_file);
     free(redir->tmp_file);
     redir->tmp_file = NULL;
-    return (0);
+    return 0;
 }
-
-#include "../../includes/shell.h"
 
 int exe_redirection(t_redirect *redir, t_shell *mshell)
 {
@@ -128,3 +114,4 @@ int exe_redirection(t_redirect *redir, t_shell *mshell)
     }
     return (0);
 }
+

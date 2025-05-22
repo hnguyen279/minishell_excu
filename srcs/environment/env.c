@@ -217,7 +217,7 @@ void	env_print(char **envp)
 	}
 }
 
-int env_underscore(t_shell *mshell, char **cmd)
+int env_set_last_argument(t_shell *mshell, char **cmd)
 {
     char *last_cmd;
     size_t i;
@@ -235,7 +235,7 @@ int env_underscore(t_shell *mshell, char **cmd)
     return (1);
 }
 
-int env_clone_underscore(t_shell *mshell)
+int env_backup_last_argument(t_shell *mshell) //confuse
 {
     const char *underscore_val;
 
@@ -247,7 +247,7 @@ int env_clone_underscore(t_shell *mshell)
         mshell->env_last_cmd = ft_strdup(underscore_val);
         if (!mshell->env_last_cmd)
         {
-            ft_printf_fd(2, "minishell: env_clone_underscore: malloc failed\n");
+            ft_printf_fd(2, "minishell: env_backup_last_argument: malloc failed\n");
             mshell->exit_code = 1;
             return (1);
         }
