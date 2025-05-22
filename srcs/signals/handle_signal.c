@@ -10,7 +10,6 @@ static void sigint_interactive(int sig)
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
-	rl_done = 1;
 	g_signum = 128 + SIGINT;
 }
 

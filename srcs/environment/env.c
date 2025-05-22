@@ -235,25 +235,33 @@ int env_set_last_argument(t_shell *mshell, char **cmd)
     return (1);
 }
 
-int env_backup_last_argument(t_shell *mshell) //confuse
+int env_backup_last_argument(t_shell *mshell, char **cmd)
 {
-    const char *underscore_val;
+    size_t i;
 
-    if (!mshell)
-        return (1);
-    underscore_val = env_find_value(mshell, "_");
-    if (underscore_val && *underscore_val)
-    {
-        mshell->env_last_cmd = ft_strdup(underscore_val);
-        if (!mshell->env_last_cmd)
-        {
-            ft_printf_fd(2, "minishell: env_backup_last_argument: malloc failed\n");
-            mshell->exit_code = 1;
-            return (1);
-        }
-    }
-    return (0);
+    i  = 0;
+	if (!mshell || !cmd || !cmd[0])
+		return (1);
+	if (mshell->env_last_cmd)
+	{
+		free(mshell->env_last_cmd);
+		mshell->env_last_cmd = NULL;
+	}
+	while (cmd[i])
+		i++;
+	if (i > 0)
+	{
+		mshell->env_last_cmd = ft_strdup(cmd[i - 1]);
+		if (!mshell->env_last_cmd)
+		{
+			ft_printf_fd(2, "minishell: $_ backup failed (malloc)\n");
+			mshell->exit_code = 1;
+			return (1);
+		}
+	}
+	return (0);
 }
+
 //// new
 
 int env_add(t_shell *mshell, const char *key, const char *value)
@@ -282,21 +290,17 @@ int env_add(t_shell *mshell, const char *key, const char *value)
         ft_strlcat(tmp, "=", len);
         ft_strlcat(tmp, value, len);
     }
-
-    // Nếu key đã tồn tại → ghi đè
     i = 0;
     if (env_find_variable(mshell, key, &i))
     {
         free(mshell->envp[i]);
         mshell->envp[i] = tmp;
 
-        if (ft_strncmp(tmp, "_=", 2) == 0) // chỉ swap nếu đúng key "_="
+        if (ft_strncmp(tmp, "_=", 2) == 0) 
             env_swap_last(mshell->envp);
 
         return (0);
     }
-
-    // Nếu chưa có key → thêm mới
     env_len = 0;
     while (mshell->envp[env_len])
         env_len++;
