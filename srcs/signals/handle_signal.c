@@ -6,6 +6,7 @@ volatile sig_atomic_t g_signum = 0;
 static void sigint_interactive(int sig)
 {
 	(void)sig;
+    g_signum = 128 + SIGINT;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
@@ -16,9 +17,10 @@ static void sigint_interactive(int sig)
 static void sigint_heredoc(int sig)
 {
 	(void)sig;
-	write(STDOUT_FILENO, "^C\n", 3);
+    g_signum = 128 + SIGINT;
+	//write(STDOUT_FILENO, "^C\n", 3);
 	rl_done = 1;
-	g_signum = 128 + SIGINT;
+    close(STDIN_FILENO);  // readline return NULL
 }
 
 

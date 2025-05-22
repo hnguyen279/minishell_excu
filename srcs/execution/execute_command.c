@@ -54,11 +54,15 @@ static int wait_command(t_shell *mshell, pid_t pid, int *status)
     return mshell->exit_code;
 }
 
-
 static void run_command_child(t_ast *node, t_shell *mshell, char *cmd_path)
 {
     setup_signals(mshell, MODE_CHILD);
-    if (execve(cmd_path, node->cmd, mshell->envp) == -1) //cmd was split == char **args???? of  t_cmd *cmd
+
+    if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
+        exit(mshell->exit_code);
+    // for (int i = 0; node->cmd[i]; i++)
+    //     printf("cmd[%d] = %s\n", i, node->cmd[i]);
+    if (execve(cmd_path, node->cmd, mshell->envp) == -1)
     {
         ft_printf_fd(2, "minishell: %s: %s\n", node->cmd[0], strerror(errno));
         free(cmd_path);
@@ -85,12 +89,40 @@ static int fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
     }
     if (pid == 0)
         run_command_child(node, mshell, cmd_path);
-
     free(cmd_path);
-    printf("execute here in fork and exec worked\n");
-
+    //printf("execute here in fork and exec worked\n");
     return (wait_command(mshell, pid, &status));
 }
+
+int execute_builtin_command(t_ast *node, t_shell *mshell)
+{
+    pid_t pid;
+    int status;
+
+    if (node->redirects)
+    {
+        pid = fork();
+        if (pid == -1)
+        {
+            perror("fork");
+            return (mshell->exit_code = 1);
+        }
+        if (pid == 0)
+        {
+            if (exe_redirection(node->redirects, mshell) != 0)
+                exit(mshell->exit_code);
+            exit(execute_builtin(mshell, node->cmd));
+        }
+        return wait_command(mshell, pid, &status);
+    }
+    else
+    {
+        mshell->exit_code = execute_builtin(mshell, node->cmd);
+        env_backup_last_argument(mshell, node->cmd);
+        return mshell->exit_code;
+    }
+}
+
 
 int execute_command(t_ast *node, t_shell *mshell)
 {
@@ -99,26 +131,27 @@ int execute_command(t_ast *node, t_shell *mshell)
     if (!node->cmd || !node->cmd[0])
     {
         mshell->exit_code = display_error_cmd(NULL);
-        return (mshell->exit_code);
+        return mshell->exit_code;
     }
-    if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
-        return (mshell->exit_code);
-    cmd_path = find_cmd_path(mshell, node->cmd[0]);
-    if (!cmd_path)
-        return (mshell->exit_code);
     if (is_builtin(node->cmd[0]))
     {
-        mshell->exit_code = execute_builtin(mshell, node->cmd);
-        env_backup_last_argument(mshell, node->cmd); // store $_
-        // free(cmd_path);
+        return execute_builtin_command(node, mshell);
+        // if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
+        //     return mshell->exit_code;
+        // mshell->exit_code = execute_builtin(mshell, node->cmd);
+        // env_backup_last_argument(mshell, node->cmd);
+        // return mshell->exit_code;
     }
-    else
-    {
-        mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
-        env_backup_last_argument(mshell, node->cmd);  // $_ work for external command
-        // free(cmd_path);
+    cmd_path = find_cmd_path(mshell, node->cmd[0]);
+    if (!cmd_path)
+    {   
+        return mshell->exit_code;
+        // //ft_printf_fd(2, "minishell: %s: command not found\n", node->cmd[0]);
+        // mshell->exit_code = 127;
+        // return 127;
     }
-    return (mshell->exit_code);
+    mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
+    env_backup_last_argument(mshell, node->cmd);
+    return mshell->exit_code;
 }
-
 

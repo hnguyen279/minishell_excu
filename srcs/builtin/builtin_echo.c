@@ -12,7 +12,7 @@ int builtin_echo(t_shell *mshell, char **token)
     if (token[i] && ft_strncmp(token[i], "-n", 2) == 0)
     {
         j = 2;
-        while (token[i][j] == 'n') 
+        while (token[i][j] != '\0' && token[i][j] == 'n')
             j++;
         if (token[i][j] == '\0')  // -n, -nnn, ...
         {
