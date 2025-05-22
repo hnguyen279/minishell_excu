@@ -20,7 +20,12 @@ static int is_builtin(char *cmd)
 
 static int execute_builtin(t_shell *mshell, char **token)
 {
-
+    //debug
+    printf("execute_builtin\n");
+    for (int i = 0; token[i]; i++)
+    {
+        printf("token[%d] = [%s]\n", i, token[i]);
+    }
 	if (ft_strcmp(token[0], "cd") == 0)
 		mshell->exit_code = builtin_cd(mshell, token);
 	else if (ft_strcmp(token[0], "echo") == 0)
@@ -98,7 +103,6 @@ int execute_builtin_command(t_ast *node, t_shell *mshell)
 {
     pid_t pid;
     int status;
-
     if (node->redirects)
     {
         pid = fork();
