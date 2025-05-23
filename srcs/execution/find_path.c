@@ -74,7 +74,7 @@ static char *get_path(char *first_cmd, char **env)
 	cmd_path = build_cmd_path(first_cmd, paths);
 	if (!cmd_path)
 	{
-		print_error("no cmd_path from get_path function");
+		//print_error("no cmd_path from get_path function");
 		return (NULL);
 	}
 	return (cmd_path);

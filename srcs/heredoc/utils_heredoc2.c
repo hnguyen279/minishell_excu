@@ -58,18 +58,40 @@ static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
 	char *line;
 	int status = 0;
 
-	while (g_signum != 128 + SIGINT)
+	while (1)
 	{
 		line = readline("> ");
 		if (!line)
 		{
-			ft_printf_fd(2,
-				"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
-				delim);
+			if (g_signum == 128 + SIGINT)
+			{
+				mshell->exit_code = 130;
+				status = 1;
+			}
+			else
+			{
+				ft_printf_fd(2,
+					"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
+					delim);
+			}
 			break;
 		}
-		if (!ft_strcmp(line, delim))
+
+		if (g_signum == 128 + SIGINT)
 		{
+			free(line);
+			mshell->exit_code = 130;
+			status = 1;
+			break;
+		}
+		size_t len = strlen(line);
+		if (len > 0 && line[len - 1] == '\r')
+			line[len - 1] = '\0';
+		// Debug
+		//printf("read line: [%s], delimiter: [%s]\n", line, delim);
+		if (ft_strcmp(line, delim) == 0)
+		{
+			//printf("matched! heredoc ending.\n");
 			free(line);
 			break;
 		}
@@ -78,7 +100,13 @@ static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
 			break;
 	}
 	free((void *)delim);
-	return (status || g_signum == 128 + SIGINT);
+	setup_signals(mshell, MODE_INTERACTIVE);  // reset signal mode
+	// reopen stdin
+	int fd_in = open("/dev/tty", O_RDONLY);
+	if (fd_in != -1)
+		dup2(fd_in, STDIN_FILENO);
+	close(fd_in);
+	return status;
 }
 
 int open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
@@ -91,24 +119,25 @@ int open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
 	if (!redir->file)
 		return display_error_errno(mshell, "heredoc: no delimiter", 0);
 	if (create_tmp_file(mshell, redir, &path, &fd))
-		return (1);
+		return 1;
 	if (prepare_delimiter(mshell, redir, &delim, &expand))
 	{
 		close(fd);
 		unlink(path);
 		free(redir->tmp_file);
-		return (1);
+		redir->tmp_file = NULL;
+		return 1;
 	}
 	if (write_heredoc(mshell, fd, delim, expand))
 	{
 		close(fd);
 		unlink(path);
 		free(redir->tmp_file);
-		setup_signals(mshell, MODE_INTERACTIVE);
-		return (1);
+		redir->tmp_file = NULL;
+		return 1;
 	}
 	close(fd);
-	setup_signals(mshell, MODE_INTERACTIVE);
 	mshell->exit_code = 0;
-	return (0);
+	return 0;
 }
+

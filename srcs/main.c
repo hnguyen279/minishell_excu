@@ -105,7 +105,7 @@ void shell_interactive(t_shell *mshell)
                             }
                             else
                             {
-                                printf("execute ast\n");
+                                //printf("execute ast\n");
                                 execute_ast(tree, mshell);
                             }
                         }
@@ -127,7 +127,11 @@ void shell_interactive(t_shell *mshell)
         free_token_list(tokenized_input_list);
         tokenized_input_list = NULL;
         free_cmd_list(cmd_list);
+        cmd_list = NULL;
         free_ast(tree, mshell);
+        tree = NULL;
+        mshell->ast = NULL;
+        g_signum = 0;  // Reset signal 
     }
     // printf("before clear working history\n");
     clear_working_history(&history_head);

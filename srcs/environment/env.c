@@ -1,13 +1,13 @@
 
 #include "../../includes/shell.h"
 
-void	ft_free_null(char ***array) //same with void ft_free_null(char ***array);
+void ft_free_null(char ***array)
 {
-	size_t	i;
+	size_t i = 0;
 
 	if (!array || !*array)
 		return;
-	i = 0;
+
 	while ((*array)[i])
 	{
 		free((*array)[i]);
@@ -17,6 +17,7 @@ void	ft_free_null(char ***array) //same with void ft_free_null(char ***array);
 	free(*array);
 	*array = NULL;
 }
+
 
 void env_free(t_shell *mshell)
 {
@@ -239,28 +240,29 @@ int env_backup_last_argument(t_shell *mshell, char **cmd)
 {
     size_t i;
 
-    i  = 0;
-	if (!mshell || !cmd || !cmd[0])
-		return (1);
-	if (mshell->env_last_cmd)
-	{
-		free(mshell->env_last_cmd);
-		mshell->env_last_cmd = NULL;
-	}
-	while (cmd[i])
-		i++;
-	if (i > 0)
-	{
-		mshell->env_last_cmd = ft_strdup(cmd[i - 1]);
-		if (!mshell->env_last_cmd)
-		{
-			ft_printf_fd(2, "minishell: $_ backup failed (malloc)\n");
-			mshell->exit_code = 1;
-			return (1);
-		}
-	}
-	return (0);
+    if (!mshell || !cmd || !cmd[0])
+        return (1);
+    if (mshell->env_last_cmd)
+    {
+        free(mshell->env_last_cmd);
+        mshell->env_last_cmd = NULL;
+    }
+    i = 0;
+    while (cmd[i])
+        i++;
+    if (i > 0 && cmd[i - 1])
+    {
+        mshell->env_last_cmd = ft_strdup(cmd[i - 1]);
+        if (!mshell->env_last_cmd)
+        {
+            ft_printf_fd(2, "minishell: $_ backup failed (malloc)\n");
+            mshell->exit_code = 1;
+            return (1);
+        }
+    }
+    return (0);
 }
+
 
 //// new
 

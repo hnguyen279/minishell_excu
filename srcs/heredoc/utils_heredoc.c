@@ -1,18 +1,5 @@
 #include "../../includes/shell.h"
 
-// static char *env_find_value_heredoc(const char *key, char **env) -->use char *env_find_value(t_shell *mshell, const char *key)
-// {
-//     size_t key_len = ft_strlen(key);
-//     size_t i = 0;
-//     while (env[i])
-//     {
-//         if (ft_strncmp(env[i], key, key_len) == 0 && env[i][key_len] == '=')
-//             return (env[i] + key_len + 1); //pointer to value (home/user) HOME=home/user
-//         i++;
-//     }
-//     return (NULL);
-// }
-
 static size_t exchange_variable(char *str, int fd, t_shell *ms)
 {
     size_t i = 0;
@@ -67,33 +54,28 @@ int is_fully_quoted(const char *str)
 
 char *get_delimiter(char *file)
 {
-    size_t i;
+	size_t i = 0;
     size_t end_i;
-    char *delimiter;
     size_t len;
 
-    i = 0;
-    if (!file || !file[0])
-        return (NULL);
-    while (file[i] && (file[i] == ' ' || (file[i] >= 9 && file[i] <= 13)))
-        i++;
-    if (!file[i])
-        return (strdup(""));
-    len = ft_strlen(file);
-    end_i = len - 1;
-    while (end_i > i && (file[end_i] == ' ' || (file[end_i] <= 9 && file[end_i] >= 13)))
-        end_i--;
-    if ((file[i] == '\'' || file[i] == '"') && file[end_i] == file[i])
-    {
-        i++;
-        end_i--;
-    }
-    if (end_i < i)
-    {
-        return (ft_strdup(""));
-    }
-    delimiter = ft_substr(file, i, end_i - i + 1);
-    return (delimiter);
+	if (!file || !file[0]) 
+        return NULL;
+	while (file[i] && (file[i] == ' ' || (file[i] >= 9 && file[i] <= 13)))
+		i++;
+	len = strlen(file);
+	if (i >= len)
+		return ft_strdup("");
+	end_i = len - 1;
+	while (end_i > i && (file[end_i] == ' ' || (file[end_i] >= 9 && file[end_i] <= 13)))
+		end_i--;
+	if ((file[i] == '\'' || file[i] == '\"') && file[end_i] == file[i])
+	{
+		if (end_i > i + 1)
+			return ft_substr(file, i + 1, end_i - i - 1);
+		else
+			return ft_strdup("");
+	}
+	return ft_substr(file, i, end_i - i + 1);
 }
 
 void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
