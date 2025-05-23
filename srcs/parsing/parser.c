@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/22 15:19:20 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/22 17:10:56 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,9 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 	(*new_cmd)->args = fill_args(temp_token_list);
 	// print_array((*new_cmd)->args);
 	// if (*temp_token_list)
+
 	// 	print_linked_list(*temp_token_list);
+
 	if (!(*new_cmd)->args)
 	{
 		print_error("Fail to update command node");
@@ -243,6 +245,7 @@ char	**fill_args(t_token **token_list)
 			args[count] = ft_strdup((*token_list)->value);
 			if (!args[count])
 			{
+
 				get_error_msg(ERR_MALLOC); 
 				free_array(args, count); // free 
 				return (NULL);
@@ -254,6 +257,7 @@ char	**fill_args(t_token **token_list)
 			args[count] = NULL; // reset count
 			return (args);
 		}
+
 		*token_list = (*token_list)->next;
 	}
 	args[count] = NULL;
