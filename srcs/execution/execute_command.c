@@ -94,8 +94,11 @@ static int fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
     }
     if (pid == 0)
         run_command_child(node, mshell, cmd_path);
-    free(cmd_path);
-    //printf("execute here in fork and exec worked\n");
+
+
+    // free(cmd_path); // double free
+    printf("execute here in fork and exec worked\n");
+
     return (wait_command(mshell, pid, &status));
 }
 
@@ -153,6 +156,7 @@ int execute_command(t_ast *node, t_shell *mshell)
         // //ft_printf_fd(2, "minishell: %s: command not found\n", node->cmd[0]);
         // mshell->exit_code = 127;
         // return 127;
+
     }
     mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
     env_backup_last_argument(mshell, node->cmd);
