@@ -94,40 +94,44 @@ static int fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
     }
     if (pid == 0)
         run_command_child(node, mshell, cmd_path);
-
-
-    // free(cmd_path); // double free
-    printf("execute here in fork and exec worked\n");
-
+    // free(cmd_path); // double free ??
+    //printf("execute here in fork and exec worked\n");
     return (wait_command(mshell, pid, &status));
 }
 
 int execute_builtin_command(t_ast *node, t_shell *mshell)
 {
-    pid_t pid;
-    int status;
-    if (node->redirects)
+    int in_fd;
+    int out_fd;
+
+    in_fd = dup(STDIN_FILENO);
+    out_fd = dup(STDOUT_FILENO);
+    if (in_fd == -1 || out_fd == -1)
     {
-        pid = fork();
-        if (pid == -1)
-        {
-            perror("fork");
-            return (mshell->exit_code = 1);
-        }
-        if (pid == 0)
-        {
-            if (exe_redirection(node->redirects, mshell) != 0)
-                exit(mshell->exit_code);
-            exit(execute_builtin(mshell, node->cmd));
-        }
-        return wait_command(mshell, pid, &status);
+        perror("minishell: dup failed");
+        if (in_fd != -1)
+            close(in_fd);
+        if (out_fd != -1)
+            close(out_fd);
+        mshell->exit_code = 1;
+        return 1;
     }
-    else
+    if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
     {
-        mshell->exit_code = execute_builtin(mshell, node->cmd);
-        env_backup_last_argument(mshell, node->cmd);
+        if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
+            perror("minishell: dup2 restore failed");
+        close(in_fd);
+        close(out_fd);
         return mshell->exit_code;
     }
+    mshell->exit_code = execute_builtin(mshell, node->cmd);
+    if (!mshell->has_pipe)
+        env_backup_last_argument(mshell, node->cmd);
+    if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
+        perror("minishell: dup2 restore failed");
+    close(in_fd);
+    close(out_fd);
+    return mshell->exit_code;
 }
 
 
@@ -156,10 +160,10 @@ int execute_command(t_ast *node, t_shell *mshell)
         // //ft_printf_fd(2, "minishell: %s: command not found\n", node->cmd[0]);
         // mshell->exit_code = 127;
         // return 127;
-
     }
     mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
-    env_backup_last_argument(mshell, node->cmd);
+    if (!mshell->has_pipe)
+        env_set_last_argument(mshell, node->cmd);
     return mshell->exit_code;
 }
 

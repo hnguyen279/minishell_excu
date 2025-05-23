@@ -107,6 +107,8 @@ void shell_interactive(t_shell *mshell)
                             {
                                 //printf("execute ast\n");
                                 execute_ast(tree, mshell);
+                                if (!mshell->has_pipe && mshell->env_last_cmd)
+                                    env_set_last_argument(mshell, NULL);
                             }
                         }
                     }
