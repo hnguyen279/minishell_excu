@@ -1,4 +1,5 @@
 test
+
 redirect append work 3
 redirect append work 3
 dup2 not failedredirect append work 3
@@ -80,4 +81,11 @@ check before checking fd opencheck before dup2 not faileddup2 not failedredirect
 cmd path /usr/bin/echo
 shell builtin commandtest
 [?2004hminishell$ [?2004l
+
 exit
+ sleep 4 > file.txt | sleep 2 > file2.txt
+ ps aux | grep 'Z'
+
+ valgrind --track-fds=yes ./minishell
+
+cat < file.txt | grep "abc" > result.txt

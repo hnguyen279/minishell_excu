@@ -3,6 +3,8 @@
 
 static int redirect_input(t_redirect *redir)
 {
+    if (!redir || !redir->file)
+        return (1);
     int fd = open(redir->file, O_RDONLY);
     if (fd == -1)
     {
@@ -22,6 +24,8 @@ static int redirect_input(t_redirect *redir)
 
 static int redirect_output(t_redirect *redir)
 {
+    if (!redir || !redir->file)
+        return (1);
     int fd = open(redir->file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
     if (fd == -1)
     {
@@ -41,13 +45,10 @@ static int redirect_output(t_redirect *redir)
 // debuging
 static int redirect_output_append(t_redirect *redir)
 {
+    
     if (!redir || !redir->file)
-    {
-        printf("redir or redir->file is NULL!\n");
         return (1);
-    }
-    printf("Trying to redirect to file: %s\n", redir->file);
-
+  
     int fd = open(redir->file, O_CREAT | O_WRONLY | O_APPEND, 0644);
     printf("open fd return %d\n", fd);
     if (fd == -1)
@@ -114,7 +115,7 @@ static int redirect_heredoc(t_redirect *redir, t_shell *mshell)
 {
     int fd;
 
-    if (!redir->tmp_file)
+    if (!redir || !redir->tmp_file)
         return display_error_errno(mshell, "heredoc: no temporary file", 0);
     fd = open(redir->tmp_file, O_RDONLY);
     if (fd == -1)
@@ -140,6 +141,9 @@ int exe_redirection(t_redirect *redir, t_shell *mshell)
         ft_printf_fd(2, "minishell: internal error: null shell pointer\n");
         return (1);
     }
+
+    //printf("exe_redirection worked\n");
+
     while (current)
     {
         if (is_ambiguous_redirect(mshell, current) != 0)
