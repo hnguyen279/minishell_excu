@@ -15,11 +15,11 @@
 /*
 Using a linked list to maintain history list
 */
-void	store_history(char	*line, t_token **history_head)
+void	store_history(char *line, t_token **history_head)
 {
 	t_token	*new_hist;
 	t_token	*temp;
-	
+
 	add_history(line);
 	new_hist = create_token(line, WORD);
 	if (!new_hist)
@@ -36,10 +36,9 @@ void	store_history(char	*line, t_token **history_head)
 		{
 			temp = temp->next;
 		}
-		temp->next = new_hist;	
+		temp->next = new_hist;
 	}
 }
-
 
 void	print_working_history(t_token *history_head)
 {
@@ -60,16 +59,16 @@ void	print_working_history(t_token *history_head)
 				printf(" %d  %s\n", i, temp->value);
 			else
 				printf("%d  %s\n", i, temp->value);
-			}
+		}
 		temp = temp->next;
 		i++;
 	}
 }
 
-void clear_working_history(t_token **hist_head)
+void	clear_working_history(t_token **hist_head)
 {
-	t_token	*temp;
-	
+	t_token *temp;
+
 	while (*hist_head)
 	{
 		temp = *hist_head;
