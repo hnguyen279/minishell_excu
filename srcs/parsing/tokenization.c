@@ -12,7 +12,7 @@
 
 #include "../../includes/shell.h"
 
-/* 
+/*
 	Go through input character by character
 	- Inside quote: extract quotet token
 	- Outside quote: handle token and meta
@@ -24,10 +24,10 @@ t_token	*convert_user_input_to_token(char *line)
 {
 	int		i;
 	t_token	*new_token;
-	t_token	*tokenized_input_list = NULL;
+	t_token	*tokenized_input_list;
 	char	*extracted_str;
 
-
+	tokenized_input_list = NULL;
 	if (is_comment(line) == 0)
 		return (NULL);
 	i = 0;
@@ -37,7 +37,7 @@ t_token	*convert_user_input_to_token(char *line)
 			i++;
 		else if (line[i] == '|')
 		{
-			new_token =	create_token("|", PIPE);
+			new_token = create_token("|", PIPE);
 			add_token(&tokenized_input_list, new_token);
 			i++;
 		}
@@ -97,7 +97,7 @@ char	*extract_quoted_token(char *line, int *i)
 	int		start_pos;
 	char	quote;
 	char	*str;
-	
+
 	quote = line[*i];
 	(*i)++;
 	start_pos = *i;
@@ -109,7 +109,7 @@ char	*extract_quoted_token(char *line, int *i)
 		get_error_msg(ERR_MALLOC);
 		return (NULL);
 	}
-	(*i)++;	
+	(*i)++;
 	return (str);
 }
 
@@ -117,13 +117,14 @@ char	*extract_word(char *line, int *i)
 {
 	int		start_pos;
 	char	*extracted_str;
-	
+
 	start_pos = *i;
 	while (line[*i])
 	{
 		if (ft_isspace(line[*i]) == TRUE || line[*i] == '\'' || line[*i] == '\"'
-			|| line[*i] == '<' || line[*i] == '>'|| line[*i] == '|') //add | pipe
-			break;
+			|| line[*i] == '<' || line[*i] == '>' || line[*i] == '|')
+			// add | pipe
+			break ;
 		(*i)++;
 	}
 	extracted_str = ft_substr(line, start_pos, *i - start_pos);

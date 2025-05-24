@@ -31,7 +31,7 @@ t_token	*create_token(char *s, t_token_type i)
 void	add_token(t_token **tokenized_input_list, t_token *new_token)
 {
 	t_token	*temp;
-	
+
 	if (!new_token)
 	{
 		get_error_msg(ERR_MALLOC);
@@ -52,4 +52,3 @@ void	add_token(t_token **tokenized_input_list, t_token *new_token)
 		// printf("%s\n", tokenized_input_list->value);
 	}
 }
-

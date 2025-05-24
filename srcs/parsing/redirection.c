@@ -14,8 +14,9 @@
 
 int	is_redirection(t_token *token)
 {
-	if (token->type == REDIR_IN_token || token->type == REDIR_OUT_token ||
-		token->type == REDIR_HEREDOC_token ||	token->type == REDIR_APPEND_token)
+	if (token->type == REDIR_IN_token || token->type == REDIR_OUT_token
+		|| token->type == REDIR_HEREDOC_token
+		|| token->type == REDIR_APPEND_token)
 		return (TRUE);
 	return (FALSE);
 }
@@ -27,7 +28,7 @@ int	is_redirection(t_token *token)
 
 int	is_valid_redirection(t_token *token_list)
 {
-	t_token *current;
+	t_token	*current;
 
 	current = token_list;
 	if (!current)
@@ -47,7 +48,7 @@ int	is_valid_redirection(t_token *token_list)
 				return (FALSE);
 			}
 		}
-		current = current->next;	
+		current = current->next;
 	}
 	return (TRUE);
 }

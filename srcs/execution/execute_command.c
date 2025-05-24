@@ -96,9 +96,7 @@ static int fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
         run_command_child(node, mshell, cmd_path);
 
 
-    // free(cmd_path); // double free
-    printf("execute here in fork and exec worked\n");
-
+    free(cmd_path);
     return (wait_command(mshell, pid, &status));
 }
 
