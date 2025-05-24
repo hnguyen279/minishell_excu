@@ -218,22 +218,47 @@ void	env_print(char **envp)
 	}
 }
 
+// int env_set_last_argument(t_shell *mshell, char **cmd)
+// {
+//     char *last_cmd;
+//     size_t i;
+
+//     if (!mshell || !cmd)
+//         return (1);
+//     i = 0;
+//     while (cmd[i])
+//         i++;
+//     if (i > 0 && !mshell->has_pipe)
+//     {
+//         last_cmd = cmd[i - 1];
+//         return (env_add(mshell, "_", last_cmd));
+//     }
+//     return (1);
+// }
+
 int env_set_last_argument(t_shell *mshell, char **cmd)
 {
-    char *last_cmd;
-    size_t i;
+    char *last_cmd = NULL;
+    size_t i = 0;
 
-    if (!mshell || !cmd)
-        return (1);
-    i = 0;
-    while (cmd[i])
-        i++;
-    if (i > 0 && !mshell->has_pipe)
+    if (!mshell)
+        return 1;
+    if (cmd && cmd[0])
     {
-        last_cmd = cmd[i - 1];
-        return (env_add(mshell, "_", last_cmd));
+        while (cmd[i])
+            i++;
+        if (i > 0)
+            last_cmd = cmd[i - 1];
     }
-    return (1);
+    else if (mshell->env_last_cmd)
+    {
+        last_cmd = mshell->env_last_cmd;
+    }
+
+    if (last_cmd)
+        return env_add(mshell, "_", last_cmd);
+
+    return 0;
 }
 
 int env_backup_last_argument(t_shell *mshell, char **cmd)

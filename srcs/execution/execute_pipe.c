@@ -87,5 +87,9 @@ int execute_pipe(t_ast *ast, t_shell *shell)
         shell->exit_code = 128 + WTERMSIG(status[1]);
     else
         shell->exit_code = 1;
+    if (ast->right && ast->right->cmd)
+        env_set_last_argument(shell, ast->right->cmd);
+    else if (ast->left && ast->left->cmd)
+        env_set_last_argument(shell, ast->left->cmd);
     return shell->exit_code;
 }
