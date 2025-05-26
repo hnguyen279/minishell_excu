@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 09:13:48 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 18:35:15 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void    handle_line(char *line, t_shell *mshell)
     t_token	*tokenized_input_list;
 	t_cmd	*cmd_list;
 	t_ast	*tree;
+    // char    *expanded_line;
 
     // printf("print line: %s\n", line);
     if (validate_quote(line) == FALSE)
@@ -97,10 +98,12 @@ void    handle_line(char *line, t_shell *mshell)
         return ;
     }
     // printf("validate line successfully\n");
+    // expanded_line = expand_variables(line, mshell);
     tokenized_input_list = NULL;
 	cmd_list = NULL;
 	tree = NULL;
     process_valid_line(line, mshell, &tokenized_input_list, &cmd_list, &tree);
+    // free_string(expanded_line);
     free_token_list(tokenized_input_list);
     free_cmd_list(cmd_list);
     free_ast(tree, mshell);
@@ -120,6 +123,8 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
         print_error("Failed to convert user input to token");
         return ;
     }
+    expand_variables(tokenized_input_list, mshell);
+    print_linked_list(*tokenized_input_list);
     if (validate_token(*tokenized_input_list) == FALSE)
     {
         mshell->exit_code = 2;

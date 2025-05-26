@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/05/21 12:10:49 by trpham           ###   ########.fr        #
+#    Updated: 2025/05/26 13:37:36 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/parsing/validate_input.c \
 		$(SRCS_DIR)/parsing/redirection.c \
 		$(SRCS_DIR)/parsing/history.c \
+		$(SRCS_DIR)/parsing/expansion.c \
 		$(SRCS_DIR)/ast/ast.c \
 		$(SRCS_DIR)/heredoc/process_heredoc.c \
 		$(SRCS_DIR)/heredoc/utils_heredoc.c \

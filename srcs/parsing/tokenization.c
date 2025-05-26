@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 07:39:34 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 18:26:05 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ t_token	*convert_user_input_to_token(char *line)
 		{
 			if (line[i + 1] == '<')
 			{
-				new_token = create_token("<<", REDIR_HEREDOC_token);
+				new_token = create_token("<<", REDIR_HEREDOC_TOKEN);
 				i += 2;
 			}
 			else
 			{
-				new_token = create_token("<", REDIR_IN_token);
+				new_token = create_token("<", REDIR_IN_TOKEN);
 				i++;
 			}
 			add_token(&tokenized_input_list, new_token);
@@ -59,12 +59,12 @@ t_token	*convert_user_input_to_token(char *line)
 		{
 			if (line[i + 1] == '>')
 			{
-				new_token = create_token(">>", REDIR_APPEND_token);
+				new_token = create_token(">>", REDIR_APPEND_TOKEN);
 				i += 2;
 			}
 			else
 			{
-				new_token = create_token(">", REDIR_OUT_token);
+				new_token = create_token(">", REDIR_OUT_TOKEN);
 				i++;
 			}
 			add_token(&tokenized_input_list, new_token);
@@ -87,7 +87,7 @@ t_token	*convert_user_input_to_token(char *line)
 			free_string(extracted_str);
 		}
 	}
-	// print_linked_list(tokenized_input_list);
+	print_linked_list(tokenized_input_list);
 	return (tokenized_input_list);
 }
 
