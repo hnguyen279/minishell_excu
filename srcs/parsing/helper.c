@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/22 12:56:20 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 09:00:29 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,13 @@ void	free_string(char *s)
 	}
 }
 
-void free_array(char **arr, int i)
+void	free_array(char **arr, int i)
 {
 	int	j;
 
 	j = 0;
-
 	if (!arr)
-        return;
+		return ;
 	while (j < i)
 	{
 		free_string(arr[j]);
@@ -59,7 +58,8 @@ void	print_linked_list(t_token *head)
 	{
 		if (temp)
 		{
-			printf("Value of input tokens %s type %d\n", temp->value, temp->type);
+			printf("Value of input tokens %s type %d\n", temp->value,
+				temp->type);
 		}
 		temp = temp->next;
 	}
@@ -109,26 +109,28 @@ void	get_error_msg(t_error_type err)
 int	ft_isspace(char c)
 {
 	if (c == ' ' || c == '\t')
-		return TRUE;
-	return FALSE;
+		return (TRUE);
+	return (FALSE);
 }
 
 void	print_array(char **arr)
 {
-	while (*arr)
+	int	i = 0;
+
+	while (arr[i])
 	{
-		printf("%s, ", *arr);
-		arr++;
+		printf("%s, ", arr[i]);
+		i++;
 	}
 	printf("\n");
 }
 
-
 void	print_cmd_list(t_cmd *head)
 {
 	t_cmd	*temp;
-	int		i = 0;
+	int		i;
 
+	i = 0;
 	temp = head;
 	while (temp)
 	{
@@ -148,8 +150,9 @@ void	print_cmd_list(t_cmd *head)
 void	print_redirect_list(t_redirect *redir_list)
 {
 	t_redirect	*temp;
-	int			i = 0;
+	int			i;
 
+	i = 0;
 	temp = redir_list;
 	while (temp)
 	{
@@ -161,17 +164,18 @@ void	print_redirect_list(t_redirect *redir_list)
 		printf("redirect type : %d\n", redir_list->type);
 		temp = temp->next;
 	}
-	
 }
 
-void free_token_list(t_token *tokens)
+void	free_token_list(t_token *tokens)
 {
-    t_token *tmp;
-    while (tokens)
-    {
-        tmp = tokens->next;
-        free(tokens->value);
-        free(tokens);
-        tokens = tmp;
-    }
+	t_token *tmp;
+	
+	while (tokens)
+	{
+		tmp = tokens->next;
+		free(tokens->value);
+		free(tokens);
+		tokens = tmp;
+	}
+	tokens = NULL;
 }
