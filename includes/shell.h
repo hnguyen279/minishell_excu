@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 07:13:45 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 18:51:01 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ typedef enum e_token_type
 	NONE = 0,
 	PIPE = 1,
 	WORD = 2,
-	REDIR_IN_token = 3,
-	REDIR_OUT_token = 4,
-	REDIR_APPEND_token = 5,
-	REDIR_HEREDOC_token = 6
+	REDIR_IN_TOKEN = 3,
+	REDIR_OUT_TOKEN = 4,
+	REDIR_APPEND_TOKEN = 5,
+	REDIR_HEREDOC_TOKEN = 6
 }	t_token_type;
 
 typedef enum e_error_type
@@ -159,6 +159,11 @@ int				parse_redirection(t_cmd **new_cmd, t_token **token_list);
 void			print_cmd_list(t_cmd *head);
 void			print_redirect_list(t_redirect *redir_list);
 void			free_cmd_list(t_cmd *head);
+char			*str_join_result_and_free(char *s1, char *s2);
+char			*char_join_result_and_free(char *s1, char c);
+char			*expand_token_value(char *str, t_shell	*mshell);
+void			expand_variables(t_token **token_list, t_shell *mshell);
+
 
 /* Abstract Syntax Tree */
 t_ast			*create_ast_node(int type);
@@ -180,8 +185,6 @@ void			print_error(char *msg);
 void			get_error_msg(t_error_type err);
 int				ft_isspace(char c);
 void			print_array(char **arr);
-// void print_ast(t_ast *root);
-// void print_ast_recursive(t_ast *node, int depth);
 
 /* Heredoc functions */
 int				open_heredoc_pipe(t_shell *mshell, t_redirect *redir);
