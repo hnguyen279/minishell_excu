@@ -21,7 +21,7 @@ static int is_builtin(char *cmd)
 static int execute_builtin(t_shell *mshell, char **token)
 {
     //debug
-    printf("execute_builtin\n");
+    // printf("execute_builtin\n");
     for (int i = 0; token[i]; i++)
     {
         printf("token[%d] = [%s]\n", i, token[i]);

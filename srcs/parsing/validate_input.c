@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/16 06:18:35 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 06:43:27 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,7 @@ int	validate_quote(char *line)
 	while (line[i])
 	{
 		if ((line[i] == '\'' || line[i] == '\"') && quote == 0)
-		{
 			quote = line[i];
-		}
 		else if (line[i] == quote)
 			quote = 0;
 		i++;
@@ -46,9 +44,9 @@ int	validate_quote(char *line)
 	if (quote != 0)
 	{
 		get_error_msg(ERR_QUOTE);
-		return (-1);
+		return (FALSE);
 	}
-	return (0);
+	return (TRUE);
 }
 
 int	is_valid_pipe(t_token *token)

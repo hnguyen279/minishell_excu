@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/23 06:20:14 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 09:13:31 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,21 +35,17 @@ t_cmd	*parse_tokens_to_commands(t_token *tokenized_list)
 		}
 		if (update_command_node(&new_cmd, &temp_token_list) == FALSE)
 		{
-			print_error("failed to update command node");
+			print_error("Failed to update command node");
 			free_cmd_list(cmd_list);
 			return (NULL);
 		}
-		// else
-		// 	printf("update command node succeeded\n");
 		if (cmd_list == NULL)
 			cmd_list = new_cmd;
 		else
 		{
 			current = cmd_list;
 			while (current->next)
-			{
 				current = current->next;
-			}
 			current->next = new_cmd;
 		}
 		current = NULL;
@@ -63,21 +59,19 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 {
 	if (!*new_cmd)
 	{
-		print_error("not new_cmd");
+		print_error("Failed creating new_cmd");
 		return (FALSE);
 	}
 	else if (!*temp_token_list)
 	{
-		print_error("not temp token list");
+		print_error("Not exist temp token list");
 		return (FALSE);
 	}
 	(*new_cmd)->args = fill_args(temp_token_list);
 	// print_array((*new_cmd)->args);
-	// if (*temp_token_list)
-	// 	print_linked_list(*temp_token_list);
 	if (!(*new_cmd)->args)
 	{
-		print_error("Fail to update command node");
+		print_error("Failed to update new cmd args");
 		return (FALSE);
 	}
 	(*new_cmd)->cmd_name = ft_strdup(((*new_cmd)->args)[0]);
@@ -85,11 +79,9 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 		return (FALSE);
 	if (parse_redirection(new_cmd, temp_token_list) == FALSE)
 	{
-		print_error("parse redirection failed \n");
+		print_error("Parse redirection failed \n");
 		return (FALSE);
 	}
-	// else
-	// 	printf("parse redirection succeeded and return\n");
 	return (TRUE);
 }
 
@@ -101,12 +93,12 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 	//	cause that's when the token_list reaching the end, not an error
 	if (!new_cmd || !token_list)
 	{
-		print_error("pointer to new cmdn and token list not exist");
+		print_error("Pointer to new cmdn and token list not exist");
 		return (FALSE);
 	}
 	else if (!*new_cmd)
 	{
-		print_error("invalid new_cmd in parse_redirection");
+		print_error("Invalid new_cmd in parse_redirection");
 		return (FALSE);
 	}
 	while (*token_list && (*token_list)->type != PIPE)
@@ -121,17 +113,16 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 				return (FALSE);
 			}
 			// printf("redir type %d\n", redir_type);
-			//(*token_list) = (*token_list)->next;
+			(*token_list) = (*token_list)->next;
 			// printf("after redirects %s\n", (*token_list)->value);
 			if (!*token_list || (*token_list)->type != WORD
 				|| !(*token_list)->value || !*(*token_list)->value)
 			{
-				print_error("invalid or missing file after redirection");
+				print_error("Invalid or missing file after redirection");
 				get_error_msg(ERR_REDIR);
 				return (FALSE);
 			}
-			// printf("Parsing redirection: %s (%d)\n", (*token_list)->value,
-			//	(*token_list)->type);
+			// printf("Parsing redirection: %s (%d)\n", (*token_list)->value, (*token_list)->type);
 			if (add_redirects(&(*new_cmd)->redirects, redir_type,
 					(*token_list)->value) == FALSE)
 			{
@@ -160,7 +151,7 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
 	current = NULL;
 	if (!file || !*file)
 	{
-		print_error("empty file name in redirection");
+		print_error("Empty file name in redirection");
 		return (FALSE);
 	}
 	new_redir = malloc(sizeof(t_redirect));
@@ -237,7 +228,7 @@ char	**fill_args(t_token **token_list)
 			args[count] = ft_strdup((*token_list)->value);
 			if (!args[count])
 			{
-				get_error_msg(ERR_MALLOC);
+				print_error("Fill argurment malloc error");
 				free_array(args, count); // free
 				return (NULL);
 			}
