@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/23 06:17:57 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 07:13:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,10 @@ int				init_shell(t_shell *mshell, char **envp);
 void			shell_interactive(t_shell *mshell);
 void			shell_cleanup(t_shell *mshell);
 int				handle_special_command_line(char *line, t_token **history_head);
+void			handle_line(char *line, t_shell *mshell);
+void			process_valid_line(char *line, t_shell *mshell,
+				t_token **tokenized_input_list, t_cmd **cmd_list, t_ast **tree);
+void			run_ast_pipeline(t_shell *mshell, t_ast *tree);
 
 /* Tokenization */
 int				is_comment(char *s);

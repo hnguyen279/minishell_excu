@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/22 12:56:20 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 09:00:29 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,10 +115,12 @@ int	ft_isspace(char c)
 
 void	print_array(char **arr)
 {
-	while (*arr)
+	int	i = 0;
+
+	while (arr[i])
 	{
-		printf("%s, ", *arr);
-		arr++;
+		printf("%s, ", arr[i]);
+		i++;
 	}
 	printf("\n");
 }
@@ -167,6 +169,7 @@ void	print_redirect_list(t_redirect *redir_list)
 void	free_token_list(t_token *tokens)
 {
 	t_token *tmp;
+	
 	while (tokens)
 	{
 		tmp = tokens->next;
@@ -174,4 +177,5 @@ void	free_token_list(t_token *tokens)
 		free(tokens);
 		tokens = tmp;
 	}
+	tokens = NULL;
 }

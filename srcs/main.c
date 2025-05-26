@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/24 05:51:55 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 09:13:48 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,8 @@ void	shell_interactive(t_shell *mshell)
 {
 	char	*line;
 	t_token	*history_head;
-	t_token	*tokenized_input_list;
-	t_cmd	*cmd_list;
-	t_ast	*tree;
 
 	history_head = NULL;
-	tokenized_input_list = NULL;
-	cmd_list = NULL;
-	tree = NULL;
 	while (1)
 	{
 		line = readline("minishell$ ");
@@ -58,101 +52,111 @@ void	shell_interactive(t_shell *mshell)
 			free(line);
 			continue ;
 		}
-		if (line[0] != '\0')
-		{
-			store_history(line, &history_head);
-            if (handle_special_command_line(line, &history_head) == TRUE)
-            {
-                free_string(line);
+        store_history(line, &history_head);
+        if (handle_special_command_line(line, &history_head) == TRUE)
+        {
+            if (ft_strcmp(line, "exit") == 0)
                 break;
-            }
-            else if (ft_strcmp(line, "history") == 0)
-                print_working_history(history_head);
-            else if (ft_strcmp(line, "history -c") == 0)
-                clear_working_history(&history_head);
-            else if (validate_quote(line) != FALSE)
-            {
-                tokenized_input_list = convert_user_input_to_token(line);
-                if (!tokenized_input_list)
-                {
-                    mshell->exit_code = 1;
-                    free_string(line);
-                    continue;
-                }
-                if (validate_token(tokenized_input_list) == TRUE)
-                {
-                    cmd_list = parse_tokens_to_commands(tokenized_input_list);
-                    if (!cmd_list)
-                    {
-                        print_error("Failed to parse token to cmd");
-                        mshell->exit_code = 2;
-                        get_error_msg(ERR_SYNTAX);
-                    }
-                    else
-                    {
-                        // printf("parse token to cmds succeed\n");
-                        // print_cmd_list(cmd_list);
-                        tree = convert_cmd_to_ast(cmd_list);
-                        if (!tree)
-                        {
-                            // free_cmd_list(cmd_list);
-                            mshell->exit_code = 2;
-                            get_error_msg(ERR_MALLOC);
-                        }
-                        else
-                        {
-                            // printf("ast tree is successfully created\n");
-                            if (process_heredocs(mshell, tree))
-                            {
-                                printf("execute process heredocts\n");
-                                mshell->exit_code = 1;
-                            }
-                            else
-                            {
-                                //printf("execute ast\n");
-                                execute_ast(tree, mshell);
-                                if (!mshell->has_pipe && mshell->env_last_cmd)
-                                    env_set_last_argument(mshell, NULL);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    mshell->exit_code = 2;
-                    get_error_msg(ERR_SYNTAX);
-                }
-            }
-            else
-            {
-                mshell->exit_code = 2;
-                get_error_msg(ERR_QUOTE);
-            }
         }
+        else
+            handle_line(line, mshell);
         free_string(line);
-        free_token_list(tokenized_input_list);
-        tokenized_input_list = NULL;
-        free_cmd_list(cmd_list);
-        cmd_list = NULL;
-        free_ast(tree, mshell);
-        tree = NULL;
-        mshell->ast = NULL;
-        g_signum = 0;  // Reset signal 
     }
-    // printf("before clear working history\n");
+    free_string(line);
     clear_working_history(&history_head);
 }
 
 int handle_special_command_line(char *line, t_token **history_head)
 {
     if (ft_strcmp(line, "exit") == 0)
+        return (TRUE);
+    else if (ft_strcmp(line, "history") == 0)
     {
-        // free_string(*line);
+        print_working_history(*history_head);
         return (TRUE);
     }
-    else if (ft_strcmp(line, "history") == 0)
-        print_working_history(*history_head);
     else if (ft_strcmp(line, "history -c") == 0)
+    {
         clear_working_history(history_head);
+        return (TRUE);
+    }
     return (FALSE);
+}
+
+void    handle_line(char *line, t_shell *mshell)
+{
+    t_token	*tokenized_input_list;
+	t_cmd	*cmd_list;
+	t_ast	*tree;
+
+    // printf("print line: %s\n", line);
+    if (validate_quote(line) == FALSE)
+    {
+        mshell->exit_code = 2;
+        print_error("Failed to validate quote");
+        return ;
+    }
+    // printf("validate line successfully\n");
+    tokenized_input_list = NULL;
+	cmd_list = NULL;
+	tree = NULL;
+    process_valid_line(line, mshell, &tokenized_input_list, &cmd_list, &tree);
+    free_token_list(tokenized_input_list);
+    free_cmd_list(cmd_list);
+    free_ast(tree, mshell);
+    mshell->ast = NULL;
+    tree = NULL;
+    g_signum = 0;  // Reset signal 
+ 
+}
+
+void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_input_list, t_cmd **cmd_list, t_ast **tree)
+{
+    *tokenized_input_list = convert_user_input_to_token(line);
+    if (!*tokenized_input_list)
+    {
+        mshell->exit_code = 1;
+        // free_string(line);
+        print_error("Failed to convert user input to token");
+        return ;
+    }
+    if (validate_token(*tokenized_input_list) == FALSE)
+    {
+        mshell->exit_code = 2;
+        print_error("Failed to validate token");
+        return ;
+    }
+    *cmd_list = parse_tokens_to_commands(*tokenized_input_list);
+    if (!*cmd_list)
+    {
+        print_error("Failed to parse token to cmd");
+        mshell->exit_code = 2;
+        return ;
+    }
+    
+    // printf("parse token to cmds succeed\n");
+    // print_cmd_list(cmd_list);
+    *tree = convert_cmd_to_ast(*cmd_list);
+    if (!*tree)
+    {
+        mshell->exit_code = 2;
+        print_error("Failed to convert cmd to ast");
+        return ;
+    }
+    run_ast_pipeline(mshell, *tree);
+}
+
+void    run_ast_pipeline(t_shell *mshell, t_ast *tree)
+{
+    // printf("ast tree is successfully created\n");
+    if (process_heredocs(mshell, tree))
+    {
+        printf("execute process heredocts\n");
+        mshell->exit_code = 1;
+        return ;
+    }
+    //printf("execute ast\n");
+    execute_ast(tree, mshell);
+    if (!mshell->has_pipe && mshell->env_last_cmd)
+        env_set_last_argument(mshell, NULL);
 }

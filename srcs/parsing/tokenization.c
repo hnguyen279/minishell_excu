@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/22 15:25:28 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 07:39:34 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ t_token	*convert_user_input_to_token(char *line)
 		}
 	}
 	// print_linked_list(tokenized_input_list);
-	// validate_token(tokenized_input_list);
 	return (tokenized_input_list);
 }
 
