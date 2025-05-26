@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/16 06:26:36 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 18:26:39 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 int	is_redirection(t_token *token)
 {
-	if (token->type == REDIR_IN_token || token->type == REDIR_OUT_token
-		|| token->type == REDIR_HEREDOC_token
-		|| token->type == REDIR_APPEND_token)
+	if (token->type == REDIR_IN_TOKEN || token->type == REDIR_OUT_TOKEN
+		|| token->type == REDIR_HEREDOC_TOKEN
+		|| token->type == REDIR_APPEND_TOKEN)
 		return (TRUE);
 	return (FALSE);
 }
