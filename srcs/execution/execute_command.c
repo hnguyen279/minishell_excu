@@ -21,7 +21,7 @@ static int is_builtin(char *cmd)
 static int execute_builtin(t_shell *mshell, char **token)
 {
     //debug
-    printf("execute_builtin\n");
+    // printf("execute_builtin\n");
     for (int i = 0; token[i]; i++)
     {
         printf("token[%d] = [%s]\n", i, token[i]);
@@ -94,8 +94,9 @@ static int fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
     }
     if (pid == 0)
         run_command_child(node, mshell, cmd_path);
-    // free(cmd_path); // double free ??
-    //printf("execute here in fork and exec worked\n");
+
+
+    free(cmd_path);
     return (wait_command(mshell, pid, &status));
 }
 
