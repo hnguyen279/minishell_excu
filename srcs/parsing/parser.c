@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 18:24:59 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 19:06:40 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,12 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 	return (TRUE);
 }
 
+// remove !*token_list condition,
+//	cause that's when the token_list reaching the end, not an error
 int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 {
 	t_redirect_type	redir_type;
 
-	// remove !*token_list condition,
-	//	cause that's when the token_list reaching the end, not an error
 	if (!new_cmd || !token_list)
 	{
 		print_error("Pointer to new cmdn and token list not exist");
@@ -119,26 +119,20 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 				|| !(*token_list)->value || !*(*token_list)->value)
 			{
 				print_error("Invalid or missing file after redirection");
-				get_error_msg(ERR_REDIR);
+				// get_error_msg(ERR_REDIR);
 				return (FALSE);
 			}
-			// printf("Parsing redirection: %s (%d)\n", (*token_list)->value, (*token_list)->type);
 			if (add_redirects(&(*new_cmd)->redirects, redir_type,
 					(*token_list)->value) == FALSE)
 			{
 				print_error("Failed to add redirects");
 				return (FALSE);
 			}
-			// else
-			// {
-			// 	printf("add redirect work in parse redirection\n");
-			// }
 			(*token_list) = (*token_list)->next;
 		}
 		else
 			(*token_list) = (*token_list)->next;
 	}
-	// printf("end of redirect and return (\n"));
 	return (TRUE);
 }
 
@@ -157,14 +151,16 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
 	new_redir = malloc(sizeof(t_redirect));
 	if (!new_redir)
 	{
-		get_error_msg(ERR_MALLOC);
+		print_error("Failed to add redirects");
+		// get_error_msg(ERR_MALLOC);
 		return (FALSE);
 	}
 	new_redir->file = ft_strdup(file);
 	if (!new_redir->file)
 	{
 		// free(new_redir);
-		get_error_msg(ERR_MALLOC);
+		// get_error_msg(ERR_MALLOC);
+		print_error("Failed to strdup file");
 		return (FALSE);
 	}
 	new_redir->type = type;
@@ -217,7 +213,8 @@ char	**fill_args(t_token **token_list)
 	args = (char **)malloc(sizeof(char *) * (count + 1));
 	if (!args)
 	{
-		get_error_msg(ERR_MALLOC);
+		print_error("Malloc failed");
+		// get_error_msg(ERR_MALLOC);
 		return (NULL);
 	}
 	count = 0;
@@ -229,14 +226,14 @@ char	**fill_args(t_token **token_list)
 			if (!args[count])
 			{
 				print_error("Fill argurment malloc error");
-				free_array(args, count); // free
+				free_array(args, count);
 				return (NULL);
 			}
 			count++; // only increase if args[count]
 		}
 		else if (is_redirection(*token_list) == TRUE)
 		{
-			args[count] = NULL; // reset count
+			args[count] = NULL;
 			return (args);
 		}
 		*token_list = (*token_list)->next;
@@ -268,7 +265,8 @@ t_cmd	*create_cmd(void)
 	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!new_cmd)
 	{
-		get_error_msg(ERR_MALLOC);
+		print_error("Malloc failed to create new_cmd");
+		// get_error_msg(ERR_MALLOC);
 		return (NULL);
 	}
 	new_cmd->args = NULL;
