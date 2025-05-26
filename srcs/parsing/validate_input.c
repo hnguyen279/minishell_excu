@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 06:43:27 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 19:02:03 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ int	validate_quote(char *line)
 	}
 	if (quote != 0)
 	{
-		get_error_msg(ERR_QUOTE);
+		print_error("Unclosed quote");
+		// get_error_msg(ERR_QUOTE);
 		return (FALSE);
 	}
 	return (TRUE);
@@ -56,20 +57,23 @@ int	is_valid_pipe(t_token *token)
 	temp = token;
 	if (temp->type == PIPE)
 	{
-		get_error_msg(ERR_PIPE);
+		// get_error_msg(ERR_PIPE);
+		print_error("Invalid pipe");
 		return (FALSE);
 	}
 	while (temp)
 	{
 		if (temp->type == PIPE && temp->next == NULL)
 		{
-			get_error_msg(ERR_PIPE);
+			// get_error_msg(ERR_PIPE);
+			print_error("Invalid pipe");
 			return (FALSE);
 		}
 		if (temp->type == PIPE && (temp->next->type == PIPE
 				|| is_redirection(temp->next) == TRUE))
 		{
-			get_error_msg(ERR_PIPE);
+			// get_error_msg(ERR_PIPE);
+			print_error("Invalid pipe");
 			return (FALSE);
 		}
 		temp = temp->next;

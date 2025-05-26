@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 18:26:05 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 19:01:02 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,8 @@ char	*extract_quoted_token(char *line, int *i)
 	str = ft_substr(line, start_pos, *i - start_pos);
 	if (!str)
 	{
-		get_error_msg(ERR_MALLOC);
+		print_error("Malloc failed to substr");
+		// get_error_msg(ERR_MALLOC);
 		return (NULL);
 	}
 	(*i)++;

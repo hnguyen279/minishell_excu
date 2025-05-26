@@ -12,9 +12,9 @@
 
 #include "../includes/shell.h"
 
-void    expand_variables(t_token **token_list, t_shell *mshell)
+void	expand_variables(t_token **token_list, t_shell *mshell)
 {
-    t_token	*temp;
+	t_token	*temp;
 	char	*expanded_value;
 
 	temp = *token_list;
@@ -36,22 +36,21 @@ void    expand_variables(t_token **token_list, t_shell *mshell)
 			temp = temp->next;
 		}
 	}
-
 }
 
-char	*expand_token_value(char *str, t_shell	*mshell)
+char	*expand_token_value(char *str, t_shell *mshell)
 {
-	int		i = 0;
+	int		i;
 	char	*result;
 	char	*exit_code_str;
 
+	i = 0;
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
-
 	while (str[i])
 	{
-		if (str[i] == '$' && str[i + 1]!= '\0')
+		if (str[i] == '$' && str[i + 1] != '\0')
 		{
 			if (str[i + 1] == '?')
 			{
@@ -63,7 +62,6 @@ char	*expand_token_value(char *str, t_shell	*mshell)
 			}
 			// else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
 			// {
-				
 			// }
 		}
 		else
@@ -94,8 +92,8 @@ char	*str_join_result_and_free(char *s1, char *s2)
 
 char	*char_join_result_and_free(char *s1, char c)
 {
-	char	*joined_str;
-	char	s2[2];
+	char *joined_str;
+	char s2[2];
 
 	s2[0] = c;
 	s2[1] = '\0';
