@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:38:32 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/23 05:50:13 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/26 18:55:48 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ t_ast	*create_ast_node(int type)
 	new_node = malloc(sizeof(t_ast));
 	if (!new_node)
 	{
-		get_error_msg(ERR_MALLOC);
+		// get_error_msg(ERR_MALLOC);
+		print_error("Failed to create ast node");
 		return (NULL);
 	}
 	new_node->type = type;
