@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 19:01:02 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/27 07:09:21 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ t_token	*convert_user_input_to_token(char *line)
 			free_string(extracted_str);
 		}
 	}
-	print_linked_list(tokenized_input_list);
+	// print_linked_list(tokenized_input_list);
 	return (tokenized_input_list);
 }
 
@@ -106,7 +106,6 @@ char	*extract_quoted_token(char *line, int *i)
 	if (!str)
 	{
 		print_error("Malloc failed to substr");
-		// get_error_msg(ERR_MALLOC);
 		return (NULL);
 	}
 	(*i)++;

@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 18:46:43 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/27 07:21:32 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,19 @@ char	*expand_token_value(char *str, t_shell *mshell)
 					return (NULL);
 				i = i + 2;
 			}
-			// else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
-			// {
-			// }
+			else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
+			{
+				i++;
+				result = handle_env_variable(&str, mshell, &i, result);
+				if (!result)
+					return (NULL);
+				printf("after join: %s\n", result);
+			}
 		}
 		else
 		{
 			result = char_join_result_and_free(result, str[i]);
-			printf("after join: %s\n", result);
+			// printf("after join: %s\n", result);
 			if (!result)
 				return (NULL);
 			i++;
@@ -99,4 +104,36 @@ char	*char_join_result_and_free(char *s1, char c)
 	s2[1] = '\0';
 	joined_str = str_join_result_and_free(s1, s2);
 	return (joined_str);
+}
+
+char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
+{
+	char	*var_name;
+	int		start;
+	char	*env_value;
+	
+	start = *i;
+	while (ft_isalpha((*str)[*i]) || (*str)[*i] == '_')
+		(*i)++;
+	var_name = ft_substr(*str, start, (*i) - start);
+	if (!var_name)
+	{
+		print_error("Substr failed in handle_env_variables");
+		return (NULL);
+	}
+	printf("var_name: %s\n", var_name);
+	env_value = env_find_value(mshell, var_name);
+	if (!env_value)
+	{
+		print_error("Invalid env_var name");
+		return (NULL);
+	}
+	printf("env_value %s\n", env_value);
+	result = str_join_result_and_free(result, env_value);
+	if (!result)
+		return (NULL);
+	free_string(var_name);
+	// free_string(env_value);
+	
+	return (result);	
 }
