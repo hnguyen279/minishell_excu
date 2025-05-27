@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 18:51:01 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/27 07:06:27 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ typedef struct s_token
 	t_token_type		type;
 	struct s_token		*next;
 	struct s_token		*prev;
+	// int					double_quote;
 }	t_token;
 
 typedef enum e_redirect_type
@@ -163,6 +164,7 @@ char			*str_join_result_and_free(char *s1, char *s2);
 char			*char_join_result_and_free(char *s1, char c);
 char			*expand_token_value(char *str, t_shell	*mshell);
 void			expand_variables(t_token **token_list, t_shell *mshell);
+char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result);
 
 
 /* Abstract Syntax Tree */
