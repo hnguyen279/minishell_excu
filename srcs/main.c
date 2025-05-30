@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 18:35:15 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/30 15:09:18 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
         return ;
     }
     expand_variables(tokenized_input_list, mshell);
-    print_linked_list(*tokenized_input_list);
+    // print_linked_list(*tokenized_input_list);
     if (validate_token(*tokenized_input_list) == FALSE)
     {
         mshell->exit_code = 2;
