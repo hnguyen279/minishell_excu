@@ -238,21 +238,18 @@ void	env_print(char **envp)
 
 int env_set_last_argument(t_shell *mshell, char **cmd)
 {
+    if (!mshell)
+        return 1;
+    
     char *last_cmd = NULL;
     size_t i = 0;
 
-    if (!mshell)
-        return 1;
-    if (cmd && cmd[0])
+    if (cmd)
     {
         while (cmd[i])
             i++;
         if (i > 0)
             last_cmd = cmd[i - 1];
-    }
-    else if (mshell->env_last_cmd)
-    {
-        last_cmd = mshell->env_last_cmd;
     }
 
     if (last_cmd)

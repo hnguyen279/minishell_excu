@@ -57,7 +57,11 @@ int is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 {
 	if (!redir || !redir->file || !redir->ori_path)
 		return (0);
-	if (redir->file[0] == '\0' && redir->ori_path[0] != '\0'
+
+	// case: expanded to empty string
+	if (redir->file[0] == '\0'
+		&& redir->ori_path[0] != '\0'
+		&& ft_strchr(redir->ori_path, '$')
 		&& !is_fully_quoted(redir->ori_path)
 		&& redir->type != REDIR_HEREDOC)
 	{
@@ -65,10 +69,13 @@ int is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 		mshell->exit_code = 1;
 		return (1);
 	}
+
+	// case: expanded to multiple words
 	if (ft_strchr(redir->ori_path, '$')
-		&& ft_strchr(redir->file, ' ')
-		&& !is_white_spaces_cmd(redir->file)
-		&& !is_fully_quoted(redir->ori_path))
+		&& ft_strchr(redir->file, ' ') // file has spaces
+		&& !is_fully_quoted(redir->ori_path)
+		&& !is_white_spaces_cmd(redir->file) // not just all spaces
+		&& redir->type != REDIR_HEREDOC)
 	{
 		ft_printf_fd(2, "minishell: ambiguous redirect: `%s`\n", redir->ori_path);
 		mshell->exit_code = 1;

@@ -74,9 +74,14 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 		print_error("Failed to update new cmd args");
 		return (FALSE);
 	}
-	(*new_cmd)->cmd_name = ft_strdup(((*new_cmd)->args)[0]);
-	if (!(*new_cmd)->cmd_name)
-		return (FALSE);
+	// (*new_cmd)->cmd_name = ft_strdup(((*new_cmd)->args)[0]);
+	// if (!(*new_cmd)->cmd_name)
+	// 	return (FALSE);
+	// H add
+	if ((*new_cmd)->args[0])
+		(*new_cmd)->cmd_name = ft_strdup((*new_cmd)->args[0]);
+	else
+		(*new_cmd)->cmd_name = NULL;
 	if (parse_redirection(new_cmd, temp_token_list) == FALSE)
 	{
 		print_error("Parse redirection failed \n");
@@ -209,6 +214,18 @@ char	**fill_args(t_token **token_list)
 	char	**args;
 
 	count = count_args(*token_list);
+	// H add
+	if (count == 0)
+	{
+		args = malloc(sizeof(char *));
+		if (!args)
+		{
+			print_error("Malloc failed");
+			return (NULL);
+		}
+		args[0] = NULL;
+		return (args);
+	}
 	// printf("count args %d\n", count);
 	args = (char **)malloc(sizeof(char *) * (count + 1));
 	if (!args)
