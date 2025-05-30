@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/27 07:06:27 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/28 07:41:33 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ typedef struct s_token
 	t_token_type		type;
 	struct s_token		*next;
 	struct s_token		*prev;
-	// int					double_quote;
+	int					in_single_quote; // true if in and false if not
 }	t_token;
 
 typedef enum e_redirect_type
