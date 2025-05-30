@@ -128,9 +128,9 @@ static int redirect_heredoc(t_redirect *redir, t_shell *mshell)
         return display_error_errno(mshell, "dup2", 1);
     }
     close(fd);
-    unlink(redir->tmp_file);
-    free(redir->tmp_file);
-    redir->tmp_file = NULL;
+    // unlink(redir->tmp_file); --> free in main
+    // free(redir->tmp_file);
+    // redir->tmp_file = NULL;
     return 0;
 }
 

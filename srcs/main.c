@@ -33,6 +33,28 @@ int	main(int ac, char *av[], char *env[])
 	return (mshell.exit_code);
 }
 
+void cleanup_heredoc_tempfiles(t_ast *tree)
+{
+    if (!tree)
+        return;
+    if (tree->redirects)
+    {
+        t_redirect *redir = tree->redirects;
+        while (redir)
+        {
+            if (redir->type == REDIR_HEREDOC && redir->tmp_file)
+            {
+                unlink(redir->tmp_file);
+                free(redir->tmp_file);
+                redir->tmp_file = NULL;
+            }
+            redir = redir->next;
+        }
+    }
+    cleanup_heredoc_tempfiles(tree->left);
+    cleanup_heredoc_tempfiles(tree->right);
+}
+
 void	shell_interactive(t_shell *mshell)
 {
 	char	*line;
@@ -162,6 +184,7 @@ void    run_ast_pipeline(t_shell *mshell, t_ast *tree)
     }
     //printf("execute ast\n");
     execute_ast(tree, mshell);
-    if (!mshell->has_pipe && mshell->env_last_cmd)
-        env_set_last_argument(mshell, NULL);
+    cleanup_heredoc_tempfiles(tree);
+    if (!mshell->has_pipe && tree->cmd && tree->cmd[0])
+        env_set_last_argument(mshell, tree->cmd);
 }

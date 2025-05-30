@@ -33,12 +33,13 @@ int	is_valid_redirection(t_token *token_list)
 	current = token_list;
 	if (!current)
 		return (FALSE);
-	if (is_redirection(current) == TRUE)
-	{
-		print_error("Invalid redirection");
-		// get_error_msg(ERR_REDIR);
-		return (FALSE);
-	}
+	//H hide
+	// if (is_redirection(current) == TRUE)
+	// {
+	// 	print_error("Invalid redirection");
+	// 	// get_error_msg(ERR_REDIR);
+	// 	return (FALSE);
+	// }
 	while (current)
 	{
 		if (is_redirection(current) == TRUE)
@@ -49,6 +50,7 @@ int	is_valid_redirection(t_token *token_list)
 				// get_error_msg(ERR_REDIR);
 				return (FALSE);
 			}
+			current = current->next; //H add
 		}
 		current = current->next;
 	}
