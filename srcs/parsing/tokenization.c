@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/27 07:09:21 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/30 15:10:49 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ t_token	*convert_user_input_to_token(char *line)
 	t_token	*new_token;
 	t_token	*tokenized_input_list;
 	char	*extracted_str;
+	int		in_single_quote = FALSE;
 
 	tokenized_input_list = NULL;
 	if (is_comment(line) == 0)
@@ -71,11 +72,15 @@ t_token	*convert_user_input_to_token(char *line)
 		}
 		else if (line[i] == '\'' || line[i] == '\"')
 		{
+			if (line[i] == '\'')
+				in_single_quote = TRUE;
 			extracted_str = extract_quoted_token(line, &i);
 			// printf("extracted str: %s\n", extracted_str);
 			if (!extracted_str)
 				return (NULL);
 			new_token = create_token(extracted_str, WORD);
+			if (in_single_quote == TRUE)
+				new_token->in_single_quote = TRUE;
 			add_token(&tokenized_input_list, new_token);
 			free_string(extracted_str);
 		}

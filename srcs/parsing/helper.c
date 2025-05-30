@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 19:04:28 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/30 15:01:03 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,7 @@ void	print_linked_list(t_token *head)
 	{
 		if (temp)
 		{
-			printf("Value of input tokens %s type %d\n", temp->value,
-				temp->type);
+			printf("Value of input tokens %s type %d inside single quote %d\n", temp->value, temp->type, temp->in_single_quote);
 		}
 		temp = temp->next;
 	}
