@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/27 07:21:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/30 15:10:29 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	expand_variables(t_token **token_list, t_shell *mshell)
 	temp = *token_list;
 	while (temp)
 	{
-		if (temp->type == WORD) // adjust: only expand inside double quotes
+		if (temp->type == WORD && temp->in_single_quote == FALSE) // adjust: only expand inside double quotes
 		{
 			expanded_value = expand_token_value(temp->value, mshell);
 			if (expanded_value)
@@ -33,8 +33,10 @@ void	expand_variables(t_token **token_list, t_shell *mshell)
 					return ;
 				}
 			}
-			temp = temp->next;
+			// temp = temp->next;
 		}
+		// else
+		temp = temp->next;
 	}
 }
 
@@ -63,10 +65,10 @@ char	*expand_token_value(char *str, t_shell *mshell)
 			else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
 			{
 				i++;
-				result = handle_env_variable(&str, mshell, &i, result);
+				result = handle_env_variable(&str, mshell, &i, result); //need to retokenize for multiple word?
 				if (!result)
 					return (NULL);
-				printf("after join: %s\n", result);
+				// printf("after join: %s\n", result);
 			}
 		}
 		else
@@ -121,19 +123,18 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 		print_error("Substr failed in handle_env_variables");
 		return (NULL);
 	}
-	printf("var_name: %s\n", var_name);
+	// printf("var_name: %s\n", var_name);
 	env_value = env_find_value(mshell, var_name);
 	if (!env_value)
 	{
 		print_error("Invalid env_var name");
 		return (NULL);
 	}
-	printf("env_value %s\n", env_value);
+	// printf("env_value %s\n", env_value);
 	result = str_join_result_and_free(result, env_value);
 	if (!result)
 		return (NULL);
 	free_string(var_name);
 	// free_string(env_value);
-	
 	return (result);	
 }

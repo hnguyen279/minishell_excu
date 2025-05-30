@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 19:00:24 by trpham           ###   ########.fr       */
+/*   Updated: 2025/05/28 07:42:29 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ t_token	*create_token(char *s, t_token_type i)
 	new_token->type = i;
 	new_token->next = NULL;
 	new_token->prev = NULL;
+	new_token->in_single_quote = FALSE;
 	return (new_token);
 }
 
