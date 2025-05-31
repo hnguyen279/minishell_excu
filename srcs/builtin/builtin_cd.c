@@ -109,11 +109,15 @@ static void cd_to_path(t_shell *mshell, char *path)
 int builtin_cd(t_shell *mshell, char **token)
 {
     if (!mshell || !token)
-        return 1;
+    {
+        mshell->exit_code = 1;
+        return mshell->exit_code;
+    }
     if (token[1] && token[2])
     {
         ft_printf_fd(2, "minishell: cd: too many arguments\n");
-        return 1;
+        mshell->exit_code = 1;
+        return mshell->exit_code;
     }
     if (!token[1] || token[1][0] == '\0' || ft_strcmp(token[1], "~") == 0 || ft_strcmp(token[1], "--") == 0)
         cd_to_home(mshell);

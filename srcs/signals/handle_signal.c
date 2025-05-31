@@ -6,23 +6,26 @@ volatile sig_atomic_t g_signum = 0;
 static void sigint_interactive(int sig)
 {
 	(void)sig;
-    g_signum = 128 + SIGINT;
+    g_signum = SIGINT;
 	write(STDOUT_FILENO, "\n", 1);
-	rl_replace_line("", 0);
 	rl_on_new_line();
+    rl_replace_line("", 0);
 	rl_redisplay();
-	g_signum = 128 + SIGINT;
 }
 
 static void sigint_heredoc(int sig)
 {
 	(void)sig;
-    g_signum = 128 + SIGINT;
-	//write(STDOUT_FILENO, "^C\n", 3);
+    g_signum = SIGINT;
 	rl_done = 1;
-    close(STDIN_FILENO);  // readline return NULL
+    int null_fd = open("/dev/null", O_RDONLY);
+    if (null_fd != -1)
+    {
+        dup2(null_fd, STDIN_FILENO);
+        close(null_fd);
+    }
+    write(STDOUT_FILENO, "\n", 1);
 }
-
 
 int setup_signal_handlers(t_shell *mshell, void (*sigint_handler)(int), void (*sigquit_handler)(int))
 {
@@ -55,13 +58,24 @@ void setup_signals(t_shell *mshell, int mode)
         setup_signal_handlers(mshell, SIG_DFL, SIG_DFL);
 }
 
+// void sig_exit_code(t_shell *mshell)
+// {
+//     if (g_signum == 128 + SIGINT)
+//         mshell->exit_code = 130;
+//     else if (g_signum == 128 + SIGQUIT)
+//         mshell->exit_code = 131;
+//     else if (g_signum != 0)
+//         mshell->exit_code = g_signum + 128;
+//     g_signum = 0;
+// }
+
 void sig_exit_code(t_shell *mshell)
 {
-    if (g_signum == 128 + SIGINT)
-        mshell->exit_code = 130;
-    else if (g_signum == 128 + SIGQUIT)
-        mshell->exit_code = 131;
+    if (g_signum == SIGINT)
+        mshell->exit_code = 128 + SIGINT;  // = 130
+    else if (g_signum == SIGQUIT)
+        mshell->exit_code = 128 + SIGQUIT; // = 131
     else if (g_signum != 0)
-        mshell->exit_code = g_signum + 128;
+        mshell->exit_code = 128 + g_signum;
     g_signum = 0;
 }

@@ -34,5 +34,5 @@ int builtin_echo(t_shell *mshell, char **token)
     if (newline)
         printf("\n");
     mshell->exit_code = 0;
-    return mshell->exit_code;
+    return (mshell->exit_code);
 }
