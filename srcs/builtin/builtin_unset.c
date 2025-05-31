@@ -35,34 +35,62 @@ static int is_valid_var_name(const char *name)
     return (1);
 }
 
+// int builtin_unset(t_shell *mshell, char **token)
+// {
+//     size_t i = 1;
+
+//     if (!mshell || !token || !token[0])
+//         return display_error_errno(mshell, "unset: internal error", 0);
+//     if (!token[1])
+//     {
+//         mshell->exit_code = 0;
+//         return (0);
+//     }
+//     while (token[i])
+//     {
+//         if (token[i][0] == '-')
+//         {
+//             ft_printf_fd(2, "minishell: unset: %s: invalid option\n", token[i]);
+//             mshell->exit_code = 2;
+//             return (2);
+//         }
+//         if (!is_valid_var_name(token[i]))
+//         {
+//             ft_printf_fd(2, "minishell: unset: `%s': not a valid identifier\n", token[i]);
+//             mshell->exit_code = 1;
+//         }
+//         else
+//             env_remove(mshell, token[i]);
+//         i++;
+//     }
+//     return (mshell->exit_code);
+// }
+
+
 int builtin_unset(t_shell *mshell, char **token)
 {
     size_t i = 1;
 
     if (!mshell || !token || !token[0])
         return display_error_errno(mshell, "unset: internal error", 0);
-    if (!token[1])
-    {
-        mshell->exit_code = 0;
-        return (0);
-    }
     while (token[i])
     {
         if (token[i][0] == '-')
         {
             ft_printf_fd(2, "minishell: unset: %s: invalid option\n", token[i]);
             mshell->exit_code = 2;
-            return (2);
+            return (mshell->exit_code);
         }
         if (!is_valid_var_name(token[i]))
         {
             ft_printf_fd(2, "minishell: unset: `%s': not a valid identifier\n", token[i]);
             mshell->exit_code = 1;
+             return (mshell->exit_code);
         }
         else
             env_remove(mshell, token[i]);
         i++;
     }
+    mshell->exit_code = 0;
     return (mshell->exit_code);
 }
-

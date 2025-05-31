@@ -221,7 +221,7 @@ void			env_sort(char **envp, size_t len);
 void			env_swap_last(char **envp);
 void			env_print(char **envp);
 int				env_set_last_argument(t_shell *mshell, char **cmd);
-int				env_backup_last_argument(t_shell *mshell, char **cmd);
+//int				env_backup_last_argument(t_shell *mshell, char **cmd);
 void			ft_free_null(char ***array);
 
 /* Built-in functions */

@@ -83,13 +83,25 @@ int execute_pipe(t_ast *ast, t_shell *shell)
     waitpid(pid[1], &status[1], 0);
     if (WIFEXITED(status[1]))
         shell->exit_code = WEXITSTATUS(status[1]);
+    // else if (WIFSIGNALED(status[1]))
+    //     shell->exit_code = 128 + WTERMSIG(status[1]);
     else if (WIFSIGNALED(status[1]))
-        shell->exit_code = 128 + WTERMSIG(status[1]);
+    {
+        int sig = WTERMSIG(status[1]);
+        shell->exit_code = 128 + sig;
+        if (sig == SIGQUIT)
+            ft_printf_fd(2, "Quit (core dumped)\n");
+        // else if (sig == SIGINT)
+        //     ft_printf_fd(2, "\n");
+    }
     else
         shell->exit_code = 1;
-    if (ast->right && ast->right->cmd)
-        env_set_last_argument(shell, ast->right->cmd);
-    else if (ast->left && ast->left->cmd)
-        env_set_last_argument(shell, ast->left->cmd);
+    // if (ast->right && ast->right->cmd)
+    // {
+    //     printf("[DEBUG] right cmd = %s\n", ast->right->cmd[0]);
+    //     env_set_last_argument(shell, ast->right->cmd);
+    // }
+    // else if (ast->left && ast->left->cmd)
+    //     env_set_last_argument(shell, ast->left->cmd);
     return shell->exit_code;
 }

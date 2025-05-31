@@ -236,27 +236,54 @@ void	env_print(char **envp)
 //     return (1);
 // }
 
+
 int env_set_last_argument(t_shell *mshell, char **cmd)
 {
-    if (!mshell)
+    if (!mshell || !cmd || !cmd[0])
         return 1;
-    
-    char *last_cmd = NULL;
-    size_t i = 0;
 
-    if (cmd)
+    size_t i = 0;
+    while (cmd[i])
+        i++;
+
+    if (i == 0)
+        return 0;
+
+    char *last_arg = cmd[i - 1];
+     if (!last_arg[0] ||
+        strcmp(last_arg, "<") == 0 ||
+        strcmp(last_arg, ">") == 0 ||
+        strcmp(last_arg, "<<") == 0 ||
+        strcmp(last_arg, ">>") == 0)
     {
-        while (cmd[i])
-            i++;
-        if (i > 0)
-            last_cmd = cmd[i - 1];
+        return 0;
     }
 
-    if (last_cmd)
-        return env_add(mshell, "_", last_cmd);
-
-    return 0;
+    return env_add(mshell, "_", last_arg);
 }
+
+
+// int env_set_last_argument(t_shell *mshell, char **cmd)
+// {
+//     if (!mshell)
+//         return 1;
+    
+//     char *last_cmd = NULL;
+//     size_t i = 0;
+
+//     if (cmd)
+//     {
+//         while (cmd[i])
+//             i++;
+//         if (i > 0)
+//             last_cmd = cmd[i - 1];
+//     }
+
+//     if (last_cmd)
+//         return env_add(mshell, "_", last_cmd);
+
+//     return 0;
+// }
 
 int env_backup_last_argument(t_shell *mshell, char **cmd)
 {
