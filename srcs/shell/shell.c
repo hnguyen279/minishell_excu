@@ -31,6 +31,8 @@ int init_shell(t_shell *mshell, char **envp)
         ft_printf_fd(2, "init_shell: failed to duplicate env\n");
         return (1);
     }
+    if (!env_find_value(mshell, "OLDPWD"))
+		env_add(mshell, "OLDPWD", NULL);
     char *shlvl_val = env_find_value(mshell, "SHLVL");
     int shlvl = 1;
     if (shlvl_val && shlvl_val[0] != '\0')
@@ -69,7 +71,7 @@ int init_shell(t_shell *mshell, char **envp)
         return (1);
     }
     free(cwd);
-    env_remove(mshell, "OLDPWD");
+    //env_remove(mshell, "OLDPWD");
     return (0);
 }
 

@@ -39,6 +39,8 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/builtin/builtin_env.c \
 		$(SRCS_DIR)/builtin/builtin_pwd.c \
 		$(SRCS_DIR)/builtin/builtin_unset.c \
+		$(SRCS_DIR)/builtin/builtin_exit.c \
+		$(SRCS_DIR)/builtin/builtin_export.c \
 		$(SRCS_DIR)/signals/handle_signal.c \
 		$(SRCS_DIR)/shell/shell.c
 
