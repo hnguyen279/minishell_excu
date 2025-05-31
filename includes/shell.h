@@ -230,6 +230,8 @@ int				builtin_echo(t_shell *mshell, char **token);
 int				builtin_env(t_shell *mshell, char **token);
 int				builtin_pwd(t_shell *mshell, char **token);
 int				builtin_unset(t_shell *mshell, char **token);
+void			builtin_exit(t_shell *mshell, char **token);
+void			builtin_export(t_shell *mshell, char **token);
 
 /* Signal functions */
 // void set_sigint_flag(int sig);

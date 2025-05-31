@@ -91,7 +91,7 @@ void	print_error(char *msg)
 
 int	ft_isspace(char c)
 {
-	if (c == ' ' || c == '\t')
+	if (c == ' ' || (c >= 9 && c <= 13)) // c== '\t' -> old code? H dd more space?
 		return (TRUE);
 	return (FALSE);
 }
