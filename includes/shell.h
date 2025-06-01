@@ -238,7 +238,6 @@ int				setup_signal_handlers(t_shell *mshell,
 					void (*sigint_handler)(int), void (*sigquit_handler)(int));
 void			setup_signals(t_shell *mshell, int mode);
 void			sig_exit_code(t_shell *mshell);
-int 			sig_reset_readline(void);
 
 
 #endif
