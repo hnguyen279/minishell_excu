@@ -1,5 +1,8 @@
 #include "../../includes/shell.h"
 
+
+
+
 static int create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int *fd)
 {
 	char *name;
@@ -53,112 +56,6 @@ static int process_heredoc_line(t_shell *mshell, int fd, char *line, int expand)
 	return status;
 }
 
-// static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
-// {
-// 	char *line;
-// 	int status = 0;
-
-// 	while (1)
-// 	{
-// 		line = readline("> ");
-// 		if (!line)
-// 		{
-// 			if (g_signum == SIGINT)
-// 			{
-// 				mshell->exit_code = 130;
-// 				status = 1;
-// 			}
-// 			else
-// 			{
-// 				ft_printf_fd(2,
-// 					"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
-// 					delim);
-// 			}
-// 			break;
-// 		}
-
-// 		if (g_signum == SIGINT)
-// 		{
-// 			free(line);
-// 			mshell->exit_code = 130;
-// 			status = 1;
-// 			break;
-// 		}
-// 		// size_t len = strlen(line);
-// 		// if (len > 0) //&& line[len - 1] == '\r'
-// 		// 	line[len - 1] = '\0';
-// 		// Debug
-// 		//printf("read line: [%s], delimiter: [%s]\n", line, delim);
-// 		if (ft_strcmp(line, delim) == 0)
-// 		{
-// 			//printf("matched! heredoc ending.\n");
-// 			free(line);
-// 			break;
-// 		}
-// 		status = process_heredoc_line(mshell, fd, line, expand);
-// 		if (status)
-// 			break;
-// 	}
-// 	free((void *)delim);
-// 	setup_signals(mshell, MODE_INTERACTIVE);  // reset signal mode
-// 	// reopen stdin
-// 	int fd_in = open("/dev/tty", O_RDONLY);
-// 	if (fd_in != -1)
-// 	{
-// 		dup2(fd_in, STDIN_FILENO);
-// 		close(fd_in);
-// 	}
-// 	return status;
-// }
-
-// static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
-// {
-// 	char *line;
-// 	int status = 0;
-
-// 	while (1)
-// 	{
-// 		line = readline("> ");
-// 		if (!line)
-// 		{
-// 			if (g_signum == SIGINT)
-// 			{
-// 				mshell->exit_code = 130;
-// 				status = 1;
-// 				break;
-// 			}
-// 			else
-// 			{
-// 				ft_printf_fd(2,
-// 					"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
-// 					delim);
-// 			}
-// 			break;
-// 		}
-
-// 		if (ft_strcmp(line, delim) == 0)
-// 		{
-// 			free(line);
-// 			break;
-// 		}
-// 		status = process_heredoc_line(mshell, fd, line, expand);
-// 		if (status)
-// 			break;
-// 	}
-// 	free((void *)delim);
-// 	setup_signals(mshell, MODE_INTERACTIVE);  // reset signal
-// 	g_signum = 0;
-// 	// reopen tty  stdin was redirect
-// 	int fd_in = open("/dev/tty", O_RDONLY);
-// 	if (fd_in != -1)
-// 	{
-// 		dup2(fd_in, STDIN_FILENO);
-// 		close(fd_in);
-// 	}
-
-// 	return status;
-// }
-
 static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
 {
     char *line;
@@ -191,11 +88,20 @@ static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
             break;
         }
 
-        if (ft_strcmp(line, delim) == 0)
-        {
-            free(line);
-            break;
-        }
+        // if (ft_strcmp(line, delim) == 0)
+        // {
+        //     free(line);
+        //     break;
+        // }
+		char *expanded_line = expand_token_value(line, mshell);
+		if (ft_strcmp(expanded_line, delim) == 0)
+		{
+			free(expanded_line);
+			free(line);
+			break;
+		}
+		free(expanded_line);
+
 
         status = process_heredoc_line(mshell, fd, line, expand);
         if (status)

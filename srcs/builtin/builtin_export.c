@@ -68,11 +68,13 @@ int export_standalone(char **envp)
 	free(copy);
 	return 0;
 }
-
 int export_handle_one(t_shell *mshell, const char *arg)
 {
 	char *equal;
+	char *plus_equal;
 	char *key;
+	char *old_val;
+	char *new_val;
 
 	if (!arg)
 		return 0;
@@ -83,6 +85,44 @@ int export_handle_one(t_shell *mshell, const char *arg)
 		return 2;
 	}
 
+	// Check if argument uses VAR+=value syntax
+	plus_equal = ft_strnstr(arg, "+=", ft_strlen(arg));
+	if (plus_equal != NULL)
+	{
+		key = ft_substr(arg, 0, plus_equal - arg);
+		if (key == NULL)
+		{
+			ft_printf_fd(STDERR_FILENO, "minishell: export: malloc failed\n");
+			return 1;
+		}
+
+		old_val = env_find_value(mshell, key);
+		if (old_val != NULL)
+			new_val = ft_strjoin(old_val, plus_equal + 2);
+		else
+			new_val = ft_strdup(plus_equal + 2);
+
+		if (new_val == NULL)
+		{
+			free(key);
+			ft_printf_fd(STDERR_FILENO, "minishell: export: malloc failed\n");
+			return 1;
+		}
+
+		env_remove(mshell, key);
+		if (env_add(mshell, key, new_val) != 0)
+		{
+			free(key);
+			free(new_val);
+			return 1;
+		}
+
+		free(key);
+		free(new_val);
+		return 0;
+	}
+
+	// Normal VAR=val or just VAR
 	if (!export_is_valid(arg))
 	{
 		ft_printf_fd(STDERR_FILENO, "minishell: export: `%s`: not a valid identifier\n", arg);
@@ -90,10 +130,10 @@ int export_handle_one(t_shell *mshell, const char *arg)
 	}
 
 	equal = ft_strchr(arg, '=');
-	if (equal)
+	if (equal != NULL)
 	{
 		key = ft_substr(arg, 0, equal - arg);
-		if (!key)
+		if (key == NULL)
 		{
 			ft_printf_fd(STDERR_FILENO, "minishell: export: malloc failed\n");
 			return 1;
@@ -113,6 +153,7 @@ int export_handle_one(t_shell *mshell, const char *arg)
 	}
 	return 0;
 }
+
 
 
 void builtin_export(t_shell *mshell, char **token)

@@ -10,15 +10,7 @@ static size_t exchange_variable(char *str, int fd, t_shell *ms)
         i++;
     tmp = str[i];
     str[i] = '\0';
-    if (ft_strcmp(str, "_") == 0)
-    {
-        if (ms->env_last_cmd != NULL)
-            val = ms->env_last_cmd;
-        else
-            val = "";
-    }
-    else
-        val = env_find_value(ms, str);
+    val = env_find_value(ms, str);
     str[i] = tmp;
     if (val)
         write(fd, val, ft_strlen(val));
@@ -132,3 +124,5 @@ void exe_handle_dollar_expansion(char *input, int fd_write, t_shell *ms)
         i++;
     }
 }
+
+

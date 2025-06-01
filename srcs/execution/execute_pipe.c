@@ -90,9 +90,9 @@ int execute_pipe(t_ast *ast, t_shell *shell)
         int sig = WTERMSIG(status[1]);
         shell->exit_code = 128 + sig;
         if (sig == SIGQUIT)
-            ft_printf_fd(2, "Quit (core dumped)\n");
-        // else if (sig == SIGINT)
-        //     ft_printf_fd(2, "\n");
+            write(STDERR_FILENO, "Quit (core dumped)\n", 20);
+        else if (sig == SIGINT)
+            write(STDERR_FILENO, "\n", 1);  // In child
     }
     else
         shell->exit_code = 1;

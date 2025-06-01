@@ -5,13 +5,20 @@ volatile sig_atomic_t g_signum = 0;
 
 static void sigint_interactive(int sig)
 {
-	(void)sig;
+    (void)sig;
     g_signum = SIGINT;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_on_new_line();
+    write(STDOUT_FILENO, "\n", 1);   
     rl_replace_line("", 0);
-	rl_redisplay();
+    rl_on_new_line();
+    rl_redisplay();
 }
+
+
+
+
+ // if (isatty(STDIN_FILENO))
+	// rl_redisplay();
+
 
 static void sigint_heredoc(int sig)
 {

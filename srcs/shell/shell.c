@@ -12,11 +12,6 @@ void shell_cleanup(t_shell *mshell)
 {
     if (!mshell)
         return;
-    if (mshell->env_last_cmd)
-    {
-        free(mshell->env_last_cmd);
-        mshell->env_last_cmd = NULL;
-    }
     if (mshell->envp)
         env_free(mshell);
     // add more

@@ -27,9 +27,9 @@ void	expand_variables(t_token **token_list, t_shell *mshell)
 			{
 				free_string(temp->value);
 				temp->value = ft_strdup(expanded_value);
+				free_string(expanded_value); // move here avoid leak
 				if (!temp->value)
 				{
-					free_string(expanded_value);
 					return ;
 				}
 			}
