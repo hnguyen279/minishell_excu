@@ -26,13 +26,13 @@ int builtin_echo(t_shell *mshell, char **token)
     }
     while (token[i])
     {
-        printf("%s", token[i]);
+        write(STDOUT_FILENO, token[i], ft_strlen(token[i]));
         if (token[i + 1])
-            printf(" ");
+            write(STDOUT_FILENO, " ", 1);
         i++;
     }
     if (newline)
-        printf("\n");
+        write(STDOUT_FILENO, "\n", 1);
     mshell->exit_code = 0;
     return (mshell->exit_code);
 }

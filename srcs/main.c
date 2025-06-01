@@ -27,6 +27,7 @@ int	main(int ac, char *av[], char *env[])
 		return (EXIT_FAILURE);
 	}
 	(void)av;
+    setup_signals(&mshell, MODE_INTERACTIVE);
 	shell_interactive(&mshell);
 	shell_cleanup(&mshell);
 	return (mshell.exit_code);
@@ -62,10 +63,9 @@ void	shell_interactive(t_shell *mshell)
 	history_head = NULL;
 	while (1)
 	{
-        setup_signals(mshell, MODE_INTERACTIVE);
 		line = readline("minishell$ ");
-        if (g_signum)  // check siganl after readline for Ctrl C in main shell
-            sig_exit_code(mshell);
+        //if (g_signum)  // check siganl after readline for Ctrl C in main shell
+           sig_exit_code(mshell);
 		if (!line) // Ctrl+D
 		{
 			printf("exit\n");
@@ -83,9 +83,10 @@ void	shell_interactive(t_shell *mshell)
                 break;
         }
         else
+        {
             handle_line(line, mshell);
+        }
         free_string(line);
-        sig_exit_code(mshell);  // for heredoc or child sleep 5
     }
     //free_string(line); // double free ?? ****
     clear_working_history(&history_head);
