@@ -38,7 +38,6 @@ static int prepare_delimiter(t_shell *mshell, t_redirect *redir, char **delim, i
 	if (!*delim)
 		return display_error_errno(mshell, "heredoc: memory allocation failed", 0);
 	*expand = !is_fully_quoted(redir->file);
-	setup_signals(mshell, MODE_HEREDOC);
 	return (0);
 }
 
@@ -58,51 +57,54 @@ static int process_heredoc_line(t_shell *mshell, int fd, char *line, int expand)
 
 static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
 {
-	char *line;
-	int status = 0;
+    char *line;
+    int status = 0;
 
-	g_signum = 0;  // reset 
-	while (1)
-	{
-		line = readline("> ");
-		if (g_signum == SIGINT)
-		{
-			if (line)
-				free(line);  // 
-			status = -1;
-			break;
-		}
-		else if (!line)
-		{
-			ft_printf_fd(STDERR_FILENO,
-				"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n", delim);
-			break;
-		}
-		char *expanded_line = expand_token_value(line, mshell);
-		if (ft_strcmp(expanded_line, delim) == 0)
-		{
-			free(expanded_line);
-			free(line);
-			break;
-		}
-		free(expanded_line);
-		status = process_heredoc_line(mshell, fd, line, expand);
-		if (status)
-			break;
-	}
-	free((void *)delim);
-	if (status == -1)
-	{
-		int tty_fd = open("/dev/tty", O_RDONLY);
-		if (tty_fd != -1)
-		{
-			dup2(tty_fd, STDIN_FILENO);
-			close(tty_fd);
-		}
-	}
-	setup_signals(mshell, MODE_INTERACTIVE);
-	sig_exit_code(mshell);
-	return status;
+    g_signum = 0; 
+    while (1)
+    {
+        line = readline("> ");
+        if (g_signum == SIGINT)
+        {
+            if (line)
+                free(line);
+            status = -1;
+            break;
+        }
+        else if (!line)
+        {
+            ft_printf_fd(STDERR_FILENO,
+                "minishell: warning: here-document delimited by end-of-file (wanted `%s')\n", delim);
+            break;
+        }
+
+        char *expanded_line = expand_token_value(line, mshell);
+        if (ft_strcmp(expanded_line, delim) == 0)
+        {
+            free(expanded_line);
+            free(line);
+            break;
+        }
+        free(expanded_line);
+        status = process_heredoc_line(mshell, fd, line, expand);
+        if (status)
+            break;
+    }
+    free((void *)delim);
+    if (status == -1)
+    {
+        sig_exit_code(mshell);
+        int tty_fd = open("/dev/tty", O_RDONLY);
+        if (tty_fd != -1)
+        {
+            dup2(tty_fd, STDIN_FILENO);
+            close(tty_fd);
+        }
+    }
+    setup_signals(mshell, MODE_INTERACTIVE);
+    // if (status != -1)
+    //     sig_exit_code(mshell);
+    return status;
 }
 
 
@@ -134,6 +136,7 @@ int open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
 		redir->tmp_file = NULL;
 		return 1;
 	}
+	printf("DEBUG: redir->tmp_file = %s\n", redir->tmp_file);
 	close(fd);
 	mshell->exit_code = 0;
 	return 0;
