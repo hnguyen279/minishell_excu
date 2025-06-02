@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/02 12:54:04 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/02 16:11:44 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,8 +145,13 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
         print_error("Failed to convert user input to token");
         return ;
     }
-    expand_variables(tokenized_input_list, mshell);
+    *tokenized_input_list = expand_variables(tokenized_input_list, mshell);
     // print_linked_list(*tokenized_input_list);
+    if (!*tokenized_input_list)
+    {
+        // printf("Failed here\n");
+        return ;
+    }
     if (validate_token(*tokenized_input_list) == FALSE)
     {
         mshell->exit_code = 2;
