@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/02 16:10:11 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/02 17:23:02 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,14 @@ char	*expand_token_value(char *str, t_shell *mshell)
 					return (NULL);
 				// printf("after join: %s\n", result);
 			}
+			else
+			{
+				result = char_join_result_and_free(result, str[i]);
+				if (!result)
+					return (NULL);
+				i++;
+			}
+			// printf("after join: %s\n", result);
 		}
 		else
 		{
