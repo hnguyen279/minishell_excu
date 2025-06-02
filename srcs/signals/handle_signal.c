@@ -3,38 +3,49 @@
 
 volatile sig_atomic_t g_signum = 0;
 
-static void sigint_interactive(int sig)
+static void handle_sigint(int sig)
 {
     (void)sig;
     g_signum = SIGINT;
-    write(STDOUT_FILENO, "\n", 1);   
-    rl_replace_line("", 0);
-    rl_on_new_line();
-    rl_redisplay();
 }
-
-
-
-
- // if (isatty(STDIN_FILENO))
-	// rl_redisplay();
-
-
-static void sigint_heredoc(int sig)
+static int reset_readline_interactive(void)
 {
-	(void)sig;
-    g_signum = SIGINT;
-	rl_done = 1;
-    int null_fd = open("/dev/null", O_RDONLY);
-    if (null_fd != -1)
+    if (g_signum == SIGINT)
     {
-        dup2(null_fd, STDIN_FILENO);
-        close(null_fd);
+        write(STDOUT_FILENO, "\n", 1);
+        rl_replace_line("", 0);
+        rl_on_new_line();
+        rl_done = 1;
     }
-    write(STDOUT_FILENO, "\n", 1);
+    return 0;
 }
 
-int setup_signal_handlers(t_shell *mshell, void (*sigint_handler)(int), void (*sigquit_handler)(int))
+// static int reset_readline_heredoc(void)
+// {
+//     if (g_signum == SIGINT)
+//     {
+//         rl_replace_line("", 0);
+//         rl_on_new_line();
+//         rl_redisplay();
+//         rl_done = 1;
+//     }
+//     return 0;
+// }
+int reset_readline_heredoc(void)
+{
+    if (g_signum == SIGINT)
+    {
+        //debug
+        write(2, "HEREDOC SIGINT CAUGHT\n", 23);
+        write(STDOUT_FILENO, "\n", 1); // Print newline for clean prompt
+        rl_replace_line("", 0);
+        rl_on_new_line();
+        rl_done = 1; // Exit readline
+    }
+    return 0;
+}
+
+static int set_signal(t_shell *mshell, void (*sigint_handler)(int), void (*sigquit_handler)(int))
 {
     struct sigaction sa_int;
     struct sigaction sa_quit;
@@ -54,35 +65,34 @@ int setup_signal_handlers(t_shell *mshell, void (*sigint_handler)(int), void (*s
     return (0);
 }
 
-
+// Setup signal mode
 void setup_signals(t_shell *mshell, int mode)
 {
+    g_signum = 0;
     if (mode == MODE_INTERACTIVE)
-        setup_signal_handlers(mshell, sigint_interactive, SIG_IGN);
+    {
+        set_signal(mshell, handle_sigint, SIG_IGN);
+        rl_event_hook = reset_readline_interactive;
+
+    }
     else if (mode == MODE_HEREDOC)
-        setup_signal_handlers(mshell, sigint_heredoc, SIG_IGN);
-    else // CHILD_STATE
-        setup_signal_handlers(mshell, SIG_DFL, SIG_DFL);
+    {
+        set_signal(mshell, handle_sigint, SIG_IGN);
+        rl_event_hook = reset_readline_heredoc;
+    }
+    else
+    {
+        set_signal(mshell, SIG_DFL, SIG_DFL);
+        rl_event_hook = NULL;
+    }
 }
 
-// void sig_exit_code(t_shell *mshell)
-// {
-//     if (g_signum == 128 + SIGINT)
-//         mshell->exit_code = 130;
-//     else if (g_signum == 128 + SIGQUIT)
-//         mshell->exit_code = 131;
-//     else if (g_signum != 0)
-//         mshell->exit_code = g_signum + 128;
-//     g_signum = 0;
-// }
-
+// Convert signal → exit code
 void sig_exit_code(t_shell *mshell)
 {
-    if (g_signum == SIGINT)
-        mshell->exit_code = 128 + SIGINT;  // = 130
-    else if (g_signum == SIGQUIT)
-        mshell->exit_code = 128 + SIGQUIT; // = 131
-    else if (g_signum != 0)
+    if (g_signum == SIGINT || g_signum == SIGQUIT)
         mshell->exit_code = 128 + g_signum;
-    g_signum = 0;
+    g_signum = 0; // Always clear signal
 }
+
+
