@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/28 07:42:29 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/02 16:41:51 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_token	*create_token(char *s, t_token_type i)
 	new_token->value = ft_strdup(s);
 	if (!new_token->value)
 		return (NULL);
+	// printf("value of token %s\n", new_token->value);
 	new_token->type = i;
 	new_token->next = NULL;
 	new_token->prev = NULL;
@@ -51,6 +52,6 @@ void	add_token(t_token **tokenized_input_list, t_token *new_token)
 			temp = temp->next;
 		temp->next = new_token;
 		new_token->prev = temp;
-		// printf("%s\n", tokenized_input_list->value);
+		// printf("%s\n", (*tokenized_input_list)->value);
 	}
 }
