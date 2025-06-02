@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/28 07:41:33 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/02 11:14:03 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,8 @@ char			*extract_quoted_token(char *line, int *i);
 char			*extract_word(char *line, int *i);
 void			add_token(t_token **tokenized_input_list, t_token *new_token);
 t_token			*convert_user_input_to_token(char *line);
+char *extract_full_word(char *line, int *i);
+
 
 /* Validate input */
 int				validate_token(t_token *token);

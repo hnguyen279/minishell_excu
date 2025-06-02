@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/30 15:10:49 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/02 12:53:46 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,14 +83,21 @@ t_token	*convert_user_input_to_token(char *line)
 				new_token->in_single_quote = TRUE;
 			add_token(&tokenized_input_list, new_token);
 			free_string(extracted_str);
+			in_single_quote = FALSE;
 		}
 		else
 		{
-			extracted_str = extract_word(line, &i);
+			extracted_str = extract_full_word(line, &i);
+			if (!extracted_str)
+			{
+				print_error("Can't extract word");
+				return (NULL);
+			}
 			new_token = create_token(extracted_str, WORD);
 			add_token(&tokenized_input_list, new_token);
 			free_string(extracted_str);
 		}
+		
 	}
 	// print_linked_list(tokenized_input_list);
 	return (tokenized_input_list);
@@ -135,4 +142,45 @@ char	*extract_word(char *line, int *i)
 	if (!extracted_str)
 		return (NULL);
 	return (extracted_str);
+}
+
+char *extract_full_word(char *line, int *i)
+{
+	char *result;
+	char *part;
+	
+
+	// printf("enter extract full word function\n");
+	result = ft_strdup("");
+	if (!result)
+	{
+		print_error("malloc error\n");
+		return (NULL);
+	}
+	while (line[*i] && ft_isspace(line[*i]) == FALSE &&
+		   line[*i] != '<' && line[*i] != '>' && line[*i] != '|')
+	{
+		// printf("letter %c\n", line[*i]);
+		if (line[*i] == '\'' || line[*i] == '\"')
+			part = extract_quoted_token(line, i);
+		else
+			part = extract_word(line, i);  // extract until quote or space or special char
+		if (!part)
+		{
+			free(result);
+			return (NULL);
+		}
+		// printf("extracted part %s\n:", part);
+		// char *tmp = result;
+		result = ft_strjoin(result, part);
+		// free(tmp);
+		free(part);
+		// (*i)++;
+	}
+	if (result[0] == '\0') // Handle empty result
+    {
+        free(result);
+        return NULL;
+    }
+	return result;
 }
