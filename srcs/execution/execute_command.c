@@ -76,11 +76,10 @@ static int wait_command(t_shell *mshell, pid_t pid, int *status)
     {
         int sig = WTERMSIG(*status);
         mshell->exit_code = 128 + sig;
-        // g_signum = sig;
         if (sig == SIGQUIT)
             write(STDERR_FILENO, "Quit (core dumped)\n", 20);
-        // else if (sig == SIGINT)
-        //     write(STDERR_FILENO, "\n", 1);  // In child
+        else if (sig == SIGINT)
+            write(STDERR_FILENO, "\n", 1);  // In child
     }
     return mshell->exit_code;
 }

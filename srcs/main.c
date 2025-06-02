@@ -63,8 +63,9 @@ void	shell_interactive(t_shell *mshell)
 	history_head = NULL;
 	while (1)
 	{
+        g_signum = 0;
 		line = readline("minishell$ ");
-        //if (g_signum)  // check siganl after readline for Ctrl C in main shell
+        if (g_signum)  // check siganl after readline for Ctrl C in main shell
            sig_exit_code(mshell);
 		if (!line) // Ctrl+D
 		{
