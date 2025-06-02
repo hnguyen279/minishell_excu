@@ -20,31 +20,6 @@ static int reset_readline_interactive(void)
     return 0;
 }
 
-// static int reset_readline_heredoc(void)
-// {
-//     if (g_signum == SIGINT)
-//     {
-//         rl_replace_line("", 0);
-//         rl_on_new_line();
-//         rl_redisplay();
-//         rl_done = 1;
-//     }
-//     return 0;
-// }
-int reset_readline_heredoc(void)
-{
-    if (g_signum == SIGINT)
-    {
-        //debug
-        write(2, "HEREDOC SIGINT CAUGHT\n", 23);
-        write(STDOUT_FILENO, "\n", 1); // Print newline for clean prompt
-        rl_replace_line("", 0);
-        rl_on_new_line();
-        rl_done = 1; // Exit readline
-    }
-    return 0;
-}
-
 static int set_signal(t_shell *mshell, void (*sigint_handler)(int), void (*sigquit_handler)(int))
 {
     struct sigaction sa_int;
@@ -78,12 +53,10 @@ void setup_signals(t_shell *mshell, int mode)
     else if (mode == MODE_HEREDOC)
     {
         set_signal(mshell, handle_sigint, SIG_IGN);
-        rl_event_hook = reset_readline_heredoc;
     }
     else
     {
         set_signal(mshell, SIG_DFL, SIG_DFL);
-        rl_event_hook = NULL;
     }
 }
 
