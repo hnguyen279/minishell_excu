@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/02 12:53:46 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/02 17:23:52 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,13 @@ t_token	*convert_user_input_to_token(char *line)
 	int		in_single_quote = FALSE;
 
 	tokenized_input_list = NULL;
-	if (is_comment(line) == 0)
-		return (NULL);
+	// is it necessary to test the comment case, if not then can remove function is_comment
+	// if (is_comment(line) == 0)
+	// 	return (NULL);
 	i = 0;
 	while (line[i])
 	{
+		// printf("input letter %c\n", line[i]);
 		if (ft_isspace(line[i]) == TRUE)
 			i++;
 		else if (line[i] == '|')
@@ -75,13 +77,14 @@ t_token	*convert_user_input_to_token(char *line)
 			if (line[i] == '\'')
 				in_single_quote = TRUE;
 			extracted_str = extract_quoted_token(line, &i);
-			// printf("extracted str: %s\n", extracted_str);
 			if (!extracted_str)
 				return (NULL);
+			// printf("extracted str: %s\n", extracted_str);
 			new_token = create_token(extracted_str, WORD);
 			if (in_single_quote == TRUE)
 				new_token->in_single_quote = TRUE;
 			add_token(&tokenized_input_list, new_token);
+			// printf("here 1\n");
 			free_string(extracted_str);
 			in_single_quote = FALSE;
 		}
@@ -93,6 +96,8 @@ t_token	*convert_user_input_to_token(char *line)
 				print_error("Can't extract word");
 				return (NULL);
 			}
+			// printf("extracted str: %s\n", extracted_str);
+
 			new_token = create_token(extracted_str, WORD);
 			add_token(&tokenized_input_list, new_token);
 			free_string(extracted_str);
@@ -114,12 +119,14 @@ char	*extract_quoted_token(char *line, int *i)
 	start_pos = *i;
 	while (line[*i] && line[*i] != quote)
 		(*i)++;
+	// printf("print extracted quoted token %d\n", *i);
 	str = ft_substr(line, start_pos, *i - start_pos);
 	if (!str)
 	{
 		print_error("Malloc failed to substr");
 		return (NULL);
 	}
+	// printf("print extracted quoted token %s\n", str);
 	(*i)++;
 	return (str);
 }
