@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/02 11:14:03 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/02 16:04:47 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,9 @@ void			free_cmd_list(t_cmd *head);
 char			*str_join_result_and_free(char *s1, char *s2);
 char			*char_join_result_and_free(char *s1, char c);
 char			*expand_token_value(char *str, t_shell	*mshell);
-void			expand_variables(t_token **token_list, t_shell *mshell);
+// void			expand_variables(t_token **token_list, t_shell *mshell);
+t_token	*expand_variables(t_token **token_list, t_shell *mshell);
+
 char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result);
 
 

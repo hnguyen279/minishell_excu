@@ -6,13 +6,13 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/30 15:10:29 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/02 17:23:02 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/shell.h"
 
-void	expand_variables(t_token **token_list, t_shell *mshell)
+t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 {
 	t_token	*temp;
 	char	*expanded_value;
@@ -29,15 +29,16 @@ void	expand_variables(t_token **token_list, t_shell *mshell)
 				temp->value = ft_strdup(expanded_value);
 				free_string(expanded_value); // move here avoid leak
 				if (!temp->value)
-				{
-					return ;
-				}
+					return (NULL);
 			}
+			else
+				return (NULL);
 			// temp = temp->next;
 		}
 		// else
 		temp = temp->next;
 	}
+	return (*token_list);
 }
 
 char	*expand_token_value(char *str, t_shell *mshell)
@@ -70,6 +71,14 @@ char	*expand_token_value(char *str, t_shell *mshell)
 					return (NULL);
 				// printf("after join: %s\n", result);
 			}
+			else
+			{
+				result = char_join_result_and_free(result, str[i]);
+				if (!result)
+					return (NULL);
+				i++;
+			}
+			// printf("after join: %s\n", result);
 		}
 		else
 		{
@@ -127,7 +136,7 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	env_value = env_find_value(mshell, var_name);
 	if (!env_value)
 	{
-		print_error("Invalid env_var name");
+		printf("\n");
 		return (NULL);
 	}
 	// printf("env_value %s\n", env_value);

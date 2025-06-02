@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/02 12:54:04 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/02 17:25:17 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,15 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
         print_error("Failed to convert user input to token");
         return ;
     }
-    expand_variables(tokenized_input_list, mshell);
+    // printf("convert to token succeed\n");
+    // print_linked_list(*tokenized_input_list);
+
+    *tokenized_input_list = expand_variables(tokenized_input_list, mshell);
+    if (!*tokenized_input_list)
+    {
+        // print_error("Failed to expand variables");
+        return ;
+    }
     // print_linked_list(*tokenized_input_list);
     if (validate_token(*tokenized_input_list) == FALSE)
     {
@@ -161,7 +169,6 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
         return ;
     }
     
-    // printf("parse token to cmds succeed\n");
     // print_cmd_list(*cmd_list);
     *tree = convert_cmd_to_ast(*cmd_list);
     if (!*tree)
