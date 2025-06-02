@@ -1,13 +1,11 @@
 #include "../../includes/shell.h"
 
-
-
-
 static int create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int *fd)
 {
 	char *name;
-	int attempt = 0;
+	int attempt;
 
+	attempt = 0;
 	while (attempt < 1000)
 	{
 		name = make_heredoc_filename_from_fd(mshell->heredoc_index + attempt);
@@ -43,8 +41,9 @@ static int prepare_delimiter(t_shell *mshell, t_redirect *redir, char **delim, i
 
 static int process_heredoc_line(t_shell *mshell, int fd, char *line, int expand)
 {
-	int status = 0;
+	int status;
 
+	status = 0;
 	if (expand)
 		exe_handle_dollar_expansion(line, fd, mshell);
 	else if (write(fd, line, strlen(line)) == -1)
@@ -58,8 +57,9 @@ static int process_heredoc_line(t_shell *mshell, int fd, char *line, int expand)
 static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
 {
     char *line;
-    int status = 0;
+    int status;
 
+	status = 0;
     g_signum = 0; 
     while (1)
     {
@@ -102,12 +102,8 @@ static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
         }
     }
     setup_signals(mshell, MODE_INTERACTIVE);
-    // if (status != -1)
-    //     sig_exit_code(mshell);
     return status;
 }
-
-
 
 int open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
 {
@@ -136,7 +132,6 @@ int open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
 		redir->tmp_file = NULL;
 		return 1;
 	}
-	printf("DEBUG: redir->tmp_file = %s\n", redir->tmp_file);
 	close(fd);
 	mshell->exit_code = 0;
 	return 0;

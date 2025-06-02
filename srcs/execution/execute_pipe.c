@@ -53,6 +53,30 @@ static int init_child(int *pipe_fd, pid_t *pid)
     return 0;
 }
 
+int wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)
+{
+    int sig;
+
+    if (waitpid(pid, status, 0) == -1)
+        return display_error_errno(mshell, "waitpid", 1);
+    if (!update_exit_code)
+        return (0);
+    if (WIFEXITED(*status))
+        mshell->exit_code = WEXITSTATUS(*status);
+    else if (WIFSIGNALED(*status))
+    {
+        sig = WTERMSIG(*status);
+        mshell->exit_code = 128 + sig;
+        if (sig == SIGQUIT)
+            write(STDERR_FILENO, "Quit (core dumped)\n", 20);
+        else if (sig == SIGINT)
+            write(STDERR_FILENO, "\n", 1);
+    }
+    else
+        mshell->exit_code = 1;
+    return (mshell->exit_code);
+}
+
 int execute_pipe(t_ast *ast, t_shell *shell)
 {
     int pipe_fd[2];
@@ -60,48 +84,20 @@ int execute_pipe(t_ast *ast, t_shell *shell)
     int status[2];
 
     if (!ast || !ast->left || !ast->right)
-    {
-        ft_printf_fd(2, "minishell: syntax error near unexpected token `|'\n");
-        return (shell->exit_code = 1);
-    }
+        return display_error_errno(shell, "syntax error near unexpected token `|'", 0);
     if (pipe(pipe_fd) == -1)
-    {
-        perror("minishell: pipe");
-        return (shell->exit_code = 1);
-    }
+        return display_error_errno(shell, "pipe", 1);
     if (init_child(pipe_fd, &pid[0]) == -1)
-        return shell->exit_code;
+        return (shell->exit_code);
     if (pid[0] == 0)
         execute_child(shell, ast, pipe_fd, 1);
     if (init_child(pipe_fd, &pid[1]) == -1)
-        return shell->exit_code;
+        return (shell->exit_code);
     if (pid[1] == 0)
         execute_child(shell, ast, pipe_fd, 0);
     close(pipe_fd[FD_READ]);
     close(pipe_fd[FD_WRITE]);
-    waitpid(pid[0], &status[0], 0);
-    waitpid(pid[1], &status[1], 0);
-    if (WIFEXITED(status[1]))
-        shell->exit_code = WEXITSTATUS(status[1]);
-    // else if (WIFSIGNALED(status[1]))
-    //     shell->exit_code = 128 + WTERMSIG(status[1]);
-    else if (WIFSIGNALED(status[1]))
-    {
-        int sig = WTERMSIG(status[1]);
-        shell->exit_code = 128 + sig;
-        if (sig == SIGQUIT)
-            write(STDERR_FILENO, "Quit (core dumped)\n", 20);
-        else if (sig == SIGINT)
-            write(STDERR_FILENO, "\n", 1);  // In child
-    }
-    else
-        shell->exit_code = 1;
-    // if (ast->right && ast->right->cmd)
-    // {
-    //     printf("[DEBUG] right cmd = %s\n", ast->right->cmd[0]);
-    //     env_set_last_argument(shell, ast->right->cmd);
-    // }
-    // else if (ast->left && ast->left->cmd)
-    //     env_set_last_argument(shell, ast->left->cmd);
+    wait_command(shell, pid[0], &status[0], 0);     // only wait, not update exit_code
+    wait_command(shell, pid[1], &status[1], 1);    // wait and update exit_code
     return shell->exit_code;
 }

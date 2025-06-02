@@ -40,7 +40,6 @@ static int set_signal(t_shell *mshell, void (*sigint_handler)(int), void (*sigqu
     return (0);
 }
 
-// Setup signal mode
 void setup_signals(t_shell *mshell, int mode)
 {
     g_signum = 0;
@@ -48,24 +47,17 @@ void setup_signals(t_shell *mshell, int mode)
     {
         set_signal(mshell, handle_sigint, SIG_IGN);
         rl_event_hook = reset_readline_interactive;
-
     }
     else if (mode == MODE_HEREDOC)
-    {
         set_signal(mshell, handle_sigint, SIG_IGN);
-    }
     else
-    {
         set_signal(mshell, SIG_DFL, SIG_DFL);
-    }
 }
-
-// Convert signal → exit code
 void sig_exit_code(t_shell *mshell)
 {
     if (g_signum == SIGINT || g_signum == SIGQUIT)
         mshell->exit_code = 128 + g_signum;
-    g_signum = 0; // Always clear signal
+    g_signum = 0; 
 }
 
 
