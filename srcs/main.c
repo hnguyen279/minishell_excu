@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/30 15:09:18 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/02 12:54:04 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,7 @@ void	shell_interactive(t_shell *mshell)
                 break;
         }
         else
-        {
             handle_line(line, mshell);
-        }
         free_string(line);
     }
     //free_string(line); // double free ?? ****
@@ -164,7 +162,7 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
     }
     
     // printf("parse token to cmds succeed\n");
-    // print_cmd_list(cmd_list);
+    // print_cmd_list(*cmd_list);
     *tree = convert_cmd_to_ast(*cmd_list);
     if (!*tree)
     {
