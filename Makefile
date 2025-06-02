@@ -32,8 +32,13 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/execution/execute_pipe.c \
 		$(SRCS_DIR)/execution/execute_redirection.c \
 		$(SRCS_DIR)/execution/find_path.c \
-		$(SRCS_DIR)/execution/utils.c \
-		$(SRCS_DIR)/environment/env.c \
+		$(SRCS_DIR)/execution/utils_exe.c \
+		$(SRCS_DIR)/environment/env_add.c \
+		$(SRCS_DIR)/environment/utils_env.c \
+      	$(SRCS_DIR)/environment/env_init.c \
+      	$(SRCS_DIR)/environment/env_search.c \
+      	$(SRCS_DIR)/environment/env_remove.c \
+      	$(SRCS_DIR)/environment/env_last_argument.c \
 		$(SRCS_DIR)/builtin/builtin_cd.c \
 		$(SRCS_DIR)/builtin/builtin_echo.c \
 		$(SRCS_DIR)/builtin/builtin_env.c \

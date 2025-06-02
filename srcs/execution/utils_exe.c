@@ -57,7 +57,6 @@ int is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 {
 	if (!redir || !redir->file || !redir->ori_path)
 		return (0);
-
 	// case: expanded to empty string
 	if (redir->file[0] == '\0'
 		&& redir->ori_path[0] != '\0'
@@ -69,7 +68,6 @@ int is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 		mshell->exit_code = 1;
 		return (1);
 	}
-
 	// case: expanded to multiple words
 	if (ft_strchr(redir->ori_path, '$')
 		&& ft_strchr(redir->file, ' ') // file has spaces

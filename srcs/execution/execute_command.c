@@ -19,24 +19,6 @@ static int is_builtin(char *cmd)
 	return 0;
 }
 
-// static int execute_builtin(t_shell *mshell, char **token)
-// {
-// 	if (ft_strcmp(token[0], "cd") == 0)
-// 		return builtin_cd(mshell, token);
-// 	else if (ft_strcmp(token[0], "echo") == 0)
-// 		return builtin_echo(mshell, token);
-// 	else if (ft_strcmp(token[0], "pwd") == 0)
-// 		return builtin_pwd(mshell, token);
-// 	else if (ft_strcmp(token[0], "unset") == 0)
-// 		return builtin_unset(mshell, token);
-// 	else if (ft_strcmp(token[0], "env") == 0)
-// 		return builtin_env(mshell, token);
-//     else if (ft_strcmp(token[0], "exit") == 0)
-//         return builtin_exit(mshell, token);
-// 	else
-// 		return -1; 
-// }
-
 static int execute_builtin(t_shell *mshell, char **token)
 {
     //debug
@@ -64,25 +46,23 @@ static int execute_builtin(t_shell *mshell, char **token)
 	return mshell->exit_code;
 }
 
-static int wait_command(t_shell *mshell, pid_t pid, int *status)
-{
-    if (waitpid(pid, status, 0) == -1)
-        return display_error_errno(mshell, "waitpid", 1);
-    if (WIFEXITED(*status))
-        mshell->exit_code = WEXITSTATUS(*status);
-    // else if (WIFSIGNALED(status[1]))
-    //     mshell->exit_code = 128 + WTERMSIG(*status);
-    else if (WIFSIGNALED(*status))
-    {
-        int sig = WTERMSIG(*status);
-        mshell->exit_code = 128 + sig;
-        if (sig == SIGQUIT)
-            write(STDERR_FILENO, "Quit (core dumped)\n", 20);
-        else if (sig == SIGINT)
-            write(STDERR_FILENO, "\n", 1);  // In child
-    }
-    return mshell->exit_code;
-}
+// static int wait_command(t_shell *mshell, pid_t pid, int *status)
+// {
+//     if (waitpid(pid, status, 0) == -1)
+//         return display_error_errno(mshell, "waitpid", 1);
+//     if (WIFEXITED(*status))
+//         mshell->exit_code = WEXITSTATUS(*status);
+//     else if (WIFSIGNALED(*status))
+//     {
+//         int sig = WTERMSIG(*status);
+//         mshell->exit_code = 128 + sig;
+//         if (sig == SIGQUIT)
+//             write(STDERR_FILENO, "Quit (core dumped)\n", 20);
+//         else if (sig == SIGINT)
+//             write(STDERR_FILENO, "\n", 1);
+//     }
+//     return mshell->exit_code;
+// }
 
 
 static void run_command_child(t_ast *node, t_shell *mshell, char *cmd_path)
@@ -120,51 +100,44 @@ static int fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
     }
     if (pid == 0)
         run_command_child(node, mshell, cmd_path);
-
-
     free(cmd_path);
-    return (wait_command(mshell, pid, &status));
+    return (wait_command(mshell, pid, &status, 1));
 }
+
+static void safe_close_fds(int in_fd, int out_fd)
+{
+    if (in_fd != -1)
+        close(in_fd);
+    if (out_fd != -1)
+        close(out_fd);
+}
+
 static int execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
 {
-    int in_fd = dup(STDIN_FILENO);
-    int out_fd = dup(STDOUT_FILENO);
+    int in_fd;
+    int out_fd;
 
+    in_fd = dup(STDIN_FILENO);
+    out_fd = dup(STDOUT_FILENO);
     if (in_fd == -1 || out_fd == -1)
     {
         perror("minishell: dup failed");
-        if (in_fd != -1)
-            close(in_fd);
-        if (out_fd != -1)
-            close(out_fd);
+        safe_close_fds(in_fd, out_fd);
         mshell->exit_code = 1;
         return (mshell->exit_code);
     }
-
-    // Apply redirection before builtin runs
     if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
     {
-        // if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
-        //     perror("minishell: dup2 restore failed");
-        close(in_fd);
-        close(out_fd);
+        safe_close_fds(in_fd, out_fd);
         return (mshell->exit_code);
     }
-
-    // Run builtin while stdout is still redirected
     if (is_builtin)
         mshell->exit_code = execute_builtin(mshell, node->cmd);
-
-    // Set $_ if needed
     if (!mshell->has_pipe && node->cmd && node->cmd[0])
         env_set_last_argument(mshell, node->cmd);
-
-    // Restore stdout AFTER builtin is done
     if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
         perror("minishell: dup2 restore failed");
-
-    close(in_fd);
-    close(out_fd);
+    safe_close_fds(in_fd, out_fd);
     return (mshell->exit_code);
 }
 
@@ -176,7 +149,6 @@ int execute_command(t_ast *node, t_shell *mshell)
     {
         if (node->redirects)
         {
-            //printf("[DEBUG] Redirect-only command\n");
             return (execute_with_redirect(node, mshell, 0)); //fix because > file not work
         }
         mshell->exit_code = display_error_cmd(NULL);
@@ -186,13 +158,9 @@ int execute_command(t_ast *node, t_shell *mshell)
         return (execute_with_redirect(node, mshell, 1));
     cmd_path = find_cmd_path(mshell, node->cmd[0]);
     if (!cmd_path)
-    {
-        return mshell->exit_code;
-
-    }
+        return (mshell->exit_code);
     mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
     if (!mshell->has_pipe && node->cmd && node->cmd[0])
         env_set_last_argument(mshell, node->cmd);
     return (mshell->exit_code);
 }
-

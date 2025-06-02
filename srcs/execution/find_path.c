@@ -40,10 +40,8 @@ static char	*build_cmd_path(char *first_cmd, char **env_paths)
 			free_split(env_paths);
 			return (NULL);
 		}
-
 		cmd_path = ft_strjoin(one_path, first_cmd);
 		// printf("cmd path in %s\n", cmd_path);
-
 		free(one_path);
 		if (!cmd_path)
 		{

@@ -75,7 +75,6 @@ t_ast	*create_ast_node(int type)
 	new_node = malloc(sizeof(t_ast));
 	if (!new_node)
 	{
-		// get_error_msg(ERR_MALLOC);
 		print_error("Failed to create ast node");
 		return (NULL);
 	}
@@ -86,48 +85,3 @@ t_ast	*create_ast_node(int type)
 	new_node->right = NULL;
 	return (new_node);
 }
-
-// t_ast *convert_cmd_to_ast(t_cmd *cmd_list)
-// {
-//     if (!cmd_list)
-//         return (NULL);
-//     printf("cmd list is not null\n");
-//     if (!cmd_list->next) // Single command
-//     {
-//         t_ast *node = malloc(sizeof(t_ast));
-//         if (!node)
-//         {
-//             get_error_msg(ERR_MALLOC);
-//             return (NULL);
-//         }
-//         node->type = NODE_CMD;
-//         node->cmd = cmd_list->args; // Transfer ownership
-//         node->redirects = cmd_list->redirects; // Transfer ownership
-//         node->left = NULL;
-//         node->right = NULL;
-//         free(cmd_list); // Free t_cmd, but not args or redirects
-//         return (node);
-//     }
-
-//     // Pipeline
-//     t_ast *node = malloc(sizeof(t_ast));
-//     if (!node)
-//     {
-//         get_error_msg(ERR_MALLOC);
-//         return (NULL);
-//     }
-//     node->type = NODE_PIPE;
-//     node->cmd = NULL;
-//     node->redirects = NULL;
-
-//     // Left child: first command
-//     t_cmd *left_cmd = cmd_list;
-//     cmd_list = cmd_list->next;
-//     left_cmd->next = NULL;
-//     node->left = convert_cmd_to_ast(left_cmd);
-
-//     // Right child: remaining commands
-//     node->right = convert_cmd_to_ast(cmd_list);
-
-//     return (node);
-// }
