@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/03 13:35:45 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/03 14:39:43 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,10 +116,10 @@ void    handle_line(char *line, t_shell *mshell)
     // char    *expanded_line;
 
     // printf("print line: %s\n", line);
-    if (validate_quote(line) == FALSE)
+    if (validate_quote(line) == FALSE || validate_parentheses_pair(line) == FALSE)
     {
         mshell->exit_code = 2;
-        print_error("Failed to validate quote");
+        // print_error("Failed to validate quote");
         return ;
     }
     // printf("validate line successfully\n");
@@ -159,7 +159,7 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
     if (validate_token(*tokenized_input_list) == FALSE)
     {
         mshell->exit_code = 2;
-        print_error("Failed to validate token");
+        // print_error("Failed to validate token");
         return ;
     }
     *cmd_list = parse_tokens_to_commands(*tokenized_input_list);

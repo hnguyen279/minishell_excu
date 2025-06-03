@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 18:59:40 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/03 14:28:32 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,9 @@ int	is_valid_redirection(t_token *token_list)
 {
 	t_token	*current;
 
-	current = token_list;
-	if (!current)
+	if (!token_list)
 		return (FALSE);
-	//H hide
-	// if (is_redirection(current) == TRUE)
-	// {
-	// 	print_error("Invalid redirection");
-	// 	// get_error_msg(ERR_REDIR);
-	// 	return (FALSE);
-	// }
+	current = token_list;	
 	while (current)
 	{
 		if (is_redirection(current) == TRUE)
@@ -47,7 +40,6 @@ int	is_valid_redirection(t_token *token_list)
 			if (!current->next || current->next->type != WORD)
 			{
 				print_error("Invalid after redirection");
-				// get_error_msg(ERR_REDIR);
 				return (FALSE);
 			}
 			current = current->next; //H add
