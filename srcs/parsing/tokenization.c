@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/02 17:23:52 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/03 13:36:32 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ t_token	*convert_user_input_to_token(char *line)
 	t_token	*tokenized_input_list;
 	char	*extracted_str;
 	int		in_single_quote = FALSE;
+	int		in_double_quote = FALSE;
 
 	tokenized_input_list = NULL;
 	// is it necessary to test the comment case, if not then can remove function is_comment
@@ -72,35 +73,25 @@ t_token	*convert_user_input_to_token(char *line)
 			}
 			add_token(&tokenized_input_list, new_token);
 		}
-		else if (line[i] == '\'' || line[i] == '\"')
-		{
-			if (line[i] == '\'')
-				in_single_quote = TRUE;
-			extracted_str = extract_quoted_token(line, &i);
-			if (!extracted_str)
-				return (NULL);
-			// printf("extracted str: %s\n", extracted_str);
-			new_token = create_token(extracted_str, WORD);
-			if (in_single_quote == TRUE)
-				new_token->in_single_quote = TRUE;
-			add_token(&tokenized_input_list, new_token);
-			// printf("here 1\n");
-			free_string(extracted_str);
-			in_single_quote = FALSE;
-		}
 		else
 		{
-			extracted_str = extract_full_word(line, &i);
+			extracted_str = extract_full_word(line, &i, &in_single_quote, &in_double_quote);
 			if (!extracted_str)
 			{
 				print_error("Can't extract word");
 				return (NULL);
 			}
-			// printf("extracted str: %s\n", extracted_str);
-
+			// printf("extracted-str %s\n", extracted_str);
 			new_token = create_token(extracted_str, WORD);
+			// printf("set single quote: %d\n", in_single_quote);
+			// printf("set double quote: %d\n", in_double_quote);
+
+			new_token->in_single_quote = in_single_quote;
+			new_token->in_double_quote = in_double_quote;
 			add_token(&tokenized_input_list, new_token);
 			free_string(extracted_str);
+			in_single_quote = FALSE;
+			in_double_quote = FALSE;
 		}
 		
 	}
@@ -119,6 +110,11 @@ char	*extract_quoted_token(char *line, int *i)
 	start_pos = *i;
 	while (line[*i] && line[*i] != quote)
 		(*i)++;
+	if (line[*i] != quote)
+	{
+		print_error("Unclosed quote");
+		return (NULL);
+	}
 	// printf("print extracted quoted token %d\n", *i);
 	str = ft_substr(line, start_pos, *i - start_pos);
 	if (!str)
@@ -141,7 +137,6 @@ char	*extract_word(char *line, int *i)
 	{
 		if (ft_isspace(line[*i]) == TRUE || line[*i] == '\'' || line[*i] == '\"'
 			|| line[*i] == '<' || line[*i] == '>' || line[*i] == '|')
-			// add | pipe
 			break ;
 		(*i)++;
 	}
@@ -151,11 +146,10 @@ char	*extract_word(char *line, int *i)
 	return (extracted_str);
 }
 
-char *extract_full_word(char *line, int *i)
+char *extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote)
 {
 	char *result;
 	char *part;
-	
 
 	// printf("enter extract full word function\n");
 	result = ft_strdup("");
@@ -168,8 +162,23 @@ char *extract_full_word(char *line, int *i)
 		   line[*i] != '<' && line[*i] != '>' && line[*i] != '|')
 	{
 		// printf("letter %c\n", line[*i]);
-		if (line[*i] == '\'' || line[*i] == '\"')
+		if (line[*i] == '$' && (line[*i + 1] == '\'' || line[*i + 1] == '"'))
+		{
+			
+			// printf("enter here");
+			(*i)++;
 			part = extract_quoted_token(line, i);
+			// printf("letter %s\n", part);
+		}
+		else if (line[*i] == '\'' || line[*i] == '\"')
+		{
+			if (line[*i] == '\'')
+				*in_single_quote = TRUE;
+			else
+				*in_double_quote = TRUE;
+			part = extract_quoted_token(line, i);
+			
+		}
 		else
 			part = extract_word(line, i);  // extract until quote or space or special char
 		if (!part)
@@ -180,6 +189,8 @@ char *extract_full_word(char *line, int *i)
 		// printf("extracted part %s\n:", part);
 		// char *tmp = result;
 		result = ft_strjoin(result, part);
+		// printf("join with result %s\n:", result);
+
 		// free(tmp);
 		free(part);
 		// (*i)++;
