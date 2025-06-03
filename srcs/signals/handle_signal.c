@@ -8,14 +8,25 @@ static void handle_sigint(int sig)
     (void)sig;
     g_signum = SIGINT;
 }
+
 static int reset_readline_interactive(void)
 {
     if (g_signum == SIGINT)
     {
-        write(STDOUT_FILENO, "\n", 1);
         rl_replace_line("", 0);
         rl_on_new_line();
+        rl_redisplay(); 
         rl_done = 1;
+    }
+    return 0;
+}
+
+int reset_readline_heredoc(void)
+{
+    if (g_signum == SIGINT)
+    {
+        //write(STDOUT_FILENO, "\n", 1);
+        rl_done = 1;                
     }
     return 0;
 }
@@ -46,13 +57,22 @@ void setup_signals(t_shell *mshell, int mode)
     if (mode == MODE_INTERACTIVE)
     {
         set_signal(mshell, handle_sigint, SIG_IGN);
-        rl_event_hook = reset_readline_interactive;
+        if (isatty(STDIN_FILENO)) 
+            rl_event_hook = reset_readline_interactive;
     }
     else if (mode == MODE_HEREDOC)
+    {
         set_signal(mshell, handle_sigint, SIG_IGN);
+        if (isatty(STDIN_FILENO)) 
+            rl_event_hook = reset_readline_heredoc;
+    }
     else
+    {
         set_signal(mshell, SIG_DFL, SIG_DFL);
+        rl_event_hook = NULL;
+    }
 }
+
 void sig_exit_code(t_shell *mshell)
 {
     if (g_signum == SIGINT || g_signum == SIGQUIT)
