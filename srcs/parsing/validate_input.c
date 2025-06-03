@@ -69,8 +69,7 @@ int	is_valid_pipe(t_token *token)
 			print_error("Invalid pipe");
 			return (FALSE);
 		}
-		if (temp->type == PIPE && (temp->next->type == PIPE
-				|| is_redirection(temp->next) == TRUE))
+		if (temp->type == PIPE && (temp->next->type == PIPE)) //H remove || is_redirection(temp->next) == TRUE)
 		{
 			// get_error_msg(ERR_PIPE);
 			print_error("Invalid pipe");
