@@ -1,21 +1,21 @@
 #include "../../includes/shell.h"
 
-static void setup_pipe_redirection(int *pipe_fd, int std_fd, int fd_to_close)
+static void setup_pipe_redirection(int pipe_fd_src, int std_fd_dst)
 {
-    if (dup2(pipe_fd[std_fd], std_fd) == -1)
+    if (dup2(pipe_fd_src, std_fd_dst) == -1)
     {
         ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
-        close(fd_to_close);
+        close(pipe_fd_src);
         exit(1);
     }
-    close(pipe_fd[std_fd]);
+    close(pipe_fd_src);
 }
 
-static void execute_child(t_shell *shell, t_ast *ast, int *pipe_fd, int left)
+static void execute_child(t_shell *mshell, t_ast *ast, int *pipe_fd, int left)
 {
     t_ast *child;
 
-    setup_signals(shell, MODE_CHILD);
+    setup_signals(mshell, MODE_CHILD);
     if (!ast)
         exit(1);
     if (left)
@@ -24,20 +24,22 @@ static void execute_child(t_shell *shell, t_ast *ast, int *pipe_fd, int left)
         child = ast->right;  
     if (!child)
         exit(1);
-    if (child->redirects && exe_redirection(child->redirects, shell) != 0)
-        exit(shell->exit_code);
+    if (child->redirects && exe_redirection(child->redirects, mshell) != 0)
+        exit(mshell->exit_code);
     if (left)
     {
         close(pipe_fd[FD_READ]);
-        setup_pipe_redirection(pipe_fd, FD_WRITE, pipe_fd[FD_WRITE]);
+        setup_pipe_redirection(pipe_fd[FD_WRITE], STDOUT_FILENO); //1
+        //setup_pipe_redirection(pipe_fd, FD_WRITE, pipe_fd[FD_WRITE]);
     }
     else
     {
         close(pipe_fd[FD_WRITE]);
-        setup_pipe_redirection(pipe_fd, FD_READ, pipe_fd[FD_READ]);
+        setup_pipe_redirection(pipe_fd[FD_READ], STDIN_FILENO); //0
+        //setup_pipe_redirection(pipe_fd, FD_READ, pipe_fd[FD_READ]);
     }
-    execute_ast(child, shell);
-    exit(shell->exit_code);
+    execute_ast(child, mshell);
+    exit(mshell->exit_code);
 }
 
 static int init_child(int *pipe_fd, pid_t *pid)
@@ -77,27 +79,27 @@ int wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)
     return (mshell->exit_code);
 }
 
-int execute_pipe(t_ast *ast, t_shell *shell)
+int execute_pipe(t_ast *ast, t_shell *mshell)
 {
     int pipe_fd[2];
     pid_t pid[2];
     int status[2];
 
     if (!ast || !ast->left || !ast->right)
-        return display_error_errno(shell, "syntax error near unexpected token `|'", 0);
+        return display_error_errno(mshell, "syntax error near unexpected token `|'", 0);
     if (pipe(pipe_fd) == -1)
-        return display_error_errno(shell, "pipe", 1);
+        return display_error_errno(mshell, "pipe", 1);
     if (init_child(pipe_fd, &pid[0]) == -1)
-        return (shell->exit_code);
+        return (mshell->exit_code);
     if (pid[0] == 0)
-        execute_child(shell, ast, pipe_fd, 1);
+        execute_child(mshell, ast, pipe_fd, 1);
     if (init_child(pipe_fd, &pid[1]) == -1)
-        return (shell->exit_code);
+        return (mshell->exit_code);
     if (pid[1] == 0)
-        execute_child(shell, ast, pipe_fd, 0);
+        execute_child(mshell, ast, pipe_fd, 0);
     close(pipe_fd[FD_READ]);
     close(pipe_fd[FD_WRITE]);
-    wait_command(shell, pid[0], &status[0], 0);     // only wait, not update exit_code
-    wait_command(shell, pid[1], &status[1], 1);    // wait and update exit_code
-    return shell->exit_code;
+    wait_command(mshell, pid[0], &status[0], 0);     // only wait, not update exit_code
+    wait_command(mshell, pid[1], &status[1], 1);    // wait and update exit_code
+    return mshell->exit_code;
 }
