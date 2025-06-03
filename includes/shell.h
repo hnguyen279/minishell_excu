@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/03 11:35:30 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/03 14:39:04 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,9 @@ int				is_redirection(t_token *token);
 int				is_valid_redirection(t_token *token_list);
 int				validate_quote(char *line);
 int				is_operator(t_token *token);
+int				is_valid_parentheses(t_token *token_list);
+int				validate_parentheses_pair(char *line);
+
 
 /* Parsing */
 t_cmd			*parse_tokens_to_commands(t_token *tokenized_list);
