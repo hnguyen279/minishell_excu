@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/02 16:04:47 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/03 11:35:30 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef struct s_token
 	struct s_token		*next;
 	struct s_token		*prev;
 	int					in_single_quote; // true if in and false if not
+	int					in_double_quote;
 }	t_token;
 
 typedef enum e_redirect_type
@@ -136,7 +137,9 @@ char			*extract_quoted_token(char *line, int *i);
 char			*extract_word(char *line, int *i);
 void			add_token(t_token **tokenized_input_list, t_token *new_token);
 t_token			*convert_user_input_to_token(char *line);
-char *extract_full_word(char *line, int *i);
+// char *extract_full_word(char *line, int *i);
+char 			*extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote);
+// char	*expand_token_value(char *str, int	in_single_quote, int in_double_quote, t_shell *mshell);
 
 
 /* Validate input */
