@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/02 17:23:02 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/03 12:59:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@ t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 					return (NULL);
 			}
 			else
+			{
+				// free_string(temp->value);
 				return (NULL);
+			}
 			// temp = temp->next;
 		}
 		// else
@@ -59,23 +62,23 @@ char	*expand_token_value(char *str, t_shell *mshell)
 			{
 				exit_code_str = ft_itoa(mshell->exit_code);
 				result = str_join_result_and_free(result, exit_code_str);
-				if (!result)
-					return (NULL);
+				// if (!result)
+				// 	return (NULL);
 				i = i + 2;
 			}
 			else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
 			{
 				i++;
 				result = handle_env_variable(&str, mshell, &i, result); //need to retokenize for multiple word?
-				if (!result)
-					return (NULL);
+				// if (!result)
+				// 	return (NULL);
 				// printf("after join: %s\n", result);
 			}
 			else
 			{
 				result = char_join_result_and_free(result, str[i]);
-				if (!result)
-					return (NULL);
+				// if (!result)
+				// 	return (NULL);
 				i++;
 			}
 			// printf("after join: %s\n", result);
@@ -84,11 +87,14 @@ char	*expand_token_value(char *str, t_shell *mshell)
 		{
 			result = char_join_result_and_free(result, str[i]);
 			// printf("after join: %s\n", result);
-			if (!result)
-				return (NULL);
+			// if (!result)
+			// 	return (NULL);
 			i++;
 		}
+		if (!result)
+			return (NULL);
 	}
+	
 	return (result);
 }
 
