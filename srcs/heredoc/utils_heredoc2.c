@@ -95,13 +95,20 @@ static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
     {
         sig_exit_code(mshell);
         int tty_fd = open("/dev/tty", O_RDONLY);
-        if (tty_fd != -1)
-        {
-            dup2(tty_fd, STDIN_FILENO);
-            close(tty_fd);
-        }
+		if (tty_fd == -1)
+		{
+			display_error_errno(mshell, "open(/dev/tty)", 1);
+			return -1;
+		}
+		if (dup2(tty_fd, STDIN_FILENO) == -1)
+		{
+			display_error_errno(mshell, "dup2", 1);
+			close(tty_fd);
+			return -1;
+		}
+		close(tty_fd);
     }
-    setup_signals(mshell, MODE_INTERACTIVE);
+    setup_signals(mshell, MODE_HEREDOC);
     return status;
 }
 

@@ -5,18 +5,17 @@ static char *make_env_entry(const char *key, const char *value)
     char *entry;
     size_t len;
 
-    len = ft_strlen(key) + 1; // for '=' or '\0'
+    // always reserve space for '=' even if value is NULL
+    len = ft_strlen(key) + 2; // +1 for '=' +1 for '\0'
     if (value)
         len += ft_strlen(value);
     entry = ft_calloc(1, len);
     if (!entry)
         return (NULL);
     ft_strlcat(entry, key, len);
+    ft_strlcat(entry, "=", len);
     if (value)
-    {
-        ft_strlcat(entry, "=", len);
         ft_strlcat(entry, value, len);
-    }
     return (entry);
 }
 
