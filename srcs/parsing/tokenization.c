@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/04 10:24:46 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 17:03:06 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ t_token	*convert_user_input_to_token(char *line)
 			new_token = create_token(extracted_str, WORD);
 			// printf("set single quote: %d\n", in_single_quote);
 			// printf("set double quote: %d\n", in_double_quote);
-
 			new_token->in_single_quote = in_single_quote;
 			new_token->in_double_quote = in_double_quote;
 			add_token(&tokenized_input_list, new_token);
@@ -148,8 +147,9 @@ char	*extract_word(char *line, int *i)
 
 char *extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote)
 {
-	char *result;
-	char *part;
+	char	*result;
+	char	*part;
+	char	*tmp;
 
 	// printf("enter extract full word function\n");
 	result = ft_strdup("");
@@ -186,19 +186,10 @@ char *extract_full_word(char *line, int *i, int *in_single_quote, int *in_double
 			free(result);
 			return (NULL);
 		}
-		// printf("extracted part %s\n:", part);
-		// char *tmp = result;
+		tmp = result;
 		result = ft_strjoin(result, part);
-		// printf("join with result %s\n:", result);
-
-		// free(tmp);
+		free(tmp);
 		free(part);
-		// (*i)++;
 	}
-	// if (result[0] == '\0') // Handle empty result
-    // {
-    //     free(result);
-    //     return NULL;
-    // }
 	return result;
 }

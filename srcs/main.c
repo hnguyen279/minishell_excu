@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/04 15:08:02 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 18:02:29 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,20 +74,22 @@ void	shell_interactive(t_shell *mshell)
 		}
 		if (line[0] == '\0')
 		{
-			free(line);
+			free_string(line);
 			continue ;
 		}
         store_history(line, &history_head);
         if (handle_special_command_line(line, &history_head) == TRUE)
         {
             if (ft_strcmp(line, "exit") == 0)
+            {
+                free_string(line);
                 break;
+            }
         }
         else
             handle_line(line, mshell);
         free_string(line);
     }
-    //free_string(line); // double free ?? ****
     clear_working_history(&history_head);
 }
 
@@ -113,22 +115,18 @@ void    handle_line(char *line, t_shell *mshell)
     t_token	*tokenized_input_list;
 	t_cmd	*cmd_list;
 	t_ast	*tree;
-    // char    *expanded_line;
 
     // printf("print line: %s\n", line);
     if (validate_quote(line) == FALSE)
     {
         mshell->exit_code = 2;
-        // print_error("Failed to validate quote");
         return ;
     }
     // printf("validate line successfully\n");
-    // expanded_line = expand_variables(line, mshell);
     tokenized_input_list = NULL;
 	cmd_list = NULL;
 	tree = NULL;
     process_valid_line(line, mshell, &tokenized_input_list, &cmd_list, &tree);
-    // free_string(expanded_line);
     free_token_list(tokenized_input_list);
     free_cmd_list(cmd_list);
     free_ast(tree, mshell);
@@ -142,7 +140,6 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
     if (!*tokenized_input_list)
     {
         mshell->exit_code = 1;
-        // free_string(line);
         print_error("Failed to convert user input to token");
         return ;
     }
@@ -151,7 +148,10 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
 
     *tokenized_input_list = expand_variables(tokenized_input_list, mshell);
     if (!*tokenized_input_list)
+    {
+        free_token_list(*tokenized_input_list);
         return ;
+    }
     // print_linked_list(*tokenized_input_list);
     if (validate_token(*tokenized_input_list) == FALSE)
     {
