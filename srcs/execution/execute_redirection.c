@@ -112,8 +112,10 @@ static int handle_single_redirection(t_shell *mshell, t_redirect *redir)
 
 int exe_redirection(t_redirect *redir, t_shell *mshell)
 {
-    t_redirect *current = redir;
+    t_redirect *current;
+    int result;
 
+    current = redir;
     if (!mshell)
     {
         ft_printf_fd(2, "minishell: internal error: null shell pointer\n");
@@ -122,9 +124,14 @@ int exe_redirection(t_redirect *redir, t_shell *mshell)
     // printf("exe_redirection worked\n");
     while (current)
     {
-        if (handle_single_redirection(mshell, current) != 0)
-            return mshell->exit_code;
+        result = handle_single_redirection(mshell, current);
+        if (result != 0)
+        {
+            mshell->exit_code = result;
+            return (result);
+        }
         current = current->next;
     }
+    mshell->exit_code = 0;
     return (0);
 }

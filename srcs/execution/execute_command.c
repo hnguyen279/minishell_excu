@@ -128,6 +128,8 @@ static int execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
     }
     if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
     {
+        if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
+            perror("minishell: dup2 restore failed");
         safe_close_fds(in_fd, out_fd);
         return (mshell->exit_code);
     }
