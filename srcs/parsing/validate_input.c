@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/04 10:33:59 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 14:57:19 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	validate_token(t_token *token_list)
 	if (is_valid_parentheses(token_list) == FALSE)
 		return (FALSE);
 
-		
+	
 	return (TRUE);
 }
 
