@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/03 13:36:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 10:24:46 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,10 +195,10 @@ char *extract_full_word(char *line, int *i, int *in_single_quote, int *in_double
 		free(part);
 		// (*i)++;
 	}
-	if (result[0] == '\0') // Handle empty result
-    {
-        free(result);
-        return NULL;
-    }
+	// if (result[0] == '\0') // Handle empty result
+    // {
+    //     free(result);
+    //     return NULL;
+    // }
 	return result;
 }
