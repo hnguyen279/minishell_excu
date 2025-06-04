@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/04 14:50:22 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 18:10:08 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,6 @@ t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 			{
 				free_string(temp->value);
 				temp->value = ft_strdup("");
-				
-				// t_token *to_free = temp;
-				// temp = temp->next;
-				// if (!prev)
-					// *token_list = temp;
-				// else
-					// prev->next = temp;
-				// free_string(to_free->value);
-				// free(to_free);
 				free_string(expanded_value);
 				if (!temp->value)
 					return (NULL);
@@ -52,7 +43,6 @@ t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 				free_string(expanded_value); // move here avoid leak
 				if (!temp->value)
 					return (NULL);
-				
 			}
 		}
 		prev = temp;
@@ -66,6 +56,7 @@ char	*expand_token_value(char *str, t_shell *mshell)
 	int		i;
 	char	*result;
 	char	*exit_code_str;
+	char	*tmp;
 
 	i = 0;
 	result = ft_strdup("");
@@ -78,19 +69,28 @@ char	*expand_token_value(char *str, t_shell *mshell)
 			if (str[i + 1] == '?')
 			{
 				exit_code_str = ft_itoa(mshell->exit_code);
+				if (!exit_code_str)
+				{
+					print_error("ft_itoa memory allocation failed");
+					return (NULL);
+				}
+				tmp = exit_code_str; //needed?
 				result = str_join_result_and_free(result, exit_code_str);
+				free_string(tmp); //needed?
 				i = i + 2;
 			}
 			else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
 			{
 				i++;
+				tmp = result;
 				result = handle_env_variable(&str, mshell, &i, result);
+				free_string(tmp);
 				// printf("after join: %s\n", result);
-				if (ft_strcmp(result, " ") == 0)
-				{
-					// printf("break here\n");
-					return (result);
-				}
+				// if (ft_strcmp(result, "") == 0)
+				// {
+				// 	// printf("break here\n");
+				// 	return (result);
+				// }
 			}
 			else
 			{
@@ -102,13 +102,14 @@ char	*expand_token_value(char *str, t_shell *mshell)
 		else
 		{
 			result = char_join_result_and_free(result, str[i]);
-			// printf("after join: %s\n", result);
 			i++;
 		}
 		if (!result)
+		{
+			print_error("strjoin failed");
 			return (NULL);
+		}
 	}
-	
 	return (result);
 }
 
@@ -117,6 +118,7 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	char	*var_name;
 	int		start;
 	char	*env_value;
+	// char	*tmp;
 	
 	start = *i;
 	while (ft_isalpha((*str)[*i]) || (*str)[*i] == '_')
@@ -140,14 +142,12 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	env_value = env_find_value(mshell, var_name);
 	if (!env_value)
 		env_value = "";
-		// return (NULL);
 	
 	// printf("env_value %s\n", env_value);
 	result = str_join_result_and_free(result, env_value);
+	free_string(var_name);
 	if (!result)
 		return (NULL);
-	free_string(var_name);
-	// free_string(env_value);
 	return (result);	
 }
 
@@ -162,6 +162,7 @@ char	*str_join_result_and_free(char *s1, char *s2)
 		return (NULL);
 	}
 	free_string(s1);
+	// free_string(s2);
 	return (joined_str);
 }
 
