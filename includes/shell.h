@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/03 14:39:04 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 11:05:12 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void			process_valid_line(char *line, t_shell *mshell,
 void			run_ast_pipeline(t_shell *mshell, t_ast *tree);
 
 /* Tokenization */
-int				is_comment(char *s);
+// int				is_comment(char *s);
 t_token			*create_token(char *s, t_token_type i);
 char			*extract_quoted_token(char *line, int *i);
 char			*extract_word(char *line, int *i);
@@ -159,7 +159,9 @@ t_cmd			*parse_tokens_to_commands(t_token *tokenized_list);
 t_cmd			*create_cmd(void);
 int				update_command_node(t_cmd **new_cmd, t_token **temp_token_list);
 int				count_args(t_token *tokenized_input_list);
-char			**fill_args(t_token **token_list);
+// char			**fill_args(t_token **token_list);
+char			**fill_args(t_cmd **new_cmd, t_token **token_list);
+
 int				add_redirects(t_redirect **redir_list, t_redirect_type type,
 					char *file);
 t_redirect_type	token_to_redirect_type(t_token_type token_type);

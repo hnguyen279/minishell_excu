@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/03 14:49:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 10:33:59 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	validate_token(t_token *token_list)
 	if (is_valid_redirection(token_list) == FALSE)
 		return (FALSE);
 	
-	// check valid parentheses
+	// check valid parentheses necessary or not ?
 	if (is_valid_parentheses(token_list) == FALSE)
 		return (FALSE);
 
@@ -39,48 +39,14 @@ int	is_valid_parentheses(t_token *token_list)
 	// temp = token_list;
 	// while (temp)
 	// {
-	// 	if (temp->value == '(')
+	// 	if (validate_parentheses_pair(temp->value) == FALSE)
+	// 		return (FALSE);
 	// }
 	(void) token_list;
 	
 	
 	return (TRUE);
 }
-
-// int	is_valid_parentheses(t_token *tokens)
-// {
-// 	int depth = 0;
-// 	t_token *cur = tokens;
-
-// 	while (cur)
-// 	{
-// 		if (cur->type == LEFT_PAREN)
-// 		{
-// 			depth++;
-// 			if (!cur->next || cur->next->type == RIGHT_PAREN)
-// 			{
-// 				print_error("Empty '()' or unmatched '('");
-// 				return (FALSE);
-// 			}
-// 		}
-// 		else if (cur->type == RIGHT_PAREN)
-// 		{
-// 			if (depth == 0)
-// 			{
-// 				print_error("Unmatched ')'");
-// 				return (FALSE);
-// 			}
-// 			depth--;
-// 		}
-// 		cur = cur->next;
-// 	}
-// 	if (depth != 0)
-// 	{
-// 		print_error("Unmatched '('");
-// 		return (FALSE);
-// 	}
-// 	return (TRUE);
-// }
 
 
 /*
@@ -104,7 +70,6 @@ int	validate_quote(char *line)
 	if (quote != 0)
 	{
 		print_error("Unclosed quote");
-		// get_error_msg(ERR_QUOTE);
 		return (FALSE);
 	}
 	return (TRUE);

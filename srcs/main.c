@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/03 14:39:43 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 11:19:39 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void    handle_line(char *line, t_shell *mshell)
     // char    *expanded_line;
 
     // printf("print line: %s\n", line);
-    if (validate_quote(line) == FALSE || validate_parentheses_pair(line) == FALSE)
+    if (validate_quote(line) == FALSE)
     {
         mshell->exit_code = 2;
         // print_error("Failed to validate quote");
