@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/04 11:19:39 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 15:08:02 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,16 +151,27 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
 
     *tokenized_input_list = expand_variables(tokenized_input_list, mshell);
     if (!*tokenized_input_list)
-    {
-        // print_error("Failed to expand variables");
         return ;
-    }
     // print_linked_list(*tokenized_input_list);
     if (validate_token(*tokenized_input_list) == FALSE)
     {
         mshell->exit_code = 2;
-        // print_error("Failed to validate token");
         return ;
+    }
+    if (*tokenized_input_list && ft_strcmp((*tokenized_input_list)->value, "") == 0)
+    {
+        if ((*tokenized_input_list)->next)
+        {
+            t_token *to_free = *tokenized_input_list;
+            (*tokenized_input_list) = (*tokenized_input_list)->next;
+            free_string(to_free->value);
+            free(to_free);
+        }
+        else
+        {
+            mshell->exit_code = 0;
+            return ;
+        }
     }
     *cmd_list = parse_tokens_to_commands(*tokenized_input_list);
     if (!*cmd_list)
@@ -169,7 +180,6 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
         mshell->exit_code = 2;
         return ;
     }
-    
     // print_cmd_list(*cmd_list);
     *tree = convert_cmd_to_ast(*cmd_list);
     if (!*tree)
