@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 19:06:40 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 11:28:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,26 +67,22 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 		print_error("Not exist temp token list");
 		return (FALSE);
 	}
-	(*new_cmd)->args = fill_args(temp_token_list);
+	(*new_cmd)->args = fill_args(new_cmd, temp_token_list);
 	// print_array((*new_cmd)->args);
 	if (!(*new_cmd)->args)
 	{
 		print_error("Failed to update new cmd args");
 		return (FALSE);
 	}
-	// (*new_cmd)->cmd_name = ft_strdup(((*new_cmd)->args)[0]);
-	// if (!(*new_cmd)->cmd_name)
-	// 	return (FALSE);
-	// H add
 	if ((*new_cmd)->args[0])
 		(*new_cmd)->cmd_name = ft_strdup((*new_cmd)->args[0]);
 	else
 		(*new_cmd)->cmd_name = NULL;
-	if (parse_redirection(new_cmd, temp_token_list) == FALSE)
-	{
-		print_error("Parse redirection failed \n");
-		return (FALSE);
-	}
+	// if (parse_redirection(new_cmd, temp_token_list) == FALSE)
+	// {
+	// 	print_error("Parse redirection failed \n");
+	// 	return (FALSE);
+	// }
 	return (TRUE);
 }
 
@@ -106,38 +102,61 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 		print_error("Invalid new_cmd in parse_redirection");
 		return (FALSE);
 	}
-	while (*token_list && (*token_list)->type != PIPE)
+	redir_type = token_to_redirect_type((*token_list)->type);
+	if (redir_type == REDIR_INVALID)
 	{
-		if (is_redirection(*token_list) == TRUE)
-		{
-			// printf("Redirect type %s\n", (*token_list)->value);
-			redir_type = token_to_redirect_type((*token_list)->type);
-			if (redir_type == REDIR_INVALID)
-			{
-				print_error("invalid redirection token type");
-				return (FALSE);
-			}
-			// printf("redir type %d\n", redir_type);
-			(*token_list) = (*token_list)->next;
-			// printf("after redirects %s\n", (*token_list)->value);
-			if (!*token_list || (*token_list)->type != WORD
-				|| !(*token_list)->value || !*(*token_list)->value)
-			{
-				print_error("Invalid or missing file after redirection");
-				// get_error_msg(ERR_REDIR);
-				return (FALSE);
-			}
-			if (add_redirects(&(*new_cmd)->redirects, redir_type,
-					(*token_list)->value) == FALSE)
-			{
-				print_error("Failed to add redirects");
-				return (FALSE);
-			}
-			(*token_list) = (*token_list)->next;
-		}
-		else
-			(*token_list) = (*token_list)->next;
+		print_error("invalid redirection token type");
+		return (FALSE);
 	}
+	// printf("redir type %d\n", redir_type);
+	(*token_list) = (*token_list)->next;
+	// printf("after redirects %s\n", (*token_list)->value);
+	if (!*token_list || (*token_list)->type != WORD
+		|| !(*token_list)->value || !*(*token_list)->value)
+	{
+		print_error("Invalid or missing file after redirection");
+		// get_error_msg(ERR_REDIR);
+		return (FALSE);
+	}
+	if (add_redirects(&(*new_cmd)->redirects, redir_type,
+			(*token_list)->value) == FALSE)
+	{
+		print_error("Failed to add redirects");
+		return (FALSE);
+	}
+	(*token_list) = (*token_list)->next;
+	// while (*token_list && (*token_list)->type != PIPE)
+	// {
+	// 	if (is_redirection(*token_list) == TRUE)
+	// 	{
+	// 		// printf("Redirect type %s\n", (*token_list)->value);
+	// 		redir_type = token_to_redirect_type((*token_list)->type);
+	// 		if (redir_type == REDIR_INVALID)
+	// 		{
+	// 			print_error("invalid redirection token type");
+	// 			return (FALSE);
+	// 		}
+	// 		// printf("redir type %d\n", redir_type);
+	// 		(*token_list) = (*token_list)->next;
+	// 		// printf("after redirects %s\n", (*token_list)->value);
+	// 		if (!*token_list || (*token_list)->type != WORD
+	// 			|| !(*token_list)->value || !*(*token_list)->value)
+	// 		{
+	// 			print_error("Invalid or missing file after redirection");
+	// 			// get_error_msg(ERR_REDIR);
+	// 			return (FALSE);
+	// 		}
+	// 		if (add_redirects(&(*new_cmd)->redirects, redir_type,
+	// 				(*token_list)->value) == FALSE)
+	// 		{
+	// 			print_error("Failed to add redirects");
+	// 			return (FALSE);
+	// 		}
+	// 		(*token_list) = (*token_list)->next;
+	// 	}
+	// 	else
+	// 		(*token_list) = (*token_list)->next;
+	// }
 	return (TRUE);
 }
 
@@ -208,7 +227,7 @@ t_redirect_type	token_to_redirect_type(t_token_type token_type)
 	return (REDIR_INVALID);
 }
 
-char	**fill_args(t_token **token_list)
+char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 {
 	int		count;
 	char	**args;
@@ -231,12 +250,13 @@ char	**fill_args(t_token **token_list)
 	if (!args)
 	{
 		print_error("Malloc failed");
-		// get_error_msg(ERR_MALLOC);
 		return (NULL);
 	}
 	count = 0;
 	while (*token_list && (*token_list)->type != PIPE)
 	{
+		// printf("Working on this token %s\n", (*token_list)->value);
+
 		if ((*token_list)->type == WORD)
 		{
 			args[count] = ft_strdup((*token_list)->value);
@@ -246,14 +266,21 @@ char	**fill_args(t_token **token_list)
 				free_array(args, count);
 				return (NULL);
 			}
-			count++; // only increase if args[count]
+			count++; // only increase if args[count] is WORD
+			*token_list = (*token_list)->next;
 		}
 		else if (is_redirection(*token_list) == TRUE)
 		{
-			args[count] = NULL;
-			return (args);
+			// args[count] = NULL;
+			// return (args);
+			
+			if (parse_redirection(new_cmd, token_list) == FALSE)
+			{
+				print_error("Parse redirection failed \n");
+				return (NULL);
+			}
 		}
-		*token_list = (*token_list)->next;
+		// *token_list = (*token_list)->next;
 	}
 	args[count] = NULL;
 	return (args);
