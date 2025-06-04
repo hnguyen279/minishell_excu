@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/03 11:04:55 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/04 16:30:38 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	add_token(t_token **tokenized_input_list, t_token *new_token)
 	if (!new_token)
 	{
 		print_error("Invalid token");
-		// get_error_msg(ERR_MALLOC);
 		return ;
 	}
 	if (*tokenized_input_list == NULL)
