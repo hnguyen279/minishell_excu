@@ -16,10 +16,10 @@ t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 {
 	t_token	*temp;
 	char	*expanded_value;
-	t_token *prev;
+	//t_token *prev;
 
 	temp = *token_list;
-	prev = NULL;
+	//prev = NULL;
 	while (temp)
 	{
 		if (temp->type == WORD && temp->in_single_quote == FALSE) // adjust: only expand inside double quotes
@@ -45,7 +45,7 @@ t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 					return (NULL);
 			}
 		}
-		prev = temp;
+		//prev = temp;
 		temp = temp->next;
 	}
 	return (*token_list);

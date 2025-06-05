@@ -72,6 +72,7 @@ static int redirect_heredoc(t_redirect *redir, t_shell *mshell)
     if (!redir || !redir->tmp_file)
         return display_error_errno(mshell, "heredoc: no temporary file", 0);
     fd = open(redir->tmp_file, O_RDONLY);
+    //printf("tmp_heredoc_name: %s \n", redir->tmp_file);
     if (fd == -1)
         return display_error_errno(mshell, redir->tmp_file, 1);
     if (dup2(fd, STDIN_FILENO) == -1)
