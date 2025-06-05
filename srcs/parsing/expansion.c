@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/05 11:21:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/05 13:46:39 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 			else if (ft_strcmp(expanded_value, "") == 0) //else if (expanded_value[0] == '\0')
 
 			{
+				// printf("ENter here\n");
 				free_string(temp->value);
 				temp->value = ft_strdup("");
 				free_string(expanded_value);
@@ -56,7 +57,7 @@ char	*expand_token_value(char *str, t_shell *mshell)
 	int		i;
 	char	*result;
 	char	*exit_code_str;
-	//char	*tmp;
+	char	*tmp;
 
 	i = 0;
 	result = ft_strdup("");
@@ -74,18 +75,18 @@ char	*expand_token_value(char *str, t_shell *mshell)
 					print_error("ft_itoa memory allocation failed");
 					return (NULL);
 				}
-				//tmp = exit_code_str; //needed?
+				tmp = result;
 				result = str_join_result_and_free(result, exit_code_str);
-				//free_string(tmp); //needed?
+				free_string(tmp);
 				free_string(exit_code_str);
 				i = i + 2;
 			}
 			else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
 			{
 				i++;
-				// tmp = result;
+				tmp = result;
 				result = handle_env_variable(&str, mshell, &i, result);
-				// free_string(tmp);
+				free_string(tmp);
 				// printf("after join: %s\n", result);
 				// if (ft_strcmp(result, "") == 0)
 				// {
@@ -137,6 +138,7 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 			return (NULL);
 		free_string(var_name);
 		// printf("Result is empty\n");
+		// free_string(*str);
 		return (result);
 	}
 	// printf("var_name: %s\n", var_name);
@@ -162,7 +164,7 @@ char	*str_join_result_and_free(char *s1, char *s2)
 		print_error("ft_strjoin failed");
 		return (NULL);
 	}
-	free_string(s1);
+	// free_string(s1);
 	// free_string(s2);
 	return (joined_str);
 }
@@ -175,6 +177,7 @@ char	*char_join_result_and_free(char *s1, char c)
 	s2[0] = c;
 	s2[1] = '\0';
 	joined_str = str_join_result_and_free(s1, s2);
+	free_string(s1);
 	return (joined_str);
 }
 
