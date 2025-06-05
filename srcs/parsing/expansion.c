@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/04 18:10:08 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/05 11:21:32 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ char	*expand_token_value(char *str, t_shell *mshell)
 			else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
 			{
 				i++;
-				tmp = result;
+				// tmp = result;
 				result = handle_env_variable(&str, mshell, &i, result);
-				free_string(tmp);
+				// free_string(tmp);
 				// printf("after join: %s\n", result);
 				// if (ft_strcmp(result, "") == 0)
 				// {
