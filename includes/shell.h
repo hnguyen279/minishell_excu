@@ -25,6 +25,8 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <limits.h>
+
 
 # define TRUE 0
 # define FALSE -1
@@ -227,7 +229,7 @@ int				execute_pipe(t_ast *ast, t_shell *shell);
 int				execute_command(t_ast *node, t_shell *mshell);
 int				execute_ast(t_ast *node, t_shell *mshell);
 int 			wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code);
-int				display_error_errno(t_shell *mshell, const char *msg,
+int				error_msg(t_shell *mshell, const char *msg,
 					int use_errno);
 
 /* Env functions */
@@ -241,7 +243,7 @@ void			env_sort(char **envp, size_t len);
 void			env_swap_last(char **envp);
 void			env_print(char **envp);
 int				env_set_last_argument(t_shell *mshell, char **cmd);
-size_t			strlen_until_char(const char *s, const char ch);
+// size_t			strlen_until_char(const char *s, const char ch);
 void			ft_free_null(char ***array);
 char			**realloc_env(char **envp, size_t len);
 

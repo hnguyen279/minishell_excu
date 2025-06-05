@@ -54,14 +54,12 @@ static void cd_to_tilde_path(t_shell *mshell, char *token)
     path = ft_strjoin(home, token + 1);
     if (!path)
     {
-        ft_printf_fd(2, "minishell: cd: memory allocation failed\n");
         mshell->exit_code = 1;
         return;
     }
     if (chdir(path) != 0)
     {
-        ft_printf_fd(2, "minishell: cd: %s: ", path);
-        perror("");
+        ft_printf_fd(2, "minishell: cd: %s: %s\n", path, strerror(errno));
         mshell->exit_code = 1;
         free(path);
         return;
@@ -101,8 +99,6 @@ static void cd_to_path(t_shell *mshell, char *path)
         mshell->exit_code = 1;
         return;
     }
-
-    // update PWD and OLDPWD
     update_pwd(mshell);
 }
 

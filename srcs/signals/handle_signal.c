@@ -39,15 +39,15 @@ static int set_signal(t_shell *mshell, void (*sigint_handler)(int), void (*sigqu
     sa_int.sa_handler = sigint_handler;
     sa_int.sa_flags = SA_RESTART | SA_NOCLDSTOP;
     if (sigemptyset(&sa_int.sa_mask) == -1)
-        display_error_errno(mshell, "sigemptyset", 1);
+        error_msg(mshell, "sigemptyset", 1);
     if (sigaction(SIGINT, &sa_int, NULL) == -1)
-        display_error_errno(mshell, "sigaction(SIGINT)", 1);
+        error_msg(mshell, "sigaction(SIGINT)", 1);
     sa_quit.sa_handler = sigquit_handler;
     sa_quit.sa_flags = SA_RESTART | SA_NOCLDSTOP;
     if (sigemptyset(&sa_quit.sa_mask) == -1)
-        display_error_errno(mshell, "sigemptyset", 1);
+        error_msg(mshell, "sigemptyset", 1);
     if (sigaction(SIGQUIT, &sa_quit, NULL) == -1)
-        display_error_errno(mshell, "sigaction(SIGQUIT)", 1);
+        error_msg(mshell, "sigaction(SIGQUIT)", 1);
     return (0);
 }
 

@@ -41,7 +41,6 @@ int export_standalone(char **envp)
 
 	while (envp[count])
 		count++;
-
 	copy = malloc(sizeof(char *) * (count + 1));
 	if (!copy)
 	{
@@ -49,15 +48,12 @@ int export_standalone(char **envp)
 		return 1;
 	}
 	copy[count] = NULL;
-
 	while (i < count)
 	{
 		copy[i] = envp[i];
 		i++;
 	}
-
 	env_sort(copy, count);
-
 	i = 0;
 	while (i < count)
 	{
@@ -68,6 +64,7 @@ int export_standalone(char **envp)
 	free(copy);
 	return 0;
 }
+
 int export_handle_one(t_shell *mshell, const char *arg)
 {
 	char *equal;
@@ -78,14 +75,11 @@ int export_handle_one(t_shell *mshell, const char *arg)
 
 	if (!arg)
 		return 0;
-
 	if (arg[0] == '-')
 	{
 		ft_printf_fd(STDERR_FILENO, "minishell: export: `%s`: invalid option\n", arg);
 		return 2;
 	}
-
-	// Check if argument uses VAR+=value syntax
 	plus_equal = ft_strnstr(arg, "+=", ft_strlen(arg));
 	if (plus_equal != NULL)
 	{
@@ -101,14 +95,12 @@ int export_handle_one(t_shell *mshell, const char *arg)
 			new_val = ft_strjoin(old_val, plus_equal + 2);
 		else
 			new_val = ft_strdup(plus_equal + 2);
-
 		if (new_val == NULL)
 		{
 			free(key);
 			ft_printf_fd(STDERR_FILENO, "minishell: export: malloc failed\n");
 			return 1;
 		}
-
 		env_remove(mshell, key);
 		if (env_add(mshell, key, new_val) != 0)
 		{
@@ -116,19 +108,15 @@ int export_handle_one(t_shell *mshell, const char *arg)
 			free(new_val);
 			return 1;
 		}
-
 		free(key);
 		free(new_val);
 		return 0;
 	}
-
-	// Normal VAR=val or just VAR
 	if (!export_is_valid(arg))
 	{
 		ft_printf_fd(STDERR_FILENO, "minishell: export: `%s`: not a valid identifier\n", arg);
 		return 1;
 	}
-
 	equal = ft_strchr(arg, '=');
 	if (equal != NULL)
 	{
@@ -154,8 +142,6 @@ int export_handle_one(t_shell *mshell, const char *arg)
 	return 0;
 }
 
-
-
 void builtin_export(t_shell *mshell, char **token)
 {
 	int argc = 0;
@@ -169,16 +155,13 @@ void builtin_export(t_shell *mshell, char **token)
 		mshell->exit_code = 1;
 		return;
 	}
-
 	while (token[argc])
 		argc++;
-
 	if (argc == 1)
 	{
 		mshell->exit_code = export_standalone(mshell->envp);
 		return;
 	}
-
 	while (i < argc)
 	{
 		result = export_handle_one(mshell, token[i]);

@@ -1,7 +1,5 @@
 #include "../../includes/shell.h"
 
-//note check cd --help or pwd --help or cd -- / pwd --help /pwd --/ pwd -
-
 static int pwd_check_args(t_shell *mshell, char **token)
 {
     if (!mshell || !token || !token[0])
