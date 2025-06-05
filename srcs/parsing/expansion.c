@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/05 11:21:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/05 13:26:59 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 			else if (ft_strcmp(expanded_value, "") == 0) //else if (expanded_value[0] == '\0')
 
 			{
+				// printf("ENter here\n");
 				free_string(temp->value);
 				temp->value = ft_strdup("");
 				free_string(expanded_value);
@@ -56,7 +57,7 @@ char	*expand_token_value(char *str, t_shell *mshell)
 	int		i;
 	char	*result;
 	char	*exit_code_str;
-	//char	*tmp;
+	char	*tmp;
 
 	i = 0;
 	result = ft_strdup("");
@@ -83,9 +84,9 @@ char	*expand_token_value(char *str, t_shell *mshell)
 			else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
 			{
 				i++;
-				// tmp = result;
+				tmp = result;
 				result = handle_env_variable(&str, mshell, &i, result);
-				// free_string(tmp);
+				free_string(tmp);
 				// printf("after join: %s\n", result);
 				// if (ft_strcmp(result, "") == 0)
 				// {
@@ -128,15 +129,20 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	if (!var_name)
 	{
 		print_error("Substr failed in handle_env_variables");
+		// free_string(*str);
 		return (NULL);
 	}
 	else if (ft_strcmp(var_name, "EMPTY") == 0)
 	{
 		result = ft_strdup("");
 		if (!result)
+		{
+			free_string(*str);
 			return (NULL);
+		}
 		free_string(var_name);
 		// printf("Result is empty\n");
+		// free_string(*str);
 		return (result);
 	}
 	// printf("var_name: %s\n", var_name);
