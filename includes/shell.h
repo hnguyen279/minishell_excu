@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/04 11:05:12 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/05 18:46:18 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,13 +126,21 @@ void			shell_interactive(t_shell *mshell);
 void			shell_cleanup(t_shell *mshell);
 int				handle_special_command_line(char *line, t_token **history_head);
 void			handle_line(char *line, t_shell *mshell);
-void			process_valid_line(char *line, t_shell *mshell,
-				t_token **tokenized_input_list, t_cmd **cmd_list, t_ast **tree);
+int			    tokenization_expansion_validation(char *line, t_shell *mshell, t_token **tokenized_input_list);
+int			    empty_variable_extension(t_shell *mshell, t_token **tokenized_input_list);
+
+
+void			process_valid_line(t_shell *mshell,	t_token **tokenized_input_list, t_cmd **cmd_list, t_ast **tree);
 void			run_ast_pipeline(t_shell *mshell, t_ast *tree);
 
 /* Tokenization */
 // int				is_comment(char *s);
 t_token			*create_token(char *s, t_token_type i);
+void	handle_pipe(t_token **token_list, int *i);
+void	handle_in_heredoc(char *line, t_token **token_list, int *i);
+void	handle_out_append(char *line, t_token **token_list, int *i);
+
+
 char			*extract_quoted_token(char *line, int *i);
 char			*extract_word(char *line, int *i);
 void			add_token(t_token **tokenized_input_list, t_token *new_token);
