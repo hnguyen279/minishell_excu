@@ -13,16 +13,17 @@ int builtin_echo(t_shell *mshell, char **token)
     //     printf("token[%d] = [%s]'\n", i, token[i]);
     newline = 1;
     i = 1;
-    if (token[i] && ft_strncmp(token[i], "-n", 2) == 0)
+    while (token[i])
     {
+        if (token[i][0] != '-' || token[i][1] != 'n')
+            break;
         j = 2;
-        while (token[i][j] != '\0' && token[i][j] == 'n')
+        while (token[i][j] == 'n')
             j++;
-        if (token[i][j] == '\0')  // -n, -nnn, ...
-        {
-            newline = 0;
-            i++;
-        }
+        if (token[i][j] != '\0')
+            break;
+        newline = 0;
+        i++;
     }
     while (token[i])
     {
