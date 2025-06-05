@@ -117,6 +117,7 @@ void    handle_line(char *line, t_shell *mshell)
 	t_ast	*tree;
 
     // printf("print line: %s\n", line);
+    mshell->heredoc_index = 0;
     if (validate_quote(line) == FALSE)
     {
         mshell->exit_code = 2;
@@ -197,6 +198,7 @@ void    run_ast_pipeline(t_shell *mshell, t_ast *tree)
     if (process_heredocs(mshell, tree))
     {
         //printf("execute process heredocts\n");
+        cleanup_heredoc_tempfiles(tree);
         mshell->exit_code = 130;
         return ;
     }

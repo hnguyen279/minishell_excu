@@ -121,10 +121,8 @@ static int execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
     out_fd = dup(STDOUT_FILENO);
     if (in_fd == -1 || out_fd == -1)
     {
-        perror("minishell: dup failed");
         safe_close_fds(in_fd, out_fd);
-        mshell->exit_code = 1;
-        return (mshell->exit_code);
+        return display_error_errno(mshell, "dup failed", 1);
     }
     if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
     {

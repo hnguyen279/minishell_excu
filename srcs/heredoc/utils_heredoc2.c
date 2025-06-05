@@ -8,7 +8,7 @@ static int create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int 
 	attempt = 0;
 	while (attempt < 1000)
 	{
-		name = make_heredoc_filename_from_fd(mshell->heredoc_index + attempt);
+		name = make_heredoc_filename(mshell->heredoc_index + attempt);
 		if (!name)
 			return display_error_errno(mshell, "heredoc: memory allocation failed", 0);
 		*fd = open(name, O_CREAT | O_EXCL | O_WRONLY, 0600);
@@ -29,6 +29,34 @@ static int create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int 
 	}
 	return display_error_errno(mshell, "minishell: cannot create heredoc file", 0);
 }
+
+// static int create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int *fd)
+// {
+//     char *name;
+//     int attempt = 0;
+
+//     while (1)
+//     {
+//         name = make_heredoc_filename(mshell->heredoc_index + attempt);
+//         if (!name)
+//             return display_error_errno(mshell, "heredoc: malloc", 0);
+//         *fd = open(name, O_CREAT | O_EXCL | O_WRONLY, 0600);
+//         if (*fd != -1)
+//         {
+//             mshell->heredoc_index += attempt + 1;
+//             redir->tmp_file = ft_strdup(name);
+//             free(name);
+//             if (!redir->tmp_file)
+//                 return display_error_errno(mshell, "heredoc: strdup", 0);
+//             *path = redir->tmp_file;
+//             return (0);
+//         }
+//         free(name);
+//         if (errno != EEXIST)
+//             return display_error_errno(mshell, "heredoc: open", 1);
+//         ++attempt;
+//     }
+// }
 
 static int prepare_delimiter(t_shell *mshell, t_redirect *redir, char **delim, int *expand)
 {

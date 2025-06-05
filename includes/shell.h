@@ -205,7 +205,7 @@ void			exe_handle_dollar_expansion(char *input, int fd_write,
 					t_shell *ms);
 int				is_fully_quoted(const char *str);
 char			*get_delimiter(char *file);
-char			*make_heredoc_filename_from_fd(int fd);
+char			*make_heredoc_filename(int id);
 int				process_heredocs(t_shell *mshell, t_ast *node);
 
 /* Execution functions */

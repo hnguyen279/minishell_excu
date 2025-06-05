@@ -1,31 +1,31 @@
 #include "../../includes/shell.h"
 
-char *make_heredoc_filename_from_fd(int fd)
+char *make_heredoc_filename(int id)
 {
-    char *fd_str;
+    const char *prefix;
+    char *id_str;
     char *path;
     int i;
     int j;
-    const char *prefix;
 
-    prefix  = "/tmp/.heredoc_";
+    prefix = "/tmp/.heredoc_";
     i = 0;
     j = 0;
-    fd_str = ft_itoa(fd);
-    if (!fd_str)
+    id_str = ft_itoa(id);
+    if (!id_str)
         return (NULL);
-    path = malloc(16 + 10); // "/tmp/.heredoc_" + max 10 digit
+    path = malloc(ft_strlen(prefix) + ft_strlen(id_str) + 1);
     if (!path)
-        return (free(fd_str), NULL);
+        return (free(id_str), NULL);
     while (prefix[i])
     {
         path[i] = prefix[i];
         i++;
     }
-    while (fd_str[j])
-        path[i++] = fd_str[j++];
+    while (id_str[j])
+        path[i++] = id_str[j++];
     path[i] = '\0';
-    free(fd_str);
+    free(id_str);
     return (path);
 }
 
