@@ -1,11 +1,11 @@
-
 #include "../../includes/shell.h"
 
-static char **find_path(char **env)
+static char	**find_path(char **env)
 {
-	int		i = 0;
+	int		i;
 	char	**paths;
 
+	i = 0;
 	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
 	if (!env[i] || env[i][5] == '\0')
@@ -25,91 +25,55 @@ static char **find_path(char **env)
 	return (ft_split(env[i] + 5, ':'));
 }
 
-static char	*build_cmd_path(char *first_cmd, char **env_paths)
+static char	*try_path_combination(char *path_prefix, char *first_cmd)
 {
 	char	*one_path;
 	char	*cmd_path;
-	int		i = 0;
 
+	one_path = ft_strjoin(path_prefix, "/");
+	if (!one_path)
+		return (NULL);
+	cmd_path = ft_strjoin(one_path, first_cmd);
+	free(one_path);
+	if (!cmd_path)
+		return (NULL);
+	if (access(cmd_path, F_OK | X_OK) == 0)
+		return (cmd_path);
+	free(cmd_path);
+	return (NULL);
+}
+
+static char	*build_cmd_path(char *first_cmd, char **env_paths)
+{
+	char	*cmd_path;
+	int		i;
+
+	i = 0;
 	while (env_paths[i])
 	{
-		one_path = ft_strjoin(env_paths[i], "/");
-		// printf("one path in %s\n", one_path);
-		if (!one_path)
+		cmd_path = try_path_combination(env_paths[i], first_cmd);
+		if (cmd_path)
 		{
 			free_split(env_paths);
-			return (NULL);
-		}
-		cmd_path = ft_strjoin(one_path, first_cmd);
-		// printf("cmd path in %s\n", cmd_path);
-		free(one_path);
-		if (!cmd_path)
-		{
-			print_error("no cmd path from build cmd path");
-			free_split(env_paths);
-			return (NULL);
-		}
-		if (access(cmd_path, F_OK | X_OK) == 0)
-		{
-			free_split(env_paths);
-			// printf("cmd path in %s\n", cmd_path);
 			return (cmd_path);
 		}
-		free(cmd_path);
 		i++;
 	}
 	free_split(env_paths);
 	return (NULL);
 }
-// static char	*try_path_combination(char *path_prefix, char *first_cmd)
-// {
-// 	char	*one_path;
-// 	char	*cmd_path;
 
-// 	one_path = ft_strjoin(path_prefix, "/");
-// 	if (!one_path)
-// 		return (NULL);
-// 	cmd_path = ft_strjoin(one_path, first_cmd);
-// 	free(one_path);
-// 	if (!cmd_path)
-// 		return (NULL);
-// 	if (access(cmd_path, F_OK | X_OK) == 0)
-// 		return (cmd_path);
-// 	free(cmd_path);
-// 	return (NULL);
-// }
-
-// static char	*build_cmd_path(char *first_cmd, char **env_paths)
-// {
-// 	char	*cmd_path;
-// 	int		i = 0;
-
-// 	while (env_paths[i])
-// 	{
-// 		cmd_path = try_path_combination(env_paths[i], first_cmd);
-// 		if (cmd_path)
-// 		{
-// 			free_split(env_paths);
-// 			return (cmd_path);
-// 		}
-// 		i++;
-// 	}
-// 	free_split(env_paths);
-// 	return (NULL);
-// }
-
-
-static char *get_path(char *first_cmd, char **env)
+static char	*get_path(char *first_cmd, char **env)
 {
-	char	**paths = find_path(env);
+	char	**paths;
 	char	*cmd_path;
 
+	paths = find_path(env);
 	if (!paths)
 		return (NULL);
 	cmd_path = build_cmd_path(first_cmd, paths);
 	if (!cmd_path)
 	{
-		//print_error("no cmd_path from get_path function");
 		return (NULL);
 	}
 	return (cmd_path);
@@ -129,13 +93,14 @@ static int	check_is_directory(t_shell *mshell, char *cmd)
 		}
 		else if (stat(cmd, &statbuf) == 0 && access(cmd, X_OK) != 0)
 		{
-			ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n", cmd);
+			ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n",
+				cmd);
 			mshell->exit_code = 126;
 			return (126);
 		}
 		else if (access(cmd, F_OK) != 0)
 		{
-			ft_printf_fd(STDERR_FILENO, "minishell: %s: No such file or directory\n", cmd);
+			ft_printf_fd(2, "minishell: %s: No such file or directory\n", cmd);
 			mshell->exit_code = 127;
 			return (127);
 		}
@@ -143,64 +108,33 @@ static int	check_is_directory(t_shell *mshell, char *cmd)
 	return (EXIT_SUCCESS);
 }
 
-char *find_cmd_path(t_shell *mshell, char *cmd)
+static char	*handle_path_error(t_shell *mshell, char *path, int code)
 {
-    char *cmd_path;
-
-    if (!cmd || !cmd[0] || !ft_strcmp(cmd, ".") || !ft_strcmp(cmd, ".."))
-    {
-        mshell->exit_code = display_error_cmd(cmd);
-        return (NULL);
-    }
-    if (check_is_directory(mshell, cmd) != EXIT_SUCCESS)
-        return (NULL);
-    if (ft_strchr(cmd, '/') && access(cmd, F_OK) == 0)
-        return (ft_strdup(cmd));
-    cmd_path = get_path(cmd, mshell->envp);
-    if (!cmd_path)
-    {
-        ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
-        mshell->exit_code = 127;
-        return (NULL);
-    }
-    if (access(cmd_path, X_OK) != 0)
-    {
-        ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n", cmd_path);
-        mshell->exit_code = 126;
-        free(cmd_path);
-        return (NULL);
-    }
-    return (cmd_path);
+	if (code == 126)
+		ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n", path);
+	else if (code == 127)
+		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", path);
+	mshell->exit_code = code;
+	return (NULL);
 }
 
-// static char *handle_path_error(t_shell *mshell, char *path, int code)
-// {
-// 	if (code == 126)
-// 		ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n", path);
-// 	else if (code == 127)
-// 		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", path);
-// 	mshell->exit_code = code;
-// 	return (NULL);
-// }
+char	*find_cmd_path(t_shell *mshell, char *cmd)
+{
+	char	*cmd_path;
 
-// char *find_cmd_path(t_shell *mshell, char *cmd)
-// {
-// 	char *cmd_path;
-
-// 	if (!cmd || !cmd[0] || !ft_strcmp(cmd, ".") || !ft_strcmp(cmd, ".."))
-// 		return (mshell->exit_code = display_error_cmd(cmd), NULL);
-// 	if (check_is_directory(mshell, cmd) != EXIT_SUCCESS)
-// 		return (NULL);
-// 	if (ft_strchr(cmd, '/') && access(cmd, F_OK) == 0)
-// 		return (ft_strdup(cmd));
-
-// 	cmd_path = get_path(cmd, mshell->envp);
-// 	if (!cmd_path)
-// 		return handle_path_error(mshell, cmd, 127);
-// 	if (access(cmd_path, X_OK) != 0)
-// 	{
-// 		free(cmd_path);
-// 		return handle_path_error(mshell, cmd_path, 126);
-// 	}
-// 	return (cmd_path);
-// }
+	if (!cmd || !cmd[0] || !ft_strcmp(cmd, ".") || !ft_strcmp(cmd, ".."))
+		return (mshell->exit_code = display_error_cmd(cmd), NULL);
+	if (check_is_directory(mshell, cmd) != EXIT_SUCCESS)
+		return (NULL);
+	if (ft_strchr(cmd, '/') && access(cmd, F_OK) == 0)
+		return (ft_strdup(cmd));
+	cmd_path = get_path(cmd, mshell->envp);
+	if (!cmd_path)
+		return (handle_path_error(mshell, cmd, 127));
+	if (access(cmd_path, X_OK) != 0)
+	{
+		free(cmd_path);
+		return (handle_path_error(mshell, cmd_path, 126));
+	}
+	return (cmd_path);
+}
