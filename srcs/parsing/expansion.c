@@ -56,7 +56,7 @@ char	*expand_token_value(char *str, t_shell *mshell)
 	int		i;
 	char	*result;
 	char	*exit_code_str;
-	char	*tmp;
+	//char	*tmp;
 
 	i = 0;
 	result = ft_strdup("");
@@ -74,9 +74,10 @@ char	*expand_token_value(char *str, t_shell *mshell)
 					print_error("ft_itoa memory allocation failed");
 					return (NULL);
 				}
-				tmp = exit_code_str; //needed?
+				//tmp = exit_code_str; //needed?
 				result = str_join_result_and_free(result, exit_code_str);
-				free_string(tmp); //needed?
+				//free_string(tmp); //needed?
+				free_string(exit_code_str);
 				i = i + 2;
 			}
 			else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
