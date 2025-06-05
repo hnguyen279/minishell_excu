@@ -110,7 +110,6 @@ static int	handle_heredoc_loop(t_shell *mshell, int fd, const char *delim,
 		else if (check == 2)
 			break ;
 		status = process_heredoc_line(mshell, fd, line, expand);
-		free(line);
 		if (status)
 			break ;
 	}
