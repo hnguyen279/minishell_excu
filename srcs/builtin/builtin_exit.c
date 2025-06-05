@@ -56,9 +56,8 @@ void builtin_exit(t_shell *mshell, char **token)
 
 	while (token[argc])
 		argc++;
-
-	ft_putstr_fd("exit\n", STDOUT_FILENO);
-
+	if (!mshell->has_pipe)
+		ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (argc > 2)
 	{
 		ft_printf_fd(STDERR_FILENO, "minishell: exit: too many arguments\n");
