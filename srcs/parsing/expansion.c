@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/05 13:46:39 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/05 18:54:39 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@ t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 {
 	t_token	*temp;
 	char	*expanded_value;
-	//t_token *prev;
 
 	temp = *token_list;
-	//prev = NULL;
 	while (temp)
 	{
 		if (temp->type == WORD && temp->in_single_quote == FALSE) // adjust: only expand inside double quotes
@@ -27,16 +25,14 @@ t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 			expanded_value = expand_token_value(temp->value, mshell);
 			if (!expanded_value)
 				return (NULL);
-			else if (ft_strcmp(expanded_value, "") == 0) //else if (expanded_value[0] == '\0')
-
-			{
-				// printf("ENter here\n");
-				free_string(temp->value);
-				temp->value = ft_strdup("");
-				free_string(expanded_value);
-				if (!temp->value)
-					return (NULL);
-			}
+			// else if (ft_strcmp(expanded_value, "") == 0) //should remove?
+			// {
+			// 	free_string(temp->value);
+			// 	temp->value = ft_strdup("");
+			// 	free_string(expanded_value);
+			// 	if (!temp->value)
+			// 		return (NULL);
+			// }
 			else
 			{
 				free_string(temp->value);
@@ -46,7 +42,6 @@ t_token	*expand_variables(t_token **token_list, t_shell *mshell)
 					return (NULL);
 			}
 		}
-		//prev = temp;
 		temp = temp->next;
 	}
 	return (*token_list);
@@ -87,19 +82,13 @@ char	*expand_token_value(char *str, t_shell *mshell)
 				tmp = result;
 				result = handle_env_variable(&str, mshell, &i, result);
 				free_string(tmp);
-				// printf("after join: %s\n", result);
-				// if (ft_strcmp(result, "") == 0)
-				// {
-				// 	// printf("break here\n");
-				// 	return (result);
-				// }
+	
 			}
 			else
 			{
 				result = char_join_result_and_free(result, str[i]);
 				i++;
 			}
-			// printf("after join: %s\n", result);
 		}
 		else
 		{
@@ -137,16 +126,11 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 		if (!result)
 			return (NULL);
 		free_string(var_name);
-		// printf("Result is empty\n");
-		// free_string(*str);
 		return (result);
 	}
-	// printf("var_name: %s\n", var_name);
 	env_value = env_find_value(mshell, var_name);
 	if (!env_value)
 		env_value = "";
-	
-	// printf("env_value %s\n", env_value);
 	result = str_join_result_and_free(result, env_value);
 	free_string(var_name);
 	if (!result)
@@ -164,8 +148,6 @@ char	*str_join_result_and_free(char *s1, char *s2)
 		print_error("ft_strjoin failed");
 		return (NULL);
 	}
-	// free_string(s1);
-	// free_string(s2);
 	return (joined_str);
 }
 

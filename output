@@ -1,0 +1,4 @@
+CC = cc 
+	@echo "minishell is built successfully"
+	@echo "libft.a is built successfully"
+	@echo "remove objects successfully"

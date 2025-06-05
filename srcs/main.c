@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/04 18:02:29 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/05 18:47:18 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void	shell_interactive(t_shell *mshell)
     clear_working_history(&history_head);
 }
 
+
 int handle_special_command_line(char *line, t_token **history_head)
 {
     if (ft_strcmp(line, "exit") == 0)
@@ -112,53 +113,61 @@ int handle_special_command_line(char *line, t_token **history_head)
 
 void    handle_line(char *line, t_shell *mshell)
 {
-    t_token	*tokenized_input_list;
+    t_token *tokenized_input_list;
 	t_cmd	*cmd_list;
 	t_ast	*tree;
 
-    // printf("print line: %s\n", line);
     mshell->heredoc_index = 0;
     if (validate_quote(line) == FALSE)
     {
         mshell->exit_code = 2;
         return ;
     }
-    // printf("validate line successfully\n");
     tokenized_input_list = NULL;
 	cmd_list = NULL;
 	tree = NULL;
-    process_valid_line(line, mshell, &tokenized_input_list, &cmd_list, &tree);
+    if (tokenization_expansion_validation(line, mshell, &tokenized_input_list) == FALSE ||
+        empty_variable_extension(mshell, &tokenized_input_list) == FALSE)
+    {
+        free_token_list(tokenized_input_list);
+        tokenized_input_list = NULL;
+        return ;
+    }
+    print_linked_list(tokenized_input_list);
+    process_valid_line(mshell, &tokenized_input_list, &cmd_list, &tree);
     free_token_list(tokenized_input_list);
+    tokenized_input_list = NULL;
     free_cmd_list(cmd_list);
     free_ast(tree, mshell);
     mshell->ast = NULL;
     tree = NULL; 
 }
 
-void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_input_list, t_cmd **cmd_list, t_ast **tree)
+int    tokenization_expansion_validation(char *line, t_shell *mshell, t_token **tokenized_input_list)
 {
     *tokenized_input_list = convert_user_input_to_token(line);
     if (!*tokenized_input_list)
     {
         mshell->exit_code = 1;
-        print_error("Failed to convert user input to token");
-        return ;
+        return (FALSE);
     }
-    // printf("convert to token succeed\n");
-    // print_linked_list(*tokenized_input_list);
-
     *tokenized_input_list = expand_variables(tokenized_input_list, mshell);
     if (!*tokenized_input_list)
     {
         free_token_list(*tokenized_input_list);
-        return ;
+        return (FALSE);
     }
-    // print_linked_list(*tokenized_input_list);
     if (validate_token(*tokenized_input_list) == FALSE)
     {
         mshell->exit_code = 2;
-        return ;
+        return (FALSE);
     }
+    return (TRUE);
+}
+
+int    empty_variable_extension(t_shell *mshell, t_token **tokenized_input_list)
+{
+    
     if (*tokenized_input_list && ft_strcmp((*tokenized_input_list)->value, "") == 0)
     {
         if ((*tokenized_input_list)->next)
@@ -171,9 +180,14 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
         else
         {
             mshell->exit_code = 0;
-            return ;
+            return (FALSE);
         }
     }
+    return (TRUE);
+}
+
+void    process_valid_line(t_shell *mshell, t_token **tokenized_input_list, t_cmd **cmd_list, t_ast **tree)
+{
     *cmd_list = parse_tokens_to_commands(*tokenized_input_list);
     if (!*cmd_list)
     {
@@ -181,7 +195,6 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
         mshell->exit_code = 2;
         return ;
     }
-    // print_cmd_list(*cmd_list);
     *tree = convert_cmd_to_ast(*cmd_list);
     if (!*tree)
     {
@@ -194,15 +207,12 @@ void    process_valid_line(char *line, t_shell *mshell, t_token **tokenized_inpu
 
 void    run_ast_pipeline(t_shell *mshell, t_ast *tree)
 {
-    // printf("ast tree is successfully created\n");
     if (process_heredocs(mshell, tree))
     {
-        //printf("execute process heredocts\n");
         cleanup_heredoc_tempfiles(tree);
         mshell->exit_code = 130;
         return ;
     }
-    //printf("execute ast\n");
     execute_ast(tree, mshell);
     cleanup_heredoc_tempfiles(tree);
     if (tree->cmd && tree->cmd[0] && !mshell->has_pipe) //tree->type == NODE_CMD &&
