@@ -107,13 +107,13 @@ int builtin_cd(t_shell *mshell, char **token)
     if (!mshell || !token)
     {
         mshell->exit_code = 1;
-        return mshell->exit_code;
+        return (mshell->exit_code);
     }
     if (token[1] && token[2])
     {
         ft_printf_fd(2, "minishell: cd: too many arguments\n");
         mshell->exit_code = 1;
-        return mshell->exit_code;
+        return (mshell->exit_code);
     }
     if (!token[1] || token[1][0] == '\0' || ft_strcmp(token[1], "~") == 0 || ft_strcmp(token[1], "--") == 0)
         cd_to_home(mshell);
@@ -123,5 +123,5 @@ int builtin_cd(t_shell *mshell, char **token)
         cd_to_oldpwd(mshell);
     else
         cd_to_path(mshell, token[1]);
-    return mshell->exit_code;
+    return (mshell->exit_code);
 }
