@@ -6,46 +6,45 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 11:25:59 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 14:39:22 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/shell.h"
 
-t_token	*expand_variables(t_token **token_list, t_shell *mshell)
-{
-	t_token	*temp;
-	char	*expanded_value;
+// t_token	*expand_variables(t_token **token_list, t_shell *mshell)
+// {
+// 	t_token	*temp;
+// 	char	*expanded_value;
 
-	temp = *token_list;
-	while (temp)
-	{
-		if (temp->type == WORD && temp->in_single_quote == FALSE) // adjust: only expand inside double quotes
-		{
-			expanded_value = expand_token_value(temp->value, mshell);
-			if (!expanded_value)
-				return (NULL);
-			// else if (ft_strcmp(expanded_value, "") == 0) //should remove?
-			// {
-			// 	free_string(temp->value);
-			// 	temp->value = ft_strdup("");
-			// 	free_string(expanded_value);
-			// 	if (!temp->value)
-			// 		return (NULL);
-			// }
-			else
-			{
-				free_string(temp->value);
-				temp->value = ft_strdup(expanded_value);
-				free_string(expanded_value); // move here avoid leak
-				if (!temp->value)
-					return (NULL);
-			}
-		}
-		temp = temp->next;
-	}
-	return (*token_list);
-}
+// 	temp = *token_list;
+// 	while (temp)
+// 	{
+// 		// raise_quote_flag(&temp);
+// 		if (temp->type == WORD && temp->in_double_quote == TRUE) // adjust: only expand inside double quotes
+// 		{
+// 			expanded_value = expand_token_value(temp->value, mshell);
+// 			if (!expanded_value)
+// 				return (NULL);
+// 			// else if (ft_strcmp(expanded_value, "") == 0) //should remove?
+// 			// {
+// 			// 	free_string(temp->value);
+// 			// 	temp->value = ft_strdup("");
+// 			// 	free_string(expanded_value);
+// 			// 	if (!temp->value)
+// 			// 		return (NULL);
+// 			// }
+// 			free_string(temp->value);
+// 			temp->value = ft_strdup(expanded_value);
+// 			free_string(expanded_value); // move here avoid leak
+// 			if (!temp->value)
+// 				return (NULL);
+// 		}
+// 		temp = temp->next;
+// 	}
+// 	return (*token_list);
+// }
+
 
 char	*expand_token_value(char *str, t_shell *mshell)
 {
@@ -143,8 +142,8 @@ char	*str_join_result_and_free(char *s1, char *s2)
 	char	*joined_str;
 
 	joined_str = ft_strjoin(s1, s2);
-	free_string(s1);
-	free_string(s2);
+	// free_string(s1);
+	// free_string(s2);
 	if (!joined_str)
 	{
 		print_error("ft_strjoin failed");
@@ -162,8 +161,25 @@ char	*char_join_result_and_free(char *s1, char c)
 	s2[0] = c;
 	// s2[1] = '\0';
 	joined_str = str_join_result_and_free(s1, s2);
-	// free_string(s1);
+	free_string(s2);
 	return (joined_str);
 }
 
 
+
+// void	raise_quote_flag(t_token **token)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while ((*token)->value[i])
+// 	{
+// 		if ((*token)->value[i] == '\"')
+// 		{
+// 			(*token)->in_double_quote = TRUE;
+// 			return ;
+// 		}
+// 		i++;
+// 	}
+	
+// }

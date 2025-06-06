@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 11:07:03 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 14:39:27 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,15 +144,28 @@ void			handle_out_append(char *line, t_token **token_list, int *i);
 
 
 char			*extract_quoted_token(char *line, int *i);
-char			*extract_word(char *line, int *i);
+// char			*extract_word(char *line, int *i);
+// char			*extract_unquoted_word(char *line, int *i);
+// void			raise_quote_flag(t_token **token);
 void			add_token(t_token **tokenized_input_list, t_token *new_token);
-t_token			*convert_user_input_to_token(char *line);
-int				handle_word(char *line, t_token **token_list, int *i);
-char			*handle_quote(char *line, int *i, int *in_single_quote, int *in_double_quote);
+// t_token			*convert_user_input_to_token(char *line, t_shell *mshell);
+// int				handle_word(char *line, t_token **token_list, int *i, t_shell *mshell);
+// char			*handle_quote(char *line, int *i, int *in_single_quote, int *in_double_quote);
+char	*handle_single_quote(char *line, int *i, int *in_single_quote);
+// char	*handle_double_quote(char *line, int *i, int *in_double_quote);
+
+t_token	*convert_user_input_to_token(char *line, t_shell *mshell);
+
+int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell);
+char *extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote, t_shell *mshell);
+char	*handle_double_quote(char *line, int *i, int *in_double_quote, t_shell *mshell);
+char	*extract_unquoted_word(char *line, int *i, t_shell *mshell);
+
+
 
 
 // char *extract_full_word(char *line, int *i);
-char 			*extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote);
+// char 			*extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote);
 // char	*expand_token_value(char *str, int	in_single_quote, int in_double_quote, t_shell *mshell);
 
 
@@ -187,7 +200,7 @@ char			*str_join_result_and_free(char *s1, char *s2);
 char			*char_join_result_and_free(char *s1, char c);
 char			*expand_token_value(char *str, t_shell	*mshell);
 // void			expand_variables(t_token **token_list, t_shell *mshell);
-t_token	*expand_variables(t_token **token_list, t_shell *mshell);
+// t_token	*expand_variables(t_token **token_list, t_shell *mshell);
 
 char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result);
 
