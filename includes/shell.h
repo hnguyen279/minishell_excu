@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 16:05:29 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 17:11:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,7 @@ char			*extract_unquoted_word(char *line, int *i, t_shell *mshell);
 char			*expand_token_value(char *str, t_shell	*mshell);
 char			*handle_env_variable(char **str, t_shell *mshell, int *i,
 					char *result);
+char			*expand_exit_code(t_shell *mshell, char	*result, int *i);
 
 /* Validate input */
 int				validate_token(t_token *token);
@@ -193,15 +194,15 @@ void			clear_working_history(t_token **history_head);
 int				array_size(char **arr);
 void			print_error(char *msg);
 int				ft_isspace(char c);
+int				ft_isspecial(char c);
+
 
 /* Helper functions to free */
 void			free_string(char *s);
 void			free_array(char **arr, int i);
 void			free_token_list(t_token *tokens);
 void			free_cmd_list(t_cmd *head);
-// char			*str_join_result_and_free(char *s1, char *s2);
-char	*str_join_result_and_free(char **s1, char *s2);
-
+char			*str_join_result_and_free(char **s1, char *s2);
 char			*char_join_result_and_free(char **s1, char c);
 
 /* Heredoc functions */

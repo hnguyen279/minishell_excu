@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/06/06 15:37:14 by trpham           ###   ########.fr        #
+#    Updated: 2025/06/06 16:25:14 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,15 +19,15 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/parsing/handle_quote.c \
 		$(SRCS_DIR)/parsing/token_list.c \
 		$(SRCS_DIR)/parsing/tokenization.c \
-		$(SRCS_DIR)/parsing/tokenization2.c \
 		$(SRCS_DIR)/parsing/helper.c \
 		$(SRCS_DIR)/parsing/validate_input.c \
-		$(SRCS_DIR)/parsing/parser.c \
-		$(SRCS_DIR)/parsing/parser_redirection.c \
+		$(SRCS_DIR)/parsing/validate_input2.c \
 		$(SRCS_DIR)/parsing/history.c \
 		$(SRCS_DIR)/parsing/expansion.c \
 		$(SRCS_DIR)/parsing/free_function.c \
 		$(SRCS_DIR)/ast/ast.c \
+		$(SRCS_DIR)/ast/cmd_list.c \
+		$(SRCS_DIR)/ast/redirects.c \
 		$(SRCS_DIR)/heredoc/process_heredoc.c \
 		$(SRCS_DIR)/heredoc/utils_heredoc.c \
 		$(SRCS_DIR)/heredoc/utils_heredoc2.c \
