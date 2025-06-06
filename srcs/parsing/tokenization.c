@@ -28,7 +28,7 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 		else if (line[i] == '<')
 			handle_in_heredoc(line, &token_list, &i);
 		else if (line[i] == '>')
-			handle_out_append(line,  &token_list, &i);
+			handle_out_append(line, &token_list, &i);
 		else
 		{
 			if (handle_word(line, &token_list, &i, mshell) == FALSE)
@@ -88,7 +88,7 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 {
 	char	*extracted_str;
 	t_token	*new_token;
-	
+
 	extracted_str = extract_full_word(line, i, mshell);
 	if (!extracted_str)
 	{
@@ -100,4 +100,3 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 	free_string(extracted_str);
 	return (TRUE);
 }
-

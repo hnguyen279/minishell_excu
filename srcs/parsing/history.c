@@ -67,7 +67,7 @@ void	print_working_history(t_token *history_head)
 
 void	clear_working_history(t_token **hist_head)
 {
-	t_token *temp;
+	t_token	*temp;
 
 	while (*hist_head)
 	{

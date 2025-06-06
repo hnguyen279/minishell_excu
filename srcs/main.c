@@ -27,32 +27,34 @@ int	main(int ac, char *av[], char *env[])
 		return (EXIT_FAILURE);
 	}
 	(void)av;
-    setup_signals(&mshell, MODE_INTERACTIVE);
+	setup_signals(&mshell, MODE_INTERACTIVE);
 	shell_interactive(&mshell);
 	shell_cleanup(&mshell);
 	return (mshell.exit_code);
 }
 
-void cleanup_heredoc_tempfiles(t_ast *tree)
+void	cleanup_heredoc_tempfiles(t_ast *tree)
 {
-    if (!tree)
-        return;
-    if (tree->redirects)
-    {
-        t_redirect *redir = tree->redirects;
-        while (redir)
-        {
-            if (redir->type == REDIR_HEREDOC && redir->tmp_file)
-            {
-                unlink(redir->tmp_file);
-                free(redir->tmp_file);
-                redir->tmp_file = NULL;
-            }
-            redir = redir->next;
-        }
-    }
-    cleanup_heredoc_tempfiles(tree->left);
-    cleanup_heredoc_tempfiles(tree->right);
+	t_redirect	*redir;
+
+	if (!tree)
+		return ;
+	if (tree->redirects)
+	{
+		redir = tree->redirects;
+		while (redir)
+		{
+			if (redir->type == REDIR_HEREDOC && redir->tmp_file)
+			{
+				unlink(redir->tmp_file);
+				free(redir->tmp_file);
+				redir->tmp_file = NULL;
+			}
+			redir = redir->next;
+		}
+	}
+	cleanup_heredoc_tempfiles(tree->left);
+	cleanup_heredoc_tempfiles(tree->right);
 }
 
 void	shell_interactive(t_shell *mshell)
@@ -63,65 +65,65 @@ void	shell_interactive(t_shell *mshell)
 	history_head = NULL;
 	while (1)
 	{
-        g_signum = 0;
+		g_signum = 0;
 		line = readline("minishell$ ");
-        if (g_signum)  // check siganl after readline for Ctrl C in main shell
-           sig_exit_code(mshell);
+		if (g_signum) // check siganl after readline for Ctrl C in main shell
+			sig_exit_code(mshell);
 		if (!line) // Ctrl+D
 		{
 			printf("exit\n");
 			break ;
 		}
-        if (line[0] != '\0')
+		if (line[0] != '\0')
 		{
-            store_history(line, &history_head);
-            if (handle_special_command_line(line, &history_head) == TRUE)
-            {
-                if (ft_strcmp(line, "exit") == 0)
-                {
-                    free_string(line);
-                    break;
-                }
-            }
-            else
-                handle_line(line, mshell);
+			store_history(line, &history_head);
+			if (handle_special_command_line(line, &history_head) == TRUE)
+			{
+				if (ft_strcmp(line, "exit") == 0)
+				{
+					free_string(line);
+					break ;
+				}
+			}
+			else
+				handle_line(line, mshell);
 		}
-        free_string(line);
-    }
-    clear_working_history(&history_head);
+		free_string(line);
+	}
+	clear_working_history(&history_head);
 }
 
-int handle_special_command_line(char *line, t_token **history_head)
+int	handle_special_command_line(char *line, t_token **history_head)
 {
-    if (ft_strcmp(line, "exit") == 0)
-        return (TRUE);
-    else if (ft_strcmp(line, "history") == 0)
-    {
-        print_working_history(*history_head);
-        return (TRUE);
-    }
-    else if (ft_strcmp(line, "history -c") == 0)
-    {
-        clear_working_history(history_head);
-        return (TRUE);
-    }
-    return (FALSE);
+	if (ft_strcmp(line, "exit") == 0)
+		return (TRUE);
+	else if (ft_strcmp(line, "history") == 0)
+	{
+		print_working_history(*history_head);
+		return (TRUE);
+	}
+	else if (ft_strcmp(line, "history -c") == 0)
+	{
+		clear_working_history(history_head);
+		return (TRUE);
+	}
+	return (FALSE);
 }
 
-void    run_ast_pipeline(t_shell *mshell, t_ast *tree)
+void	run_ast_pipeline(t_shell *mshell, t_ast *tree)
 {
-    if (process_heredocs(mshell, tree))
-    {
-        cleanup_heredoc_tempfiles(tree);
-        mshell->exit_code = 130;
-        return ;
-    }
-    execute_ast(tree, mshell);
-    cleanup_heredoc_tempfiles(tree);
-    if (tree->cmd && tree->cmd[0] && !mshell->has_pipe) //tree->type == NODE_CMD &&
-        env_set_last_argument(mshell, tree->cmd);
+	if (process_heredocs(mshell, tree))
+	{
+		cleanup_heredoc_tempfiles(tree);
+		mshell->exit_code = 130;
+		return ;
+	}
+	execute_ast(tree, mshell);
+	cleanup_heredoc_tempfiles(tree);
+	if (tree->cmd && tree->cmd[0] && !mshell->has_pipe)
+		// tree->type == NODE_CMD &&
+		env_set_last_argument(mshell, tree->cmd);
 }
-
 
 // for testing
 // void	shell_interactive(t_shell *mshell)
@@ -137,9 +139,10 @@ void    run_ast_pipeline(t_shell *mshell, t_ast *tree)
 // 			line = readline("");
 // 		else
 // 		{
-// 			char *raw_line = get_next_line(fileno(stdin));  // non-interactive mode
+// 			char *raw_line = get_next_line(fileno(stdin)); 
+				// non-interactive mode
 // 			if (!raw_line)
-// 				break;
+// 				break ;
 // 			line = ft_strtrim(raw_line, "\n");
 // 			free(raw_line);
 // 		}
@@ -148,12 +151,12 @@ void    run_ast_pipeline(t_shell *mshell, t_ast *tree)
 // 			sig_exit_code(mshell);
 
 // 		if (!line)  // Ctrl+D or EOF
-// 			break;
+// 			break ;
 
 // 		if (line[0] == '\0')  // Empty line (Enter key)
 // 		{
 // 			free_string(line);
-// 			continue;
+// 			continue ;
 // 		}
 
 // 		store_history(line, &history_head);
@@ -162,7 +165,7 @@ void    run_ast_pipeline(t_shell *mshell, t_ast *tree)
 // 			ft_strcmp(line, "exit") == 0)
 // 		{
 // 			free_string(line);
-// 			break;
+// 			break ;
 // 		}
 // 		else
 // 			handle_line(line, mshell);

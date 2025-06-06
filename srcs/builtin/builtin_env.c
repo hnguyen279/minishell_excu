@@ -1,6 +1,6 @@
 #include "../../includes/shell.h"
 
-int builtin_env(t_shell *mshell, char **token)
+int	builtin_env(t_shell *mshell, char **token)
 {
 	if (!mshell || !token || !token[0])
 	{

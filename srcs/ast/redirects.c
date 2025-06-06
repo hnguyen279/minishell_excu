@@ -37,8 +37,8 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 	// printf("redir type %d\n", redir_type);
 	(*token_list) = (*token_list)->next;
 	// printf("after redirects %s\n", (*token_list)->value);
-	if (!*token_list || (*token_list)->type != WORD
-		|| !(*token_list)->value || !*(*token_list)->value)
+	if (!*token_list || (*token_list)->type != WORD || !(*token_list)->value
+		|| !*(*token_list)->value)
 	{
 		print_error("Invalid or missing file after redirection");
 		return (FALSE);
@@ -50,7 +50,6 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 		return (FALSE);
 	}
 	(*token_list) = (*token_list)->next;
-	
 	return (TRUE);
 }
 
