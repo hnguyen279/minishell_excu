@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 14:39:27 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 16:05:29 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # include <sys/wait.h>
 # include <unistd.h>
 # include <limits.h>
-
 
 # define TRUE 0
 # define FALSE -1
@@ -66,8 +65,8 @@ typedef struct s_token
 	t_token_type		type;
 	struct s_token		*next;
 	struct s_token		*prev;
-	int					in_single_quote; // true if in and false if not
-	int					in_double_quote;
+	// int					in_single_quote; // true if in and false if not
+	// int					in_double_quote;
 }	t_token;
 
 typedef enum e_redirect_type
@@ -126,48 +125,37 @@ typedef struct s_shell
 int				init_shell(t_shell *mshell, char **envp);
 void			shell_interactive(t_shell *mshell);
 void			shell_cleanup(t_shell *mshell);
+
+/* Handle user input */
 int				handle_special_command_line(char *line, t_token **history_head);
 void			handle_line(char *line, t_shell *mshell);
-int			    tokenization_expansion_validation(char *line, t_shell *mshell, t_token **tokenized_input_list);
-int			    empty_variable_extension(t_shell *mshell, t_token **tokenized_input_list);
-
-
-void			process_valid_line(t_shell *mshell,	t_token **tokenized_input_list, t_cmd **cmd_list, t_ast **tree);
+void			process_valid_line(t_shell *mshell,	t_token **oken_list,
+					t_cmd **cmd_list, t_ast **tree);
 void			run_ast_pipeline(t_shell *mshell, t_ast *tree);
 
 /* Tokenization */
-// int				is_comment(char *s);
+int				tokenization_expansion_validation(char *line, t_shell *mshell,
+					t_token **tokenized_input_list);
+int				empty_variable_extension(t_shell *mshell,
+					t_token **tokenized_input_list);
 t_token			*create_token(char *s, t_token_type i);
 void			handle_pipe(t_token **token_list, int *i);
 void			handle_in_heredoc(char *line, t_token **token_list, int *i);
 void			handle_out_append(char *line, t_token **token_list, int *i);
-
-
-char			*extract_quoted_token(char *line, int *i);
-// char			*extract_word(char *line, int *i);
-// char			*extract_unquoted_word(char *line, int *i);
-// void			raise_quote_flag(t_token **token);
+// char			*extract_quoted_token(char *line, int *i);
 void			add_token(t_token **tokenized_input_list, t_token *new_token);
-// t_token			*convert_user_input_to_token(char *line, t_shell *mshell);
-// int				handle_word(char *line, t_token **token_list, int *i, t_shell *mshell);
-// char			*handle_quote(char *line, int *i, int *in_single_quote, int *in_double_quote);
-char	*handle_single_quote(char *line, int *i, int *in_single_quote);
-// char	*handle_double_quote(char *line, int *i, int *in_double_quote);
+t_token			*convert_user_input_to_token(char *line, t_shell *mshell);
+int				handle_word(char *line, t_token **token_list, int *i,
+					t_shell *mshell);
+char			*extract_full_word(char *line, int *i, t_shell *mshell);
+char			*handle_single_quote(char *line, int *i);
+char			*handle_double_quote(char *line, int *i, t_shell *mshell);
+char			*extract_unquoted_word(char *line, int *i, t_shell *mshell);
 
-t_token	*convert_user_input_to_token(char *line, t_shell *mshell);
-
-int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell);
-char *extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote, t_shell *mshell);
-char	*handle_double_quote(char *line, int *i, int *in_double_quote, t_shell *mshell);
-char	*extract_unquoted_word(char *line, int *i, t_shell *mshell);
-
-
-
-
-// char *extract_full_word(char *line, int *i);
-// char 			*extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote);
-// char	*expand_token_value(char *str, int	in_single_quote, int in_double_quote, t_shell *mshell);
-
+/* Expansion token */
+char			*expand_token_value(char *str, t_shell	*mshell);
+char			*handle_env_variable(char **str, t_shell *mshell, int *i,
+					char *result);
 
 /* Validate input */
 int				validate_token(t_token *token);
@@ -177,33 +165,19 @@ int				is_redirection(t_token *token);
 int				is_valid_redirection(t_token *token_list);
 int				validate_quote(char *line);
 int				is_operator(t_token *token);
-int				is_valid_parentheses(t_token *token_list);
-int				validate_parentheses_pair(char *line);
-
+// int				is_valid_parentheses(t_token *token_list);
+// int				validate_parentheses_pair(char *line);
 
 /* Parsing */
 t_cmd			*parse_tokens_to_commands(t_token *tokenized_list);
 t_cmd			*create_cmd(void);
 int				update_command_node(t_cmd **new_cmd, t_token **temp_token_list);
 int				count_args(t_token *tokenized_input_list);
-// char			**fill_args(t_token **token_list);
 char			**fill_args(t_cmd **new_cmd, t_token **token_list);
-
 int				add_redirects(t_redirect **redir_list, t_redirect_type type,
 					char *file);
 t_redirect_type	token_to_redirect_type(t_token_type token_type);
 int				parse_redirection(t_cmd **new_cmd, t_token **token_list);
-void			print_cmd_list(t_cmd *head);
-void			print_redirect_list(t_redirect *redir_list);
-void			free_cmd_list(t_cmd *head);
-char			*str_join_result_and_free(char *s1, char *s2);
-char			*char_join_result_and_free(char *s1, char c);
-char			*expand_token_value(char *str, t_shell	*mshell);
-// void			expand_variables(t_token **token_list, t_shell *mshell);
-// t_token	*expand_variables(t_token **token_list, t_shell *mshell);
-
-char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result);
-
 
 /* Abstract Syntax Tree */
 t_ast			*create_ast_node(int type);
@@ -216,15 +190,19 @@ void			print_working_history(t_token *history_head);
 void			clear_working_history(t_token **history_head);
 
 /* Helper functions */
+int				array_size(char **arr);
+void			print_error(char *msg);
+int				ft_isspace(char c);
+
+/* Helper functions to free */
 void			free_string(char *s);
 void			free_array(char **arr, int i);
 void			free_token_list(t_token *tokens);
-int				array_size(char **arr);
-void			print_linked_list(t_token *head);
-void			print_error(char *msg);
-void			get_error_msg(t_error_type err);
-int				ft_isspace(char c);
-void			print_array(char **arr);
+void			free_cmd_list(t_cmd *head);
+// char			*str_join_result_and_free(char *s1, char *s2);
+char	*str_join_result_and_free(char **s1, char *s2);
+
+char			*char_join_result_and_free(char **s1, char c);
 
 /* Heredoc functions */
 int				open_heredoc_pipe(t_shell *mshell, t_redirect *redir);
@@ -245,7 +223,8 @@ int				exe_redirection(t_redirect *redir, t_shell *mshell);
 int				execute_pipe(t_ast *ast, t_shell *shell);
 int				execute_command(t_ast *node, t_shell *mshell);
 int				execute_ast(t_ast *node, t_shell *mshell);
-int 			wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code);
+int				wait_command(t_shell *mshell, pid_t pid, int *status,
+					int update_exit_code);
 int				error_msg(t_shell *mshell, const char *msg,
 					int use_errno);
 
@@ -264,7 +243,6 @@ int				env_set_last_argument(t_shell *mshell, char **cmd);
 void			ft_free_null(char ***array);
 char			**realloc_env(char **envp, size_t len);
 
-
 /* Built-in functions */
 int				builtin_cd(t_shell *mshell, char **token);
 int				builtin_echo(t_shell *mshell, char **token);
@@ -275,7 +253,13 @@ void			builtin_exit(t_shell *mshell, char **token);
 void			builtin_export(t_shell *mshell, char **token);
 
 /* Signal functions */
-void setup_signals(t_shell *mshell, int mode);
-void sig_exit_code(t_shell *mshell);
+void			setup_signals(t_shell *mshell, int mode);
+void			sig_exit_code(t_shell *mshell);
+
+/* To remove block before submiting */
+void			print_cmd_list(t_cmd *head);
+void			print_redirect_list(t_redirect *redir_list);
+void			print_linked_list(t_token *head);
+void			print_array(char **arr);
 
 #endif
