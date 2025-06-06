@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/05/26 13:37:36 by trpham           ###   ########.fr        #
+#    Updated: 2025/06/06 16:25:14 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,15 +15,19 @@ CFLAGS = -g -Wall -Wextra -Werror
 
 SRCS_DIR = ./srcs/
 SRCS = $(SRCS_DIR)/main.c \
-		$(SRCS_DIR)/parsing/parser.c \
-		$(SRCS_DIR)/parsing/token_linked_list.c \
+		$(SRCS_DIR)/parsing/handle_input.c \
+		$(SRCS_DIR)/parsing/handle_quote.c \
+		$(SRCS_DIR)/parsing/token_list.c \
 		$(SRCS_DIR)/parsing/tokenization.c \
 		$(SRCS_DIR)/parsing/helper.c \
 		$(SRCS_DIR)/parsing/validate_input.c \
-		$(SRCS_DIR)/parsing/redirection.c \
+		$(SRCS_DIR)/parsing/validate_input2.c \
 		$(SRCS_DIR)/parsing/history.c \
 		$(SRCS_DIR)/parsing/expansion.c \
+		$(SRCS_DIR)/parsing/free_function.c \
 		$(SRCS_DIR)/ast/ast.c \
+		$(SRCS_DIR)/ast/cmd_list.c \
+		$(SRCS_DIR)/ast/redirects.c \
 		$(SRCS_DIR)/heredoc/process_heredoc.c \
 		$(SRCS_DIR)/heredoc/utils_heredoc.c \
 		$(SRCS_DIR)/heredoc/utils_heredoc2.c \
@@ -47,7 +51,8 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/builtin/builtin_exit.c \
 		$(SRCS_DIR)/builtin/builtin_export.c \
 		$(SRCS_DIR)/signals/handle_signal.c \
-		$(SRCS_DIR)/shell/shell.c
+		$(SRCS_DIR)/shell/shell.c \
+		$(SRCS_DIR)/parsing/to_delete_file.c
 
 OBJS = $(SRCS:%.c=%.o)
 

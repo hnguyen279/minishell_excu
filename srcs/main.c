@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/05 18:47:18 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 16:26:20 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,27 +72,24 @@ void	shell_interactive(t_shell *mshell)
 			printf("exit\n");
 			break ;
 		}
-		if (line[0] == '\0')
+        if (line[0] != '\0')
 		{
-			free_string(line);
-			continue ;
-		}
-        store_history(line, &history_head);
-        if (handle_special_command_line(line, &history_head) == TRUE)
-        {
-            if (ft_strcmp(line, "exit") == 0)
+            store_history(line, &history_head);
+            if (handle_special_command_line(line, &history_head) == TRUE)
             {
-                free_string(line);
-                break;
+                if (ft_strcmp(line, "exit") == 0)
+                {
+                    free_string(line);
+                    break;
+                }
             }
-        }
-        else
-            handle_line(line, mshell);
+            else
+                handle_line(line, mshell);
+		}
         free_string(line);
     }
     clear_working_history(&history_head);
 }
-
 
 int handle_special_command_line(char *line, t_token **history_head)
 {
@@ -111,100 +108,6 @@ int handle_special_command_line(char *line, t_token **history_head)
     return (FALSE);
 }
 
-void    handle_line(char *line, t_shell *mshell)
-{
-    t_token *tokenized_input_list;
-	t_cmd	*cmd_list;
-	t_ast	*tree;
-
-    mshell->heredoc_index = 0;
-    if (validate_quote(line) == FALSE)
-    {
-        mshell->exit_code = 2;
-        return ;
-    }
-    tokenized_input_list = NULL;
-	cmd_list = NULL;
-	tree = NULL;
-    if (tokenization_expansion_validation(line, mshell, &tokenized_input_list) == FALSE ||
-        empty_variable_extension(mshell, &tokenized_input_list) == FALSE)
-    {
-        free_token_list(tokenized_input_list);
-        tokenized_input_list = NULL;
-        return ;
-    }
-    print_linked_list(tokenized_input_list);
-    process_valid_line(mshell, &tokenized_input_list, &cmd_list, &tree);
-    free_token_list(tokenized_input_list);
-    tokenized_input_list = NULL;
-    free_cmd_list(cmd_list);
-    free_ast(tree, mshell);
-    mshell->ast = NULL;
-    tree = NULL; 
-}
-
-int    tokenization_expansion_validation(char *line, t_shell *mshell, t_token **tokenized_input_list)
-{
-    *tokenized_input_list = convert_user_input_to_token(line);
-    if (!*tokenized_input_list)
-    {
-        mshell->exit_code = 1;
-        return (FALSE);
-    }
-    *tokenized_input_list = expand_variables(tokenized_input_list, mshell);
-    if (!*tokenized_input_list)
-    {
-        free_token_list(*tokenized_input_list);
-        return (FALSE);
-    }
-    if (validate_token(*tokenized_input_list) == FALSE)
-    {
-        mshell->exit_code = 2;
-        return (FALSE);
-    }
-    return (TRUE);
-}
-
-int    empty_variable_extension(t_shell *mshell, t_token **tokenized_input_list)
-{
-    
-    if (*tokenized_input_list && ft_strcmp((*tokenized_input_list)->value, "") == 0)
-    {
-        if ((*tokenized_input_list)->next)
-        {
-            t_token *to_free = *tokenized_input_list;
-            (*tokenized_input_list) = (*tokenized_input_list)->next;
-            free_string(to_free->value);
-            free(to_free);
-        }
-        else
-        {
-            mshell->exit_code = 0;
-            return (FALSE);
-        }
-    }
-    return (TRUE);
-}
-
-void    process_valid_line(t_shell *mshell, t_token **tokenized_input_list, t_cmd **cmd_list, t_ast **tree)
-{
-    *cmd_list = parse_tokens_to_commands(*tokenized_input_list);
-    if (!*cmd_list)
-    {
-        print_error("Failed to parse token to cmd");
-        mshell->exit_code = 2;
-        return ;
-    }
-    *tree = convert_cmd_to_ast(*cmd_list);
-    if (!*tree)
-    {
-        mshell->exit_code = 2;
-        print_error("Failed to convert cmd to ast");
-        return ;
-    }
-    run_ast_pipeline(mshell, *tree);
-}
-
 void    run_ast_pipeline(t_shell *mshell, t_ast *tree)
 {
     if (process_heredocs(mshell, tree))
@@ -218,3 +121,54 @@ void    run_ast_pipeline(t_shell *mshell, t_ast *tree)
     if (tree->cmd && tree->cmd[0] && !mshell->has_pipe) //tree->type == NODE_CMD &&
         env_set_last_argument(mshell, tree->cmd);
 }
+
+
+// for testing
+// void	shell_interactive(t_shell *mshell)
+// {
+// 	char		*line;
+// 	t_token		*history_head = NULL;
+
+// 	while (1)
+// 	{
+// 		g_signum = 0;
+
+// 		if (isatty(fileno(stdin)))
+// 			line = readline("");
+// 		else
+// 		{
+// 			char *raw_line = get_next_line(fileno(stdin));  // non-interactive mode
+// 			if (!raw_line)
+// 				break;
+// 			line = ft_strtrim(raw_line, "\n");
+// 			free(raw_line);
+// 		}
+
+// 		if (g_signum)  // Signal interrupt (e.g., Ctrl+C)
+// 			sig_exit_code(mshell);
+
+// 		if (!line)  // Ctrl+D or EOF
+// 			break;
+
+// 		if (line[0] == '\0')  // Empty line (Enter key)
+// 		{
+// 			free_string(line);
+// 			continue;
+// 		}
+
+// 		store_history(line, &history_head);
+
+// 		if (handle_special_command_line(line, &history_head) == TRUE &&
+// 			ft_strcmp(line, "exit") == 0)
+// 		{
+// 			free_string(line);
+// 			break;
+// 		}
+// 		else
+// 			handle_line(line, mshell);
+
+// 		free_string(line);
+// 	}
+// 	clear_working_history(&history_head);
+// 	// printf("exit\n");  <-- REMOVE OR COMMENT OUT for tester compatibility
+// }
