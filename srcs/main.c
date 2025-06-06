@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 10:10:31 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 14:41:40 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,16 +193,10 @@ void    handle_line(char *line, t_shell *mshell)
 
 int    tokenization_expansion_validation(char *line, t_shell *mshell, t_token **tokenized_input_list)
 {
-    *tokenized_input_list = convert_user_input_to_token(line);
+    *tokenized_input_list = convert_user_input_to_token(line, mshell);
     if (!*tokenized_input_list)
     {
         mshell->exit_code = 1;
-        return (FALSE);
-    }
-    *tokenized_input_list = expand_variables(tokenized_input_list, mshell);
-    if (!*tokenized_input_list)
-    {
-        free_token_list(*tokenized_input_list);
         return (FALSE);
     }
     if (validate_token(*tokenized_input_list) == FALSE)
