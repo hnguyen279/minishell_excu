@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 15:26:03 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 16:14:53 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,9 @@ void	handle_out_append(char *line, t_token **token_list, int *i)
 
 int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 {
-	// int		in_single_quote;
-	// int		in_double_quote;
 	char	*extracted_str;
 	t_token	*new_token;
 	
-	// in_single_quote = FALSE;
-	// in_double_quote = FALSE;
 	extracted_str = extract_full_word(line, i, mshell);
 	if (!extracted_str)
 	{
@@ -100,39 +96,8 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 		return (FALSE);
 	}
 	new_token = create_token(extracted_str, WORD);
-	// new_token->in_single_quote = in_single_quote;
-	// new_token->in_double_quote = in_double_quote;
 	add_token(token_list, new_token);
 	free_string(extracted_str);
-	// in_single_quote = FALSE;
-	// in_double_quote = FALSE;
 	return (TRUE);
 }
 
-
-
-// char	*extract_quoted_token(char *line, int *i)
-// {
-// 	int		start_pos;
-// 	char	quote;
-// 	char	*str;
-
-// 	quote = line[*i];
-// 	(*i)++;
-// 	start_pos = *i;
-// 	while (line[*i] && line[*i] != quote)
-// 		(*i)++;
-// 	if (line[*i] != quote)
-// 	{
-// 		print_error("Unclosed quote");
-// 		return (NULL);
-// 	}
-// 	str = ft_substr(line, start_pos, *i - start_pos);
-// 	if (!str)
-// 	{
-// 		print_error("Malloc failed to substr");
-// 		return (NULL);
-// 	}
-// 	(*i)++;
-// 	return (str);
-// }

@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 16:13:40 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 17:39:54 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ char	*expand_token_value(char *str, t_shell *mshell)
 {
 	int		i;
 	char	*result;
-	char	*exit_code_str;
-	char	*tmp;
 
 	i = 0;
 	result = ft_strdup("");
@@ -25,39 +23,22 @@ char	*expand_token_value(char *str, t_shell *mshell)
 		return (NULL);
 	while (str[i])
 	{
-		if (str[i] == '$' && str[i + 1] != '\0')
+		if (str[i] == '$' && str[i + 1])
 		{
 			if (str[i + 1] == '?')
-			{
-				exit_code_str = ft_itoa(mshell->exit_code);
-				if (!exit_code_str)
-				{
-					print_error("ft_itoa memory allocation failed");
-					return (NULL);
-				}
-				result = str_join_result_and_free(&result, exit_code_str);
-				free_string(exit_code_str);
-				i = i + 2;
-			}
+				result = expand_exit_code(mshell, result, &i);
 			else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
-			{
-				i++;
-				tmp = result;
 				result = handle_env_variable(&str, mshell, &i, result);
-				free_string(tmp);
-	
+			else if (str[i + 1] >= '0' && str[i + 1] <= '9')
+			{
+				i += 2;
+				// result = char_join_result_and_free(&result, str[i]); // recheck this case
 			}
 			else
-			{
-				result = char_join_result_and_free(&result, str[i]);
-				i++;
-			}
+				result = char_join_result_and_free(&result, str[i++]);
 		}
 		else
-		{
-			result = char_join_result_and_free(&result, str[i]);
-			i++;
-		}
+			result = char_join_result_and_free(&result, str[i++]);
 		if (!result)
 		{
 			print_error("strjoin failed");
@@ -67,7 +48,23 @@ char	*expand_token_value(char *str, t_shell *mshell)
 	return (result);
 }
 
+char	*expand_exit_code(t_shell *mshell, char	*result, int *i)
+{
+	char	*exit_code_str;
+	
+	exit_code_str = ft_itoa(mshell->exit_code);
+	if (!exit_code_str)
+	{
+		print_error("ft_itoa memory allocation failed");
+		return (NULL);
+	}
+	result = str_join_result_and_free(&result, exit_code_str);
+	free_string(exit_code_str);
+	*i = *i + 2;
+	return (result);
+}
 
+char	*expand_number()
 
 char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 {
@@ -75,6 +72,7 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	int		start;
 	char	*env_value;
 	
+	(*i)++;
 	start = *i;
 	while (ft_isalpha((*str)[*i]) || (*str)[*i] == '_')
 		(*i)++;
@@ -86,6 +84,7 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	}
 	else if (ft_strcmp(var_name, "EMPTY") == 0)
 	{
+		free_string(result);
 		result = ft_strdup("");
 		if (!result)
 			return (NULL);
@@ -102,29 +101,3 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	return (result);	
 }
 
-char	*str_join_result_and_free(char **s1, char *s2)
-{
-	char	*joined_str;
-
-	joined_str = ft_strjoin(*s1, s2);
-	free_string(*s1);
-	if (!joined_str)
-	{
-		print_error("ft_strjoin failed");
-		return (NULL);
-	}
-	return (joined_str);
-}
-
-char	*char_join_result_and_free(char **s1, char c)
-{
-	char *joined_str;
-	char *s2;
-
-	s2 = calloc(2, 1);
-	s2[0] = c;
-	joined_str = str_join_result_and_free(s1, s2);
-	// free_string(s1);
-	free_string(s2);
-	return (joined_str);
-}

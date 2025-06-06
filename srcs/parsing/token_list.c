@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_linked_list.c                                :+:      :+:    :+:   */
+/*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 15:34:41 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 16:15:04 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ t_token	*create_token(char *s, t_token_type i)
 	new_token->type = i;
 	new_token->next = NULL;
 	new_token->prev = NULL;
-	// new_token->in_single_quote = FALSE;
-	// new_token->in_double_quote = FALSE;
 	return (new_token);
 }
 
