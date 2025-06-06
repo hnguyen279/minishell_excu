@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/05 18:46:18 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 11:07:03 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,15 +138,19 @@ void			run_ast_pipeline(t_shell *mshell, t_ast *tree);
 /* Tokenization */
 // int				is_comment(char *s);
 t_token			*create_token(char *s, t_token_type i);
-void	handle_pipe(t_token **token_list, int *i);
-void	handle_in_heredoc(char *line, t_token **token_list, int *i);
-void	handle_out_append(char *line, t_token **token_list, int *i);
+void			handle_pipe(t_token **token_list, int *i);
+void			handle_in_heredoc(char *line, t_token **token_list, int *i);
+void			handle_out_append(char *line, t_token **token_list, int *i);
 
 
 char			*extract_quoted_token(char *line, int *i);
 char			*extract_word(char *line, int *i);
 void			add_token(t_token **tokenized_input_list, t_token *new_token);
 t_token			*convert_user_input_to_token(char *line);
+int				handle_word(char *line, t_token **token_list, int *i);
+char			*handle_quote(char *line, int *i, int *in_single_quote, int *in_double_quote);
+
+
 // char *extract_full_word(char *line, int *i);
 char 			*extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote);
 // char	*expand_token_value(char *str, int	in_single_quote, int in_double_quote, t_shell *mshell);
