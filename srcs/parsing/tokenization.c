@@ -6,28 +6,16 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/05 18:49:38 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/06 12:52:26 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-/*
-	Go through input character by character
-	- Inside quote: extract quotet token
-	- Outside quote: handle token and meta
-	Split user input by space and categorize the input type.
-	Each token includes string value and its type (command, operators, etc.)
-	-> tokenization
-*/
 t_token	*convert_user_input_to_token(char *line)
 {
 	int		i;
-	t_token	*new_token;
 	t_token	*token_list;
-	char	*extracted_str;
-	int		in_single_quote = FALSE;
-	int		in_double_quote = FALSE;
 
 	token_list = NULL;
 	i = 0;
@@ -43,68 +31,103 @@ t_token	*convert_user_input_to_token(char *line)
 			handle_out_append(line,  &token_list, &i);
 		else
 		{
-			extracted_str = extract_full_word(line, &i, &in_single_quote, &in_double_quote);
-			if (!extracted_str)
-			{
-				print_error("Can't extract word");
+			if (handle_word(line, &token_list, &i) == FALSE)
 				return (NULL);
-			}
-			new_token = create_token(extracted_str, WORD);
-			new_token->in_single_quote = in_single_quote;
-			new_token->in_double_quote = in_double_quote;
-			add_token(&token_list, new_token);
-			free_string(extracted_str);
-			in_single_quote = FALSE;
-			in_double_quote = FALSE;
 		}
 	}
 	return (token_list);
 }
 
-void	handle_pipe(t_token **token_list, int *i)
+int	handle_word(char *line, t_token **token_list, int *i)
 {
+	int		in_single_quote;
+	int		in_double_quote;
+	char	*extracted_str;
 	t_token	*new_token;
-
-	new_token = NULL;
-	new_token = create_token("|", PIPE);
+	
+	in_single_quote = FALSE;
+	in_double_quote = FALSE;
+	extracted_str = extract_full_word(line, i, &in_single_quote, &in_double_quote);
+	if (!extracted_str)
+	{
+		print_error("Can't extract word");
+		return (FALSE);
+	}
+	new_token = create_token(extracted_str, WORD);
+	new_token->in_single_quote = in_single_quote;
+	new_token->in_double_quote = in_double_quote;
 	add_token(token_list, new_token);
-	(*i)++;
+	free_string(extracted_str);
+	in_single_quote = FALSE;
+	in_double_quote = FALSE;
+	return (TRUE);
 }
 
-void	handle_in_heredoc(char *line, t_token **token_list, int *i)
+char *extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote)
 {
-	t_token	*new_token;
+	char	*result;
+	char	*part;
+	// char	*tmp;
 
-	new_token = NULL;
-	if (line[*i + 1] == '<')
+	result = ft_strdup("");
+	if (!result)
 	{
-		new_token = create_token("<<", REDIR_HEREDOC_TOKEN);
-		*i += 2;
+		print_error("malloc error\n");
+		return (NULL);
 	}
-	else
+	while (line[*i] && ft_isspace(line[*i]) == FALSE &&
+		   line[*i] != '<' && line[*i] != '>' && line[*i] != '|')
 	{
-		new_token = create_token("<", REDIR_IN_TOKEN);
-		(*i)++;
+		if (line[*i] == '$' && (line[*i + 1] == '\'' || line[*i + 1] == '"'))
+		{
+			(*i)++;
+			part = handle_quote(line, i, in_single_quote, in_double_quote);
+			// part = extract_quoted_token(line, i);
+		}
+		else if (line[*i] == '\'' || line[*i] == '"')
+			part = handle_quote(line, i, in_single_quote, in_double_quote);
+		else
+		{
+			part = extract_word(line, i);  // extract until quote or space or special char
+			printf("extract from no quote %s\n", part);
+		}
+		if (!part)
+		{
+			free(result);
+			return (NULL);
+		}
+		// tmp = result;
+		// result = ft_strjoin(result, part);
+		// free(tmp);
+		result = str_join_result_and_free(result, part);
+		// free(part);
 	}
-	add_token(token_list, new_token);
+	return result;
 }
 
-void	handle_out_append(char *line, t_token **token_list, int *i)
-{
-	t_token	*new_token;
 
-	new_token = NULL;
-	if (line[*i + 1] == '>')
+char	*handle_quote(char *line, int *i, int *in_single_quote, int *in_double_quote)
+{
+	char	*part;
+	
+	part = NULL;
+	if (line[*i] == '\'')
 	{
-		new_token = create_token(">>", REDIR_APPEND_TOKEN);
-		*i += 2;
+		*in_single_quote = TRUE;
+		part = extract_quoted_token(line, i);
+		// *in_single_quote = FALSE;
+		printf("extract from single quote %s\n", part);
 	}
-	else
+	else if (line[*i] == '"')
 	{
-		new_token = create_token(">", REDIR_OUT_TOKEN);
-		(*i)++;
+		*in_double_quote = TRUE;
+		part = extract_quoted_token(line, i);
+		// *in_double_quote = FALSE;
+		printf("extract from dboule quote %s\n", part);
 	}
-	add_token(token_list, new_token);
+	if (!part)
+		return (NULL);
+	return (part);
 }
 
 char	*extract_quoted_token(char *line, int *i)
@@ -123,17 +146,19 @@ char	*extract_quoted_token(char *line, int *i)
 		print_error("Unclosed quote");
 		return (NULL);
 	}
-	// printf("print extracted quoted token %d\n", *i);
 	str = ft_substr(line, start_pos, *i - start_pos);
 	if (!str)
 	{
 		print_error("Malloc failed to substr");
 		return (NULL);
 	}
-	// printf("print extracted quoted token %s\n", str);
+	
+	// printf("print extracted quoted token %s\n", str); // to remove
 	(*i)++;
 	return (str);
 }
+
+// char	*expand_inside_quote()
 
 char	*extract_word(char *line, int *i)
 {
@@ -154,45 +179,3 @@ char	*extract_word(char *line, int *i)
 	return (extracted_str);
 }
 
-char *extract_full_word(char *line, int *i, int *in_single_quote, int *in_double_quote)
-{
-	char	*result;
-	char	*part;
-	char	*tmp;
-
-	result = ft_strdup("");
-	if (!result)
-	{
-		print_error("malloc error\n");
-		return (NULL);
-	}
-	while (line[*i] && ft_isspace(line[*i]) == FALSE &&
-		   line[*i] != '<' && line[*i] != '>' && line[*i] != '|')
-	{
-		if (line[*i] == '$' && (line[*i + 1] == '\'' || line[*i + 1] == '"'))
-		{
-			(*i)++;
-			part = extract_quoted_token(line, i);
-		}
-		else if (line[*i] == '\'' || line[*i] == '\"')
-		{
-			if (line[*i] == '\'')
-				*in_single_quote = TRUE;
-			else
-				*in_double_quote = TRUE;
-			part = extract_quoted_token(line, i);
-		}
-		else
-			part = extract_word(line, i);  // extract until quote or space or special char
-		if (!part)
-		{
-			free(result);
-			return (NULL);
-		}
-		tmp = result;
-		result = ft_strjoin(result, part);
-		free(tmp);
-		free(part);
-	}
-	return result;
-}

@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/05/26 13:37:36 by trpham           ###   ########.fr        #
+#    Updated: 2025/06/06 10:29:42 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/parsing/parser.c \
 		$(SRCS_DIR)/parsing/token_linked_list.c \
 		$(SRCS_DIR)/parsing/tokenization.c \
+		$(SRCS_DIR)/parsing/tokenization2.c \
 		$(SRCS_DIR)/parsing/helper.c \
 		$(SRCS_DIR)/parsing/validate_input.c \
 		$(SRCS_DIR)/parsing/redirection.c \
