@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/06/07 15:35:31 by trpham           ###   ########.fr        #
+#    Updated: 2025/06/07 17:06:11 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/parsing/free_function2.c \
 		$(SRCS_DIR)/ast/ast.c \
 		$(SRCS_DIR)/ast/cmd_list.c \
+		$(SRCS_DIR)/ast/cmd_args.c \
 		$(SRCS_DIR)/ast/redirects.c \
 		$(SRCS_DIR)/heredoc/process_heredoc.c \
 		$(SRCS_DIR)/heredoc/utils_heredoc.c \
