@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/06/07 11:29:10 by trpham           ###   ########.fr        #
+#    Updated: 2025/06/07 15:35:31 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ SRCS_DIR = ./srcs/
 SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/parsing/handle_input.c \
 		$(SRCS_DIR)/parsing/handle_quote.c \
+		$(SRCS_DIR)/parsing/handle_quote2.c \
 		$(SRCS_DIR)/parsing/token_list.c \
 		$(SRCS_DIR)/parsing/tokenization.c \
 		$(SRCS_DIR)/parsing/helper.c \

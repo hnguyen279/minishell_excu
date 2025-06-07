@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 12:38:37 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 15:33:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ void			shell_cleanup(t_shell *mshell);
 /* Handle user input */
 int				handle_special_command_line(char *line, t_token **history_head);
 void			handle_line(char *line, t_shell *mshell);
+int				init_and_validate_input(char *line, t_shell *mshell, t_token **token_list);
 void			process_valid_line(t_shell *mshell,	t_token **oken_list,
 					t_cmd **cmd_list, t_ast **tree);
 void			run_ast_pipeline(t_shell *mshell, t_ast *tree);
@@ -151,6 +152,10 @@ char			*extract_full_word(char *line, int *i, t_shell *mshell);
 char			*handle_single_quote(char *line, int *i);
 char			*handle_double_quote(char *line, int *i, t_shell *mshell);
 char			*extract_unquoted_word(char *line, int *i, t_shell *mshell);
+int				empty_single_quote_check(char **part, int *i, int start_pos);
+int				empty_double_quote_check(char **part, int *i, int start_pos);
+int				substr_and_move_index(char *line, char **part, int *i, int start_pos);
+
 
 /* Expansion token */
 char			*expand_token_value(char *str, t_shell	*mshell);
@@ -158,6 +163,7 @@ void			handle_dollar_sign(char *str, t_shell *mshell, char **result, int *i);
 char			*handle_env_variable(char **str, t_shell *mshell, int *i,
 					char *result);
 char			*expand_exit_code(t_shell *mshell, char	*result, int *i);
+char			*extract_variable_name(char **str, char **var_name, int *i, char **result);
 
 /* Validate input */
 int				validate_token(t_token *token);
@@ -174,6 +180,7 @@ int				is_operator(t_token *token);
 t_cmd			*parse_tokens_to_commands(t_token *tokenized_list);
 t_cmd			*create_cmd(void);
 int				update_command_node(t_cmd **new_cmd, t_token **temp_token_list);
+int				add_and_update_cmd_node(t_token **temp_token_list, t_cmd **cmd_list);
 int				count_args(t_token *tokenized_input_list);
 char			**fill_args(t_cmd **new_cmd, t_token **token_list);
 int				add_redirects(t_redirect **redir_list, t_redirect_type type,

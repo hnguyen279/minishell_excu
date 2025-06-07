@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 12:48:07 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 13:18:53 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	handle_dollar_sign(char *str, t_shell *mshell, char **result, int *i)
 		*result = char_join_result_and_free(result, str[(*i)++]);
 }
 
-
 char	*expand_exit_code(t_shell *mshell, char *result, int *i)
 {
 	char	*exit_code_str;
@@ -76,27 +75,14 @@ char	*expand_exit_code(t_shell *mshell, char *result, int *i)
 char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 {
 	char	*var_name;
-	int		start;
 	char	*env_value;
+
 	(*i)++;
-	start = *i;
-	while (ft_isalpha((*str)[*i]) || (*str)[*i] == '_')
-		(*i)++;
-	var_name = ft_substr(*str, start, (*i) - start);
+	var_name = extract_variable_name(str, &var_name, i, &result);
 	if (!var_name)
-	{
-		print_error("Substr failed in handle_env_variables");
 		return (NULL);
-	}
-	else if (ft_strcmp(var_name, "EMPTY") == 0)
-	{
-		free_string(result);
-		result = ft_strdup("");
-		if (!result)
-			return (NULL);
-		free_string(var_name);
+	else if (var_name[0] == '\0')
 		return (result);
-	}
 	env_value = env_find_value(mshell, var_name);
 	if (!env_value)
 		env_value = "";
@@ -105,4 +91,30 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	if (!result)
 		return (NULL);
 	return (result);
+}
+
+char	*extract_variable_name(char **str, char **var_name, int *i,
+			char **result)
+{
+	int		start;
+
+	start = *i;
+	while (ft_isalpha((*str)[*i]) || (*str)[*i] == '_')
+		(*i)++;
+	*var_name = ft_substr(*str, start, (*i) - start);
+	if (!*var_name)
+	{
+		print_error("Substr failed in handle_env_variables");
+		return (NULL);
+	}
+	else if (ft_strcmp(*var_name, "EMPTY") == 0)
+	{
+		free_string(*result);
+		*result = ft_strdup("");
+		if (!*result)
+			return (NULL);
+		free_string(*var_name);
+		return (*result);
+	}
+	return (*var_name);
 }
