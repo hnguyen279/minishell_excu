@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 13:59:55 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 17:00:01 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,9 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 {
 	t_redirect_type	redir_type;
 
-	if (!new_cmd || !token_list)
-	{
-		print_error("Pointer to new cmdn and token list not exist");
+	if (check_redir_type_before_parsing(new_cmd, token_list,
+			&redir_type) == FALSE)
 		return (FALSE);
-	}
-	else if (!*new_cmd)
-	{
-		print_error("Invalid new_cmd in parse_redirection");
-		return (FALSE);
-	}
-	redir_type = token_to_redirect_type((*token_list)->type);
-	if (redir_type == REDIR_INVALID)
-	{
-		print_error("invalid redirection token type");
-		return (FALSE);
-	}
 	(*token_list) = (*token_list)->next;
 	if (!*token_list || (*token_list)->type != WORD || !(*token_list)->value
 		|| !*(*token_list)->value)
@@ -51,6 +38,28 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 	return (TRUE);
 }
 
+int	check_redir_type_before_parsing(t_cmd **new_cmd, t_token **token_list,
+		t_redirect_type *redir_type)
+{
+	if (!new_cmd || !token_list)
+	{
+		print_error("Pointer to new cmdn and token list not exist");
+		return (FALSE);
+	}
+	else if (!*new_cmd)
+	{
+		print_error("Invalid new_cmd in parse_redirection");
+		return (FALSE);
+	}
+	*redir_type = token_to_redirect_type((*token_list)->type);
+	if (*redir_type == REDIR_INVALID)
+	{
+		print_error("invalid redirection token type");
+		return (FALSE);
+	}
+	return (TRUE);
+}
+
 int	add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
 {
 	t_redirect	*new_redir;
@@ -63,27 +72,8 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
 		print_error("Empty file name in redirection");
 		return (FALSE);
 	}
-	new_redir = malloc(sizeof(t_redirect));
-	if (!new_redir)
-	{
-		print_error("Failed to add redirects");
+	if (create_redirect(&new_redir, file, type) == FALSE)
 		return (FALSE);
-	}
-	new_redir->file = ft_strdup(file);
-	if (!new_redir->file)
-	{
-		// free(new_redir);
-		print_error("Failed to strdup file");
-		return (FALSE);
-	}
-	new_redir->type = type;
-	if (type == REDIR_IN)
-		new_redir->fd = 0;
-	else if (type == REDIR_HEREDOC)
-		new_redir->fd = 1;
-	new_redir->ori_path = NULL;
-	new_redir->tmp_file = NULL;
-	new_redir->next = NULL;
 	if (!*redir_list)
 		*redir_list = new_redir;
 	else
@@ -93,6 +83,32 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
 			current = current->next;
 		current->next = new_redir;
 	}
+	return (TRUE);
+}
+
+int	create_redirect(t_redirect **new_redir, char *file, t_redirect_type type)
+{
+	*new_redir = malloc(sizeof(t_redirect));
+	if (!*new_redir)
+	{
+		print_error("Failed to add redirects");
+		return (FALSE);
+	}
+	(*new_redir)->ori_path = NULL;
+	(*new_redir)->tmp_file = NULL;
+	(*new_redir)->next = NULL;
+	(*new_redir)->file = ft_strdup(file);
+	if (!(*new_redir)->file)
+	{
+		free((*new_redir));
+		print_error("Failed to strdup file");
+		return (FALSE);
+	}
+	(*new_redir)->type = type;
+	if (type == REDIR_IN)
+		(*new_redir)->fd = 0;
+	else if (type == REDIR_HEREDOC)
+		(*new_redir)->fd = 1;
 	return (TRUE);
 }
 

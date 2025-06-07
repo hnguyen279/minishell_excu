@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 15:36:49 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 16:58:36 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,55 +96,4 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 	else
 		(*new_cmd)->cmd_name = NULL;
 	return (TRUE);
-}
-
-char	**fill_args(t_cmd **new_cmd, t_token **token_list)
-{
-	int		count;
-	char	**args;
-
-	count = count_args(*token_list);
-	if (count == 0)
-	{
-		args = malloc(sizeof(char *));
-		if (!args)
-		{
-			print_error("Malloc failed");
-			return (NULL);
-		}
-		args[0] = NULL;
-		return (args);
-	}
-	args = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!args)
-	{
-		print_error("Malloc failed");
-		return (NULL);
-	}
-	count = 0;
-	while (*token_list && (*token_list)->type != PIPE)
-	{
-		if ((*token_list)->type == WORD)
-		{
-			args[count] = ft_strdup((*token_list)->value);
-			if (!args[count])
-			{
-				print_error("Fill argurment malloc error");
-				free_array(args, count);
-				return (NULL);
-			}
-			count++;
-			*token_list = (*token_list)->next;
-		}
-		else if (is_redirection(*token_list) == TRUE)
-		{
-			if (parse_redirection(new_cmd, token_list) == FALSE)
-			{
-				print_error("Parse redirection failed \n");
-				return (NULL);
-			}
-		}
-	}
-	args[count] = NULL;
-	return (args);
 }
