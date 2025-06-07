@@ -30,14 +30,27 @@ int	error_msg(t_shell *mshell, const char *msg, int use_errno)
 int	display_error_cmd(char *cmd)
 {
 	if (!cmd || cmd[0] == '\0')
-		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
+	{
+		ft_printf_fd(STDERR_FILENO, "minishell: : command not found\n");
+		return (127);
+	}
 	else if (!ft_strcmp(cmd, "."))
-		ft_printf_fd(STDERR_FILENO, "minishell: .: filename argument required\n.: usage: . filename [arguments]\n");
+	{
+		ft_printf_fd(STDERR_FILENO,
+			"minishell: .: filename argument required\n"
+			".: usage: . filename [arguments]\n");
+		return (2);
+	}
 	else if (!ft_strcmp(cmd, ".."))
-		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
+	{
+		ft_printf_fd(STDERR_FILENO, "minishell: ..: command not found\n");
+		return (127);
+	}
 	else
+	{
 		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
-	return (1);
+		return (127);
+	}
 }
 
 int	is_white_spaces_cmd(char *cmd)

@@ -47,13 +47,13 @@ static void cd_to_tilde_path(t_shell *mshell, char *token)
     home = env_find_value(mshell, "HOME");
     if (!home)
     {
-        ft_printf_fd(2, "minishell: cd: HOME not set\n");
         mshell->exit_code = 1;
         return;
     }
     path = ft_strjoin(home, token + 1);
     if (!path)
     {
+        ft_printf_fd(2, "minishell: cd: memory allocation failed\n");
         mshell->exit_code = 1;
         return;
     }

@@ -59,3 +59,4 @@ int	env_add(t_shell *mshell, const char *key, const char *value)
 	}
 	return (append_env_variable(mshell, entry));
 }
+

@@ -31,7 +31,7 @@ static int digits_with_overflow(const char *str, size_t *i, unsigned long *resul
 	return 1;
 }
 
-int ft_atol_safe(const char *str, long *out)
+int ft_atol_check(const char *str, long *out)
 {
 	size_t i;
 	int sign;
@@ -64,39 +64,28 @@ int to_valid_exit_code(long num)
 	return (int)num;
 }
 
-static void handle_exit_with_argument(t_shell *mshell, const char *arg)
+void builtin_exit(t_shell *mshell, char **token)
 {
 	long code;
 
-	if (!ft_atol_safe(arg, &code))
-	{
-		ft_printf_fd(2, "minishell: exit: %s: numeric argument required\n", arg);
-		mshell->exit_code = 2;
-	}
-	else
-		mshell->exit_code = to_valid_exit_code(code);
-}
-
-void builtin_exit(t_shell *mshell, char **token)
-{
-	int argc;
-
-	argc = 0;
-	while (token[argc])
-		argc++;
+	code = 0;
 	if (!mshell->has_pipe)
 		ft_putstr_fd("exit\n", STDOUT_FILENO);
-	if (argc > 2)
+	if (token[1] && !ft_atol_check(token[1], &code))
+	{
+		ft_printf_fd(2, "minishell: exit: %s: numeric argument required\n", token[1]);
+		mshell->exit_code = 2;
+	}
+	else if (token[1] && token[2])
 	{
 		ft_printf_fd(2, "minishell: exit: too many arguments\n");
 		mshell->exit_code = 1;
 		return;
 	}
-	else if (argc == 2)
-		handle_exit_with_argument(mshell, token[1]);
+	else if (token[1])
+		mshell->exit_code = to_valid_exit_code(code);
 	free_ast(mshell->ast, mshell);
 	mshell->ast = NULL;
 	shell_cleanup(mshell);
 	exit(mshell->exit_code);
 }
-

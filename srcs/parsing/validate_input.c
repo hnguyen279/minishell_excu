@@ -15,6 +15,28 @@
 /*
 Read character by character and check the quote here
 */
+
+// H add for error msg
+void	print_token_error(t_token *token)
+{
+	const char	*str;
+
+	if (!token)
+		str = "newline";
+	else if (token->type == REDIR_IN_TOKEN)
+		str = "<";
+	else if (token->type == REDIR_OUT_TOKEN)
+		str = ">";
+	else if (token->type == REDIR_APPEND_TOKEN)
+		str = ">>";
+	else if (token->type == REDIR_HEREDOC_TOKEN)
+		str = "<<";
+	else if (token->type == PIPE)
+		str = "|";
+	ft_printf_fd(2, "minishell: syntax error near unexpected token `%s'\n", str);
+}
+
+
 int	validate_quote(char *line)
 {
 	int	i;
@@ -57,20 +79,23 @@ int	is_valid_pipe(t_token *token)
 	temp = token;
 	if (temp->type == PIPE)
 	{
-		print_error("Unexpected token '|'");
+		//print_error("Unexpected token '|'");
+		print_token_error(temp);
 		return (FALSE);
 	}
 	while (temp)
 	{
 		if (temp->type == PIPE && temp->next == NULL)
 		{
-			print_error("Unexpected token '|'");
+			//print_error("Unexpected token '|'");
+			print_token_error(temp);
 			return (FALSE);
 		}
 		// if (temp->type == PIPE && (temp->next->type == PIPE))
 		// {
 		// 	// get_error_msg(ERR_PIPE);
-		// 	print_error("Unexpected token '|'");
+		//	print_token_error(temp);
+		//// 	print_error("Unexpected token '|'");
 		// 	return (FALSE);
 		// }
 		temp = temp->next;
@@ -91,7 +116,8 @@ int	is_valid_redirection(t_token *token_list)
 		{
 			if (!current->next || current->next->type != WORD)
 			{
-				print_error("Invalid after redirection");
+				print_token_error(current->next);
+				//print_error("Invalid after redirection");
 				return (FALSE);
 			}
 			current = current->next; //H add
