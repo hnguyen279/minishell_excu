@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 16:29:45 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 11:27:04 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	print_error(char *msg)
 
 int	ft_isspace(char c)
 {
-	if (c == ' ' || (c >= 9 && c <= 13)) // c== '\t' -> old code? H dd more space?
+	if (c == ' ' || (c >= 9 && c <= 13))
 		return (TRUE);
 	return (FALSE);
 }

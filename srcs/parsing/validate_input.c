@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 16:17:39 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 11:28:12 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,27 +75,23 @@ int	is_valid_pipe(t_token *token)
 
 	if (!token)
 		return (FALSE);
-	
 	temp = token;
 	if (temp->type == PIPE)
 	{
-		//print_error("Unexpected token '|'");
-		print_token_error(temp);
+		print_error("Unexpected token '|'");
 		return (FALSE);
 	}
 	while (temp)
 	{
 		if (temp->type == PIPE && temp->next == NULL)
 		{
-			//print_error("Unexpected token '|'");
-			print_token_error(temp);
+			print_error("Unexpected token '|'");
 			return (FALSE);
 		}
 		// if (temp->type == PIPE && (temp->next->type == PIPE))
 		// {
 		// 	// get_error_msg(ERR_PIPE);
-		//	print_token_error(temp);
-		//// 	print_error("Unexpected token '|'");
+		// 	print_error("Unexpected token '|'");
 		// 	return (FALSE);
 		// }
 		temp = temp->next;
@@ -109,18 +105,17 @@ int	is_valid_redirection(t_token *token_list)
 
 	if (!token_list)
 		return (FALSE);
-	current = token_list;	
+	current = token_list;
 	while (current)
 	{
 		if (is_redirection(current) == TRUE)
 		{
 			if (!current->next || current->next->type != WORD)
 			{
-				print_token_error(current->next);
-				//print_error("Invalid after redirection");
+				print_error("Invalid after redirection");
 				return (FALSE);
 			}
-			current = current->next; //H add
+			current = current->next; // H add
 		}
 		current = current->next;
 	}
@@ -140,8 +135,6 @@ int	is_valid_redirection(t_token *token_list)
 // 	}
 // 	return (FALSE);
 // }
-
-
 
 // int	validate_parentheses_pair(char *line)
 // {

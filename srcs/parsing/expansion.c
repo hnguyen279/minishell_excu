@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 17:39:54 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 11:25:51 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ char	*expand_token_value(char *str, t_shell *mshell)
 	char	*result;
 
 	i = 0;
-	if (!str) //check for herodoc
-    	return (NULL);
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
@@ -34,7 +32,8 @@ char	*expand_token_value(char *str, t_shell *mshell)
 			else if (str[i + 1] >= '0' && str[i + 1] <= '9')
 			{
 				i += 2;
-				// result = char_join_result_and_free(&result, str[i]); // recheck this case
+				// result = char_join_result_and_free(&result, str[i]);
+					// recheck this case
 			}
 			else
 				result = char_join_result_and_free(&result, str[i++]);
@@ -50,10 +49,10 @@ char	*expand_token_value(char *str, t_shell *mshell)
 	return (result);
 }
 
-char	*expand_exit_code(t_shell *mshell, char	*result, int *i)
+char	*expand_exit_code(t_shell *mshell, char *result, int *i)
 {
 	char	*exit_code_str;
-	
+
 	exit_code_str = ft_itoa(mshell->exit_code);
 	if (!exit_code_str)
 	{
@@ -71,14 +70,13 @@ char	*expand_exit_code(t_shell *mshell, char	*result, int *i)
 	return (result);
 }
 
-// char	*expand_number()
+// char	*expand_number(void)
 
 char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 {
 	char	*var_name;
 	int		start;
 	char	*env_value;
-	
 	(*i)++;
 	start = *i;
 	while (ft_isalpha((*str)[*i]) || (*str)[*i] == '_')
@@ -105,6 +103,5 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	free_string(var_name);
 	if (!result)
 		return (NULL);
-	return (result);	
+	return (result);
 }
-

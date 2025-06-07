@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 16:14:53 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 11:27:39 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 		else if (line[i] == '<')
 			handle_in_heredoc(line, &token_list, &i);
 		else if (line[i] == '>')
-			handle_out_append(line,  &token_list, &i);
+			handle_out_append(line, &token_list, &i);
 		else
 		{
 			if (handle_word(line, &token_list, &i, mshell) == FALSE)
@@ -64,6 +64,41 @@ void	handle_in_heredoc(char *line, t_token **token_list, int *i)
 		(*i)++;
 	}
 	add_token(token_list, new_token);
+}
+
+void	handle_out_append(char *line, t_token **token_list, int *i)
+{
+	t_token	*new_token;
+
+	new_token = NULL;
+	if (line[*i + 1] == '>')
+	{
+		new_token = create_token(">>", REDIR_APPEND_TOKEN);
+		*i += 2;
+	}
+	else
+	{
+		new_token = create_token(">", REDIR_OUT_TOKEN);
+		(*i)++;
+	}
+	add_token(token_list, new_token);
+}
+
+int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
+{
+	char	*extracted_str;
+	t_token	*new_token;
+
+	extracted_str = extract_full_word(line, i, mshell);
+	if (!extracted_str)
+	{
+		print_error("Can't extract word");
+		return (FALSE);
+	}
+	new_token = create_token(extracted_str, WORD);
+	add_token(token_list, new_token);
+	free_string(extracted_str);
+	return (TRUE);
 }
 
 void	handle_out_append(char *line, t_token **token_list, int *i)

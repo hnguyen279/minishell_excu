@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:47:20 by trpham            #+#    #+#             */
-/*   Updated: 2025/05/26 19:04:48 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 11:27:09 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	print_working_history(t_token *history_head)
 
 void	clear_working_history(t_token **hist_head)
 {
-	t_token *temp;
+	t_token	*temp;
 
 	while (*hist_head)
 	{

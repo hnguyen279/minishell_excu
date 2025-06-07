@@ -6,96 +6,101 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 15:22:46 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 11:26:46 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-void    handle_line(char *line, t_shell *mshell)
+void	handle_line(char *line, t_shell *mshell)
 {
-    t_token *tokenized_input_list;
+	t_token	*tokenized_input_list;
 	t_cmd	*cmd_list;
 	t_ast	*tree;
 
-    mshell->heredoc_index = 0;
-    if (validate_quote(line) == FALSE)
-    {
-        mshell->exit_code = 2;
-        return ;
-    }
-    tokenized_input_list = NULL;
+	mshell->heredoc_index = 0;
+	if (validate_quote(line) == FALSE)
+	{
+		mshell->exit_code = 2;
+		return ;
+	}
+	tokenized_input_list = NULL;
 	cmd_list = NULL;
 	tree = NULL;
-    if (tokenization_expansion_validation(line, mshell, &tokenized_input_list) == FALSE ||
-        empty_variable_extension(mshell, &tokenized_input_list) == FALSE)
-    {
-        free_token_list(tokenized_input_list);
-        tokenized_input_list = NULL;
-        return ;
-    }
-    // print_linked_list(tokenized_input_list);
-    process_valid_line(mshell, &tokenized_input_list, &cmd_list, &tree);
-    free_token_list(tokenized_input_list);
-    tokenized_input_list = NULL;
-    free_cmd_list(cmd_list);
-    free_ast(tree, mshell);
-    mshell->ast = NULL;
-    tree = NULL; 
+	if (tokenization_expansion_validation(line, mshell,
+			&tokenized_input_list) == FALSE || empty_variable_extension(mshell,
+			&tokenized_input_list) == FALSE)
+	{
+		free_token_list(tokenized_input_list);
+		tokenized_input_list = NULL;
+		return ;
+	}
+	// print_linked_list(tokenized_input_list);
+	process_valid_line(mshell, &tokenized_input_list, &cmd_list, &tree);
+	free_token_list(tokenized_input_list);
+	tokenized_input_list = NULL;
+	free_cmd_list(cmd_list);
+	free_ast(tree, mshell);
+	mshell->ast = NULL;
+	tree = NULL;
 }
 
-int    tokenization_expansion_validation(char *line, t_shell *mshell, t_token **tokenized_input_list)
+int	tokenization_expansion_validation(char *line, t_shell *mshell,
+		t_token **tokenized_input_list)
 {
-    *tokenized_input_list = convert_user_input_to_token(line, mshell);
-    if (!*tokenized_input_list)
-    {
-        mshell->exit_code = 1;
-        return (FALSE);
-    }
-    if (validate_token(*tokenized_input_list) == FALSE)
-    {
-        mshell->exit_code = 2;
-        return (FALSE);
-    }
-    return (TRUE);
+	*tokenized_input_list = convert_user_input_to_token(line, mshell);
+	if (!*tokenized_input_list)
+	{
+		mshell->exit_code = 1;
+		return (FALSE);
+	}
+	if (validate_token(*tokenized_input_list) == FALSE)
+	{
+		mshell->exit_code = 2;
+		return (FALSE);
+	}
+	return (TRUE);
 }
 
-int    empty_variable_extension(t_shell *mshell, t_token **tokenized_input_list)
+int	empty_variable_extension(t_shell *mshell, t_token **tokenized_input_list)
 {
-    
-    if (*tokenized_input_list && ft_strcmp((*tokenized_input_list)->value, "") == 0)
-    {
-        if ((*tokenized_input_list)->next)
-        {
-            t_token *to_free = *tokenized_input_list;
-            (*tokenized_input_list) = (*tokenized_input_list)->next;
-            free_string(to_free->value);
-            free(to_free);
-        }
-        else
-        {
-            mshell->exit_code = 0;
-            return (FALSE);
-        }
-    }
-    return (TRUE);
+	t_token	*to_free;
+
+	if (*tokenized_input_list && ft_strcmp((*tokenized_input_list)->value,
+			"") == 0)
+	{
+		if ((*tokenized_input_list)->next)
+		{
+			to_free = *tokenized_input_list;
+			(*tokenized_input_list) = (*tokenized_input_list)->next;
+			free_string(to_free->value);
+			free(to_free);
+		}
+		else
+		{
+			mshell->exit_code = 0;
+			return (FALSE);
+		}
+	}
+	return (TRUE);
 }
 
-void    process_valid_line(t_shell *mshell, t_token **token_list, t_cmd **cmd_list, t_ast **tree)
+void	process_valid_line(t_shell *mshell, t_token **token_list,
+		t_cmd **cmd_list, t_ast **tree)
 {
-    *cmd_list = parse_tokens_to_commands(*token_list);
-    if (!*cmd_list)
-    {
-        print_error("Failed to parse token to cmd");
-        mshell->exit_code = 2;
-        return ;
-    }
-    *tree = convert_cmd_to_ast(*cmd_list);
-    if (!*tree)
-    {
-        mshell->exit_code = 2;
-        print_error("Failed to convert cmd to ast");
-        return ;
-    }
-    run_ast_pipeline(mshell, *tree);
+	*cmd_list = parse_tokens_to_commands(*token_list);
+	if (!*cmd_list)
+	{
+		print_error("Failed to parse token to cmd");
+		mshell->exit_code = 2;
+		return ;
+	}
+	*tree = convert_cmd_to_ast(*cmd_list);
+	if (!*tree)
+	{
+		mshell->exit_code = 2;
+		print_error("Failed to convert cmd to ast");
+		return ;
+	}
+	run_ast_pipeline(mshell, *tree);
 }
