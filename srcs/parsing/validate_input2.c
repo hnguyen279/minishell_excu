@@ -38,6 +38,3 @@ int	is_operator(t_token *token)
 		return (TRUE);
 	return (FALSE);
 }
-
-
-

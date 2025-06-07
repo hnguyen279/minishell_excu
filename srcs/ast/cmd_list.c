@@ -127,7 +127,6 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 	while (*token_list && (*token_list)->type != PIPE)
 	{
 		// printf("Working on this token %s\n", (*token_list)->value);
-
 		if ((*token_list)->type == WORD)
 		{
 			args[count] = ft_strdup((*token_list)->value);

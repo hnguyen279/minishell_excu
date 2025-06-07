@@ -53,7 +53,6 @@ int	is_valid_pipe(t_token *token)
 
 	if (!token)
 		return (FALSE);
-	
 	temp = token;
 	if (temp->type == PIPE)
 	{
@@ -84,7 +83,7 @@ int	is_valid_redirection(t_token *token_list)
 
 	if (!token_list)
 		return (FALSE);
-	current = token_list;	
+	current = token_list;
 	while (current)
 	{
 		if (is_redirection(current) == TRUE)
@@ -94,7 +93,7 @@ int	is_valid_redirection(t_token *token_list)
 				print_error("Invalid after redirection");
 				return (FALSE);
 			}
-			current = current->next; //H add
+			current = current->next; // H add
 		}
 		current = current->next;
 	}
@@ -114,8 +113,6 @@ int	is_valid_redirection(t_token *token_list)
 // 	}
 // 	return (FALSE);
 // }
-
-
 
 // int	validate_parentheses_pair(char *line)
 // {

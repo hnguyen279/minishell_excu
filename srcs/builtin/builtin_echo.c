@@ -1,27 +1,28 @@
 #include "../../includes/shell.h"
 
-static int should_suppress_newline(char *arg)
+static int	should_suppress_newline(char *arg)
 {
-	int j;
+	int	j;
 
 	if (!arg || arg[0] != '-' || arg[1] != 'n')
-		return 0;
+		return (0);
 	j = 2;
 	while (arg[j] == 'n')
 		j++;
 	return (arg[j] == '\0');
 }
 
-
-int builtin_echo(t_shell *mshell, char **token)
+int	builtin_echo(t_shell *mshell, char **token)
 {
-	int i = 1;
-	int newline = 1;
+	int	i;
+	int	newline;
 
+	i = 1;
+	newline = 1;
 	while (token[i])
 	{
 		if (!should_suppress_newline(token[i]))
-			break;
+			break ;
 		newline = 0;
 		i++;
 	}
@@ -35,5 +36,5 @@ int builtin_echo(t_shell *mshell, char **token)
 	if (newline)
 		write(STDOUT_FILENO, "\n", 1);
 	mshell->exit_code = 0;
-	return mshell->exit_code;
+	return (mshell->exit_code);
 }
