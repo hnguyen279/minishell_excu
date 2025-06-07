@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:32:45 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 12:38:37 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ char			*extract_unquoted_word(char *line, int *i, t_shell *mshell);
 
 /* Expansion token */
 char			*expand_token_value(char *str, t_shell	*mshell);
+void			handle_dollar_sign(char *str, t_shell *mshell, char **result, int *i);
 char			*handle_env_variable(char **str, t_shell *mshell, int *i,
 					char *result);
 char			*expand_exit_code(t_shell *mshell, char	*result, int *i);

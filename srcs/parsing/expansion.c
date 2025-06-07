@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:25:51 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 12:48:07 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,7 @@ char	*expand_token_value(char *str, t_shell *mshell)
 	while (str[i])
 	{
 		if (str[i] == '$' && str[i + 1])
-		{
-			if (str[i + 1] == '?')
-				result = expand_exit_code(mshell, result, &i);
-			else if (str[i + 1] == '_' || ft_isalpha(str[i + 1]))
-				result = handle_env_variable(&str, mshell, &i, result);
-			else if (str[i + 1] >= '0' && str[i + 1] <= '9')
-			{
-				i += 2;
-				// result = char_join_result_and_free(&result, str[i]);
-					// recheck this case
-			}
-			else
-				result = char_join_result_and_free(&result, str[i++]);
-		}
+			handle_dollar_sign(str, mshell, &result, &i);
 		else
 			result = char_join_result_and_free(&result, str[i++]);
 		if (!result)
@@ -48,6 +35,22 @@ char	*expand_token_value(char *str, t_shell *mshell)
 	}
 	return (result);
 }
+
+void	handle_dollar_sign(char *str, t_shell *mshell, char **result, int *i)
+{
+	if (str[*i + 1] == '?')
+		*result = expand_exit_code(mshell, *result, i);
+	else if (str[*i + 1] == '_' || ft_isalpha(str[*i + 1]))
+		*result = handle_env_variable(&str, mshell, i, *result);
+	else if (ft_isdigit(str[*i + 1]))
+	{
+		*i += 2;
+		*result = char_join_result_and_free(result, str[(*i)++]);
+	}
+	else
+		*result = char_join_result_and_free(result, str[(*i)++]);
+}
+
 
 char	*expand_exit_code(t_shell *mshell, char *result, int *i)
 {
@@ -60,7 +63,7 @@ char	*expand_exit_code(t_shell *mshell, char *result, int *i)
 		return (NULL);
 	}
 	result = str_join_result_and_free(&result, exit_code_str);
-	if (!result) //H add
+	if (!result)
 	{
 		print_error("strjoin failed");
 		return (NULL);
@@ -69,8 +72,6 @@ char	*expand_exit_code(t_shell *mshell, char *result, int *i)
 	*i = *i + 2;
 	return (result);
 }
-
-// char	*expand_number(void)
 
 char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 {

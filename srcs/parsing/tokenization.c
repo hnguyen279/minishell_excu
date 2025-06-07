@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:27:39 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 11:49:19 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,39 +100,3 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 	free_string(extracted_str);
 	return (TRUE);
 }
-
-void	handle_out_append(char *line, t_token **token_list, int *i)
-{
-	t_token	*new_token;
-
-	new_token = NULL;
-	if (line[*i + 1] == '>')
-	{
-		new_token = create_token(">>", REDIR_APPEND_TOKEN);
-		*i += 2;
-	}
-	else
-	{
-		new_token = create_token(">", REDIR_OUT_TOKEN);
-		(*i)++;
-	}
-	add_token(token_list, new_token);
-}
-
-int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
-{
-	char	*extracted_str;
-	t_token	*new_token;
-	
-	extracted_str = extract_full_word(line, i, mshell);
-	if (!extracted_str)
-	{
-		print_error("Can't extract word");
-		return (FALSE);
-	}
-	new_token = create_token(extracted_str, WORD);
-	add_token(token_list, new_token);
-	free_string(extracted_str);
-	return (TRUE);
-}
-
