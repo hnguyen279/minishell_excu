@@ -18,6 +18,8 @@ char	*expand_token_value(char *str, t_shell *mshell)
 	char	*result;
 
 	i = 0;
+	if (!str) //check for herodoc
+    	return (NULL);
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
