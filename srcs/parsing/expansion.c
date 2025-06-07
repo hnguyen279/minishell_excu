@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 22:38:39 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 11:25:51 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,11 @@ char	*expand_exit_code(t_shell *mshell, char *result, int *i)
 		return (NULL);
 	}
 	result = str_join_result_and_free(&result, exit_code_str);
+	if (!result) //H add
+	{
+		print_error("strjoin failed");
+		return (NULL);
+	}
 	free_string(exit_code_str);
 	*i = *i + 2;
 	return (result);
@@ -72,7 +77,6 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	char	*var_name;
 	int		start;
 	char	*env_value;
-
 	(*i)++;
 	start = *i;
 	while (ft_isalpha((*str)[*i]) || (*str)[*i] == '_')

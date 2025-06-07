@@ -1,12 +1,13 @@
 #include "../../includes/shell.h"
 
-int	builtin_env(t_shell *mshell, char **token)
+int builtin_env(t_shell *mshell, char **token)
 {
 	if (!mshell || !token || !token[0])
 	{
 		ft_printf_fd(2, "minishell: builtin_env: Invalid parameter(s)\n");
 		return (1);
 	}
+	env_add(mshell, "_", token[0]);
 	if (token[1])
 	{
 		if (token[1][0] == '-')

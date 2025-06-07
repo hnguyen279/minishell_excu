@@ -1,31 +1,7 @@
 #include "../../includes/shell.h"
 
-static int	should_suppress_newline(char *arg)
+static void print_echo_from(char **token, int i)
 {
-	int	j;
-
-	if (!arg || arg[0] != '-' || arg[1] != 'n')
-		return (0);
-	j = 2;
-	while (arg[j] == 'n')
-		j++;
-	return (arg[j] == '\0');
-}
-
-int	builtin_echo(t_shell *mshell, char **token)
-{
-	int	i;
-	int	newline;
-
-	i = 1;
-	newline = 1;
-	while (token[i])
-	{
-		if (!should_suppress_newline(token[i]))
-			break ;
-		newline = 0;
-		i++;
-	}
 	while (token[i])
 	{
 		write(STDOUT_FILENO, token[i], ft_strlen(token[i]));
@@ -33,8 +9,30 @@ int	builtin_echo(t_shell *mshell, char **token)
 			write(STDOUT_FILENO, " ", 1);
 		i++;
 	}
+}
+
+int builtin_echo(t_shell *mshell, char **token)
+{
+	int i;
+	int newline;
+	int j;
+
+	i = 1;
+	newline = 1;
+	while (token[i] && token[i][0] == '-' && token[i][1] == 'n')
+	{
+		j = 2;
+		while (token[i][j] == 'n')
+			j++;
+		if (token[i][j] != '\0')
+			break;
+		newline = 0;
+		i++;
+	}
+	print_echo_from(token, i);
 	if (newline)
 		write(STDOUT_FILENO, "\n", 1);
 	mshell->exit_code = 0;
-	return (mshell->exit_code);
+	return (0);
 }
+

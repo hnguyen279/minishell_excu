@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 17:11:45 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 11:32:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,8 +207,8 @@ char			*char_join_result_and_free(char **s1, char c);
 
 /* Heredoc functions */
 int				open_heredoc_pipe(t_shell *mshell, t_redirect *redir);
-void			exe_handle_dollar_expansion(char *input, int fd_write,
-					t_shell *ms);
+// void			exe_handle_dollar_expansion(char *input, int fd_write,
+// 					t_shell *ms);
 int				is_fully_quoted(const char *str);
 char			*get_delimiter(char *file);
 char			*make_heredoc_filename(int id);

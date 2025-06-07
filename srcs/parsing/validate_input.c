@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 16:17:39 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 11:28:12 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,28 @@
 /*
 Read character by character and check the quote here
 */
+
+// H add for error msg
+void	print_token_error(t_token *token)
+{
+	const char	*str;
+
+	if (!token)
+		str = "newline";
+	else if (token->type == REDIR_IN_TOKEN)
+		str = "<";
+	else if (token->type == REDIR_OUT_TOKEN)
+		str = ">";
+	else if (token->type == REDIR_APPEND_TOKEN)
+		str = ">>";
+	else if (token->type == REDIR_HEREDOC_TOKEN)
+		str = "<<";
+	else if (token->type == PIPE)
+		str = "|";
+	ft_printf_fd(2, "minishell: syntax error near unexpected token `%s'\n", str);
+}
+
+
 int	validate_quote(char *line)
 {
 	int	i;
