@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:29:22 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 15:36:49 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,43 +16,44 @@ t_cmd	*parse_tokens_to_commands(t_token *tokenized_list)
 {
 	t_token	*temp_token_list;
 	t_cmd	*cmd_list;
-	t_cmd	*new_cmd;
-	t_cmd	*current;
 
 	temp_token_list = NULL;
 	cmd_list = NULL;
-	new_cmd = NULL;
-	current = NULL;
 	temp_token_list = tokenized_list;
 	while (temp_token_list)
 	{
-		new_cmd = create_cmd();
-		if (!new_cmd)
-		{
-			print_error("Failed to create cmd");
-			free_cmd_list(cmd_list);
+		if (add_and_update_cmd_node(&temp_token_list, &cmd_list) == FALSE)
 			return (NULL);
-		}
-		if (update_command_node(&new_cmd, &temp_token_list) == FALSE)
-		{
-			print_error("Failed to update command node");
-			free_cmd_list(cmd_list);
-			return (NULL);
-		}
-		if (cmd_list == NULL)
-			cmd_list = new_cmd;
-		else
-		{
-			current = cmd_list;
-			while (current->next)
-				current = current->next;
-			current->next = new_cmd;
-		}
-		current = NULL;
 		if (temp_token_list)
 			temp_token_list = temp_token_list->next;
 	}
 	return (cmd_list);
+}
+
+int	add_and_update_cmd_node(t_token **temp_token_list, t_cmd **cmd_list)
+{
+	t_cmd	*new_cmd;
+	t_cmd	*current;
+
+	new_cmd = NULL;
+	current = NULL;
+	new_cmd = create_cmd();
+	if (!new_cmd || update_command_node(&new_cmd, temp_token_list) == FALSE)
+	{
+		free_cmd_list(*cmd_list);
+		return (FALSE);
+	}
+	if (*cmd_list == NULL)
+		*cmd_list = new_cmd;
+	else
+	{
+		current = *cmd_list;
+		while (current->next)
+			current = current->next;
+		current->next = new_cmd;
+	}
+	current = NULL;
+	return (TRUE);
 }
 
 t_cmd	*create_cmd(void)
@@ -85,7 +86,6 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 		return (FALSE);
 	}
 	(*new_cmd)->args = fill_args(new_cmd, temp_token_list);
-	// print_array((*new_cmd)->args);
 	if (!(*new_cmd)->args)
 	{
 		print_error("Failed to update new cmd args");
@@ -104,7 +104,6 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 	char	**args;
 
 	count = count_args(*token_list);
-	// H add
 	if (count == 0)
 	{
 		args = malloc(sizeof(char *));
@@ -116,7 +115,6 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 		args[0] = NULL;
 		return (args);
 	}
-	// printf("count args %d\n", count);
 	args = (char **)malloc(sizeof(char *) * (count + 1));
 	if (!args)
 	{
@@ -126,7 +124,6 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 	count = 0;
 	while (*token_list && (*token_list)->type != PIPE)
 	{
-		// printf("Working on this token %s\n", (*token_list)->value);
 		if ((*token_list)->type == WORD)
 		{
 			args[count] = ft_strdup((*token_list)->value);
@@ -136,7 +133,7 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 				free_array(args, count);
 				return (NULL);
 			}
-			count++; // only increase if args[count] is WORD
+			count++;
 			*token_list = (*token_list)->next;
 		}
 		else if (is_redirection(*token_list) == TRUE)

@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:22:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 16:45:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 15:35:02 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,12 @@ char	*handle_single_quote(char *line, int *i)
 		print_error("Unclosed quote");
 		return (NULL);
 	}
-	part = ft_substr(line, start_pos, *i - start_pos);
-	if (!part)
-	{
-		print_error("Malloc failed to substr");
+	if (empty_single_quote_check(&part, i, start_pos) == TRUE)
+		return (part);
+	else
 		return (NULL);
-	}
-	(*i)++;
+	if (substr_and_move_index(line, &part, i, start_pos) == FALSE)
+		return (NULL);
 	return (part);
 }
 
@@ -82,13 +81,12 @@ char	*handle_double_quote(char *line, int *i, t_shell *mshell)
 		print_error("Unclosed quote");
 		return (NULL);
 	}
-	part = ft_substr(line, start_pos, *i - start_pos);
-	if (!part)
-	{
-		print_error("Malloc failed to substr");
+	if (empty_double_quote_check(&part, i, start_pos) == TRUE)
+		return (part);
+	else
 		return (NULL);
-	}
-	(*i)++;
+	if (substr_and_move_index(line, &part, i, start_pos) == FALSE)
+		return (NULL);
 	tmp = part;
 	part = expand_token_value(part, mshell);
 	free_string(tmp);

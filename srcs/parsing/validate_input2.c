@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 10:28:25 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:21:55 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 12:51:34 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,3 @@ int	is_operator(t_token *token)
 		return (TRUE);
 	return (FALSE);
 }
-
-
-

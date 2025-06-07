@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:29:36 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 13:59:55 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,7 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 		print_error("invalid redirection token type");
 		return (FALSE);
 	}
-	// printf("redir type %d\n", redir_type);
 	(*token_list) = (*token_list)->next;
-	// printf("after redirects %s\n", (*token_list)->value);
 	if (!*token_list || (*token_list)->type != WORD || !(*token_list)->value
 		|| !*(*token_list)->value)
 	{
@@ -71,7 +69,6 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
 		print_error("Failed to add redirects");
 		return (FALSE);
 	}
-	// printf("file to add %s\n", file);
 	new_redir->file = ft_strdup(file);
 	if (!new_redir->file)
 	{
@@ -79,7 +76,6 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
 		print_error("Failed to strdup file");
 		return (FALSE);
 	}
-	// printf("redirect file added %s\n", new_redir->file);
 	new_redir->type = type;
 	if (type == REDIR_IN)
 		new_redir->fd = 0;
@@ -89,15 +85,10 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type, char *file)
 	new_redir->tmp_file = NULL;
 	new_redir->next = NULL;
 	if (!*redir_list)
-	{
-		// printf("redir list is NULL\n");
 		*redir_list = new_redir;
-		// printf("redir list %s\n", (*redir_list)->file);
-	}
 	else
 	{
 		current = *redir_list;
-		// printf("current %s\n", current->file);
 		while (current->next)
 			current = current->next;
 		current->next = new_redir;

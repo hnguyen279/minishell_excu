@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:26:46 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/07 15:36:13 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,35 +14,40 @@
 
 void	handle_line(char *line, t_shell *mshell)
 {
-	t_token	*tokenized_input_list;
+	t_token	*token_list;
 	t_cmd	*cmd_list;
 	t_ast	*tree;
 
-	mshell->heredoc_index = 0;
-	if (validate_quote(line) == FALSE)
-	{
-		mshell->exit_code = 2;
+	token_list = NULL;
+	if (init_and_validate_input(line, mshell, &token_list) == FALSE)
 		return ;
-	}
-	tokenized_input_list = NULL;
 	cmd_list = NULL;
 	tree = NULL;
-	if (tokenization_expansion_validation(line, mshell,
-			&tokenized_input_list) == FALSE || empty_variable_extension(mshell,
-			&tokenized_input_list) == FALSE)
-	{
-		free_token_list(tokenized_input_list);
-		tokenized_input_list = NULL;
-		return ;
-	}
-	// print_linked_list(tokenized_input_list);
-	process_valid_line(mshell, &tokenized_input_list, &cmd_list, &tree);
-	free_token_list(tokenized_input_list);
-	tokenized_input_list = NULL;
+	process_valid_line(mshell, &token_list, &cmd_list, &tree);
+	free_token_list(token_list);
+	token_list = NULL;
 	free_cmd_list(cmd_list);
 	free_ast(tree, mshell);
 	mshell->ast = NULL;
 	tree = NULL;
+}
+
+int	init_and_validate_input(char *line, t_shell *mshell, t_token **token_list)
+{
+	mshell->heredoc_index = 0;
+	if (validate_quote(line) == FALSE)
+	{
+		mshell->exit_code = 2;
+		return (FALSE);
+	}
+	if (tokenization_expansion_validation(line, mshell, token_list) == FALSE
+		|| empty_variable_extension(mshell, token_list) == FALSE)
+	{
+		free_token_list(*token_list);
+		*token_list = NULL;
+		return (FALSE);
+	}
+	return (TRUE);
 }
 
 int	tokenization_expansion_validation(char *line, t_shell *mshell,
