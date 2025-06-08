@@ -94,10 +94,11 @@ int	create_redirect(t_redirect **new_redir, char *file, t_redirect_type type)
 		print_error("Failed to add redirects");
 		return (FALSE);
 	}
-	(*new_redir)->ori_path = NULL;
+	(*new_redir)->ori_path =  ft_strdup(file);;
 	(*new_redir)->tmp_file = NULL;
 	(*new_redir)->next = NULL;
-	(*new_redir)->file = ft_strdup(file);
+	char *str = "\"$USER\"";
+	(*new_redir)->file = ft_strdup(str);
 	if (!(*new_redir)->file)
 	{
 		free((*new_redir));

@@ -1,7 +1,6 @@
 #include "../../includes/shell.h"
 
-static int	assign_heredoc_path(t_shell *mshell, t_redirect *redir, char *name,
-		char **path)
+static int assign_heredoc_path(t_shell *mshell, t_redirect *redir, char *name, char **path)
 {
 	redir->tmp_file = ft_strdup(name);
 	free(name);
@@ -11,13 +10,11 @@ static int	assign_heredoc_path(t_shell *mshell, t_redirect *redir, char *name,
 	return (0);
 }
 
-static int	create_tmp_file(t_shell *mshell, t_redirect *redir, char **path,
-		int *fd)
+static int create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int *fd)
 {
-	char	*name;
-	int		attempt;
+	char *name;
+	int attempt = 0;
 
-	attempt = 0;
 	while (attempt < 1000)
 	{
 		name = make_heredoc_filename(mshell->heredoc_index + attempt);
@@ -37,161 +34,84 @@ static int	create_tmp_file(t_shell *mshell, t_redirect *redir, char **path,
 	return (error_msg(mshell, "minishell: cannot create heredoc file", 0));
 }
 
-static int	prepare_delimiter(t_shell *mshell, t_redirect *redir, char **delim,
-		int *expand)
+int	is_quoted(const char *str)
 {
-	*delim = get_delimiter(redir->file);
-	if (!*delim)
-		return (error_msg(mshell, "heredoc: memory allocation failed", 0));
-	*expand = !is_fully_quoted(redir->file);
-	return (0);
+	size_t	len;
+
+	if (!str || !str[0])
+		return (0);
+	len = ft_strlen(str);
+	if ((str[0] == '\'' || str[0] == '"') && str[len - 1] == str[0])
+	{
+		if (len == 2) // ví dụ: "" hoặc ''
+			return 0;
+		if (str[0] == '\'')
+			return 1; // single quote
+		else
+			return 2; // double quote
+	}
+	else if ((str[0] == '\'' || str[0] == '"') ||
+			 (str[len - 1] == '\'' || str[len - 1] == '"'))
+		return -1; // unmatched quote
+	return 3; // không có quote
 }
 
-// static int	process_heredoc_line(t_shell *mshell, int fd, char *line,
-// 		int expand)
-// {
-// 	int	status;
 
-// 	status = 0;
-// 	if (expand)
-// 		exe_handle_dollar_expansion(line, fd, mshell);
-// 	else if (write(fd, line, strlen(line)) == -1)
-// 		status = error_msg(mshell, "heredoc: write", 1);
-// 	if (!status && write(fd, "\n", 1) == -1)
-// 		status = error_msg(mshell, "heredoc: write", 1);
-// 	free(line);
-// 	return (status);
-// }
+char *get_delimiter(char *file)
+{
+	size_t len;
 
-// static int	check_heredoc_line_status(t_shell *mshell, char *line,
-// 		const char *delim)
-// {
-// 	char	*expanded_line;
+	if (!file)
+		return NULL;
 
-// 	if (g_signum == SIGINT)
-// 	{
-// 		free(line);
-// 		return (-1);
-// 	}
-// 	if (!line)
-// 	{
-// 		ft_printf_fd(STDERR_FILENO,
-// 			"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
-// 			delim);
-// 		return (1);
-// 	}
-// 	expanded_line = expand_token_value(line, mshell);
-// 	if (ft_strcmp(expanded_line, delim) == 0)
-// 	{
-// 		free(expanded_line);
-// 		free(line);
-// 		return (2);
-// 	}
-// 	free(expanded_line);
-// 	return (0);
-// }
+	len = strlen(file);
 
-// static int	handle_heredoc_loop(t_shell *mshell, int fd, const char *delim,
-// 		int expand)
-// {
-// 	char	*line;
-// 	int		status;
-// 	int		check;
+	if (len >= 2 &&
+		(file[0] == '\'' || file[0] == '"') &&
+		file[len - 1] == file[0])
+	{
+		return ft_substr(file, 1, len - 2); // bỏ quote đầu-cuối
+	}
 
-// 	status = 0;
-// 	while (1)
-// 	{
-// 		line = readline("> ");
-// 		check = check_heredoc_line_status(mshell, line, delim);
-// 		if (check == -1)
-// 			return (-1);
-// 		else if (check == 1)
-// 			break ;
-// 		else if (check == 2)
-// 			break ;
-// 		status = process_heredoc_line(mshell, fd, line, expand);
-// 		if (status)
-// 			break ;
-// 	}
-// 	return (status);
-// }
+	return ft_strdup(file); // giữ nguyên
+}
 
 
+int prepare_delimiter(t_shell *mshell, t_redirect *redir, char **delim, int *expand)
+{
+	int quote_type;
 
-// static char *expand_heredoc_line(char *line, t_shell *mshell, int expand)
-// {
-// 	if (expand)
-// 		return expand_token_value(line, mshell);
-// 	return ft_strdup(line);
-// }
+	quote_type = is_quoted(redir->file);
+	if (quote_type == -1)
+	{
+		ft_printf_fd(STDERR_FILENO,
+			"minishell: heredoc: unmatched quote in delimiter: %s\n",
+			redir->file);
+		return error_msg(mshell, "heredoc", 1);
+	}
 
-// static int check_heredoc_line_status(char *line, const char *delim, char *expanded_line)
-// {
-// 	if (ft_strcmp(expanded_line, delim) == 0)
-// 	{
-// 		// free(line);
-// 		free(expanded_line);
-// 		return 2;
-// 	}
-// 	free(line);
-// 	return 0;
-// }
+	if (quote_type == 0 || quote_type == 1 || quote_type == 2)
+	{
+		// Có quote đầy đủ → không mở rộng biến trong nội dung
+		*expand = 0;
+		*delim = get_delimiter(redir->file); // bỏ quote ở đầu và cuối
+	}
+	else
+	{
+		// Không có quote → mở rộng biến trong nội dung
+		*expand = 1;
+		*delim = expand_token_value(redir->file, mshell);
+		if (!*delim)
+			*delim = ft_strdup(redir->file); // fallback
+	}
 
-// static int process_heredoc_line(t_shell *mshell, int fd, char *line)
-// {
-// 	int status = 0;
+	if (!*delim)
+		return error_msg(mshell, "heredoc: memory allocation failed", 0);
 
-// 	if (write(fd, line, strlen(line)) == -1)
-// 		status = error_msg(mshell, "heredoc: write", 1);
-// 	if (!status && write(fd, "\n", 1) == -1)
-// 		status = error_msg(mshell, "heredoc: write", 1);
-// 	free(line);
-// 	return status;
-// }
+	printf("prepare_delimiter: delim = [%s], expand = %d\n", *delim, *expand);
+	return 0;
+}
 
-// static int handle_heredoc_loop(t_shell *mshell, int fd, const char *delim,
-// 		int expand)
-// {
-// 	char *line;
-// 	char *expanded_line;
-// 	int status = 0;
-// 	int check;
-
-// 	while (1)
-// 	{
-// 		line = readline("> ");
-// 		if (g_signum == SIGINT)
-// 		{
-// 			if(line)
-// 				free(line);
-// 			return -1;
-// 		}
-// 		if (!line)
-// 		{
-// 			ft_printf_fd(STDERR_FILENO,
-// 				"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
-// 				delim);
-// 			break;
-// 		}
-// 		expanded_line = expand_heredoc_line(line, mshell, expand);
-// 		if (!expanded_line)
-// 		{
-// 			free(line);
-// 			return error_msg(mshell, "heredoc: expansion failed", 0);
-// 		}
-// 		check = check_heredoc_line_status(line, delim, expanded_line);
-// 		if (check == -1)
-// 			return -1;
-// 		if (check == 1 || check == 2)
-// 			break;
-// 		status = process_heredoc_line(mshell, fd, expanded_line);
-// 		if (status)
-// 			break;
-// 	}
-// 	return status;
-// }
-
-//do to divide later
 static int handle_heredoc_loop(t_shell *mshell, int fd, const char *delim, int expand)
 {
 	char *line;
@@ -208,9 +128,7 @@ static int handle_heredoc_loop(t_shell *mshell, int fd, const char *delim, int e
 		}
 		if (!line)
 		{
-			ft_printf_fd(STDERR_FILENO,
-				"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
-				delim);
+			ft_printf_fd(STDERR_FILENO, "minishell: warning: here-document delimited by end-of-file (wanted `%s`)\n", delim);
 			break;
 		}
 		if (expand)
@@ -236,37 +154,20 @@ static int handle_heredoc_loop(t_shell *mshell, int fd, const char *delim, int e
 	return status;
 }
 
-static int	write_heredoc(t_shell *mshell, int fd, const char *delim,
-		int expand)
+static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)
 {
-	int	status;
-	//int	tty_fd;
+	int status;
 
 	g_signum = 0;
 	status = handle_heredoc_loop(mshell, fd, delim, expand);
 	free((void *)delim);
 	if (status == -1)
-	{
 		sig_exit_code(mshell);
-		// tty_fd = open("/dev/tty", O_RDONLY);
-		// if (tty_fd == -1)
-		// {
-		// 	error_msg(mshell, "open(/dev/tty)", 1);
-		// 	return (-1);
-		// }
-		// if (dup2(tty_fd, STDIN_FILENO) == -1)
-		// {
-		// 	error_msg(mshell, "dup2", 1);
-		// 	close(tty_fd);
-		// 	return (-1);
-		// }
-		// close(tty_fd);
-	}
 	setup_signals(mshell, MODE_HEREDOC);
-	return (status);
+	return status;
 }
 
-static int	cleanup_heredoc_failure(t_redirect *redir, int fd, const char *path)
+static int cleanup_heredoc_failure(t_redirect *redir, int fd, const char *path)
 {
 	close(fd);
 	unlink(path);
@@ -275,47 +176,27 @@ static int	cleanup_heredoc_failure(t_redirect *redir, int fd, const char *path)
 		free(redir->tmp_file);
 		redir->tmp_file = NULL;
 	}
-	return (1);
+	return 1;
 }
 
-int	open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
+int open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
 {
-	char	*path;
-	char	*delim;
-	int		fd;
-	int		expand;
-	int		status;
+	char *path;
+	char *delim;
+	int fd;
+	int expand;
+	int status;
 
 	if (!redir || !redir->file)
-		return (error_msg(mshell, "heredoc: no delimiter", 0));
+		return error_msg(mshell, "heredoc: no delimiter", 0);
 	if (create_tmp_file(mshell, redir, &path, &fd))
-		return (1);
+		return 1;
 	if (prepare_delimiter(mshell, redir, &delim, &expand))
-		return (cleanup_heredoc_failure(redir, fd, path));
+		return cleanup_heredoc_failure(redir, fd, path);
 	status = write_heredoc(mshell, fd, delim, expand);
 	if (status != 0)
-		return (cleanup_heredoc_failure(redir, fd, path));
+		return cleanup_heredoc_failure(redir, fd, path);
 	close(fd);
 	mshell->exit_code = 0;
-	return (0);
+	return 0;
 }
-
-// int	open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
-// {
-// 	char	*path;
-// 	char	*delim;
-// 	int		fd;
-// 	int		expand;
-
-// 	if (!redir->file)
-// 		return (error_msg(mshell, "heredoc: no delimiter", 0));
-// 	if (create_tmp_file(mshell, redir, &path, &fd))
-// 		return (1);
-// 	if (prepare_delimiter(mshell, redir, &delim, &expand))
-// 		return (cleanup_heredoc_failure(redir, fd, path));
-// 	if (write_heredoc(mshell, fd, delim, expand))
-// 		return cleanup_heredoc_failure(redir, fd, path);
-// 	close(fd);
-// 	mshell->exit_code = 0;
-// 	return (0);
-// }
