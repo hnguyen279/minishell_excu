@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/08 18:13:10 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/08 20:27:24 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ typedef struct s_redirect
 	int					fd;
 	t_redirect_type		type;
 	char				*file;
-	char				*ori_path;
+	char				*ori_file;
 	char				*tmp_file;
 	struct s_redirect	*next;
 }	t_redirect;

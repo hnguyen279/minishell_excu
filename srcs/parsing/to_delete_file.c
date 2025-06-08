@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   to_delete_file.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:28:34 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:27:25 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/08 20:27:24 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	print_redirect_list(t_redirect *redir_list)
 		printf("redirect : %d\n", ++i);
 		printf("fd : %d\n", redir_list->fd);
 		printf("file : %s\n", redir_list->file);
-		printf("original path : %s\n", redir_list->ori_path);
+		printf("original path : %s\n", redir_list->ori_file);
 		printf("temp file : %s\n", redir_list->tmp_file);
 		printf("redirect type : %d\n", redir_list->type);
 		temp = temp->next;

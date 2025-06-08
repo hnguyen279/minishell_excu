@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:38:32 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/08 16:24:47 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/08 20:27:24 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	free_ast(t_ast *node, t_shell *mshell)
 		next = redir->next;
 		free_string(redir->file);
 		free_string(redir->tmp_file);
-		free_string(redir->ori_path);
+		free_string(redir->ori_file);
 		free(redir);
 		redir = next;
 	}

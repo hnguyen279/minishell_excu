@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirects.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 17:00:01 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/08 20:27:24 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	create_redirect(t_redirect **new_redir, char *file, t_redirect_type type)
 		print_error("Failed to add redirects");
 		return (FALSE);
 	}
-	(*new_redir)->ori_path =  ft_strdup(file);;
+	(*new_redir)->ori_file =  ft_strdup(file);;
 	(*new_redir)->tmp_file = NULL;
 	(*new_redir)->next = NULL;
 	char *str = "\"$USER\"";

@@ -31,7 +31,7 @@ static int create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int 
 			return (error_msg(mshell, "heredoc: open", 1));
 		++attempt;
 	}
-	return (error_msg(mshell, "minishell: cannot create heredoc file", 0));
+	return (error_msg(mshell, "cannot create heredoc file", 0));
 }
 
 int	is_quoted(const char *str)
@@ -70,42 +70,35 @@ char *get_delimiter(char *file)
 		(file[0] == '\'' || file[0] == '"') &&
 		file[len - 1] == file[0])
 	{
-		return ft_substr(file, 1, len - 2); // bỏ quote đầu-cuối
+		return ft_substr(file, 1, len - 2);
 	}
 
-	return ft_strdup(file); // giữ nguyên
+	return ft_strdup(file);
 }
 
 
-int prepare_delimiter(t_shell *mshell, t_redirect *redir, char **delim, int *expand)
+int prepare_delimiter(t_redirect *redir, char **delim, int *expand)
 {
 	int quote_type;
 
-	quote_type = is_quoted(redir->file);
+	quote_type = is_quoted(redir->ori_file);
 	if (quote_type == -1)
 	{
-		ft_printf_fd(STDERR_FILENO,
-			"minishell: heredoc: unmatched quote in delimiter: %s\n",
-			redir->file);
-		return error_msg(mshell, "heredoc", 1);
+		ft_printf_fd(2, "minishell: heredoc: unmatched quote in delimiter: %s\n", redir->ori_file);
+		return (1);
 	}
 
 	if (quote_type == 1 || quote_type == 2 || quote_type == 3)
-	{
 		*expand = 0;
-		*delim = get_delimiter(redir->file);
-	}
 	else
-	{
 		*expand = 1;
-		*delim = expand_token_value(redir->file, mshell);
-		if (!*delim)
-			*delim = ft_strdup(redir->file);
-	}
-
+	*delim = get_delimiter(redir->ori_file);
 	if (!*delim)
-		return error_msg(mshell, "heredoc: memory allocation failed", 0);
-
+	{
+		ft_printf_fd(2, "minishell: heredoc: memory allocation failed\n");
+		return (1);
+	}
+	//debug
 	printf("prepare_delimiter: delim = [%s], expand = %d\n", *delim, *expand);
 	return 0;
 }
@@ -126,7 +119,7 @@ static int handle_heredoc_loop(t_shell *mshell, int fd, const char *delim, int e
 		}
 		if (!line)
 		{
-			ft_printf_fd(STDERR_FILENO, "minishell: warning: here-document delimited by end-of-file (wanted `%s`)\n", delim);
+			ft_printf_fd(2, "minishell: warning: here-document delimited by end-of-file (wanted `%s`)\n", delim);
 			break;
 		}
 		if (expand)
@@ -186,11 +179,11 @@ int open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
 	int expand;
 	int status;
 
-	if (!redir || !redir->file)
+	if (!redir || !redir->ori_file)
 		return error_msg(mshell, "heredoc: no delimiter", 0);
 	if (create_tmp_file(mshell, redir, &path, &fd))
 		return 1;
-	if (prepare_delimiter(mshell, redir, &delim, &expand))
+	if (prepare_delimiter(redir, &delim, &expand))
 		return cleanup_heredoc_failure(redir, fd, path);
 	status = write_heredoc(mshell, fd, delim, expand);
 	if (status != 0)
