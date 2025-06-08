@@ -73,7 +73,7 @@ static int	redirect_output_append(t_redirect *redir)
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
-		printf("dup2 failed\n");
+		ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
 		close(fd);
 		return (1);
 	}
@@ -89,11 +89,16 @@ static int	redirect_heredoc(t_redirect *redir, t_shell *mshell)
 		return (error_msg(mshell, "heredoc: no temporary file", 0));
 	fd = open(redir->tmp_file, O_RDONLY);
 	if (fd == -1)
-		return (error_msg(mshell, redir->tmp_file, 1));
+	{
+		ft_printf_fd(2, "minishell: failed to open '%s': %s\n", redir->tmp_file,
+			strerror(errno));
+		return (1);
+	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
+		ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
 		close(fd);
-		return (error_msg(mshell, "dup2", 1));
+		return (1);
 	}
 	close(fd);
 	return (0);
@@ -103,24 +108,21 @@ int	handle_single_redirection(t_shell *mshell, t_redirect *redir)
 {
 	if (is_ambiguous_redirect(mshell, redir) != 0)
 	{
-		mshell->exit_code = 1;
-		return (mshell->exit_code);
+		ft_printf_fd(2, "minishell: ambiguous redirect: %s\n", redir->file);
+		return (1);
 	}
 	if (redir->type == REDIR_IN)
-		mshell->exit_code = redirect_input(redir);
+		return (redirect_input(redir));
 	else if (redir->type == REDIR_OUT)
-		mshell->exit_code = redirect_output(redir);
+		return (redirect_output(redir));
 	else if (redir->type == REDIR_APPEND)
-	{
-		mshell->exit_code = redirect_output_append(redir);
-	}
+		return (redirect_output_append(redir));
 	else if (redir->type == REDIR_HEREDOC)
-		mshell->exit_code = redirect_heredoc(redir, mshell);
+		return (redirect_heredoc(redir, mshell));
 	else
 	{
 		ft_printf_fd(2, "minishell: invalid redirection type: %d\n",
 			redir->type);
-		mshell->exit_code = 1;
+		return (1);
 	}
-	return (mshell->exit_code);
 }

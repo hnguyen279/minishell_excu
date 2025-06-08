@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:24 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 16:42:15 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/08 22:04:30 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void	execute_child(t_shell *mshell, t_ast *ast, int *pipe_fd, int left)
 	exit(mshell->exit_code);
 }
 
-static int	init_child(int *pipe_fd, pid_t *pid)
+static int	init_child(int *pipe_fd, pid_t *pid, t_shell *mshell)
 {
 	*pid = fork();
 	if (*pid == -1)
@@ -60,6 +60,7 @@ static int	init_child(int *pipe_fd, pid_t *pid)
 		perror("minishell: fork");
 		close(pipe_fd[FD_READ]);
 		close(pipe_fd[FD_WRITE]);
+		mshell->exit_code = 1;
 		return (-1);
 	}
 	return (0);
@@ -72,15 +73,14 @@ int	execute_pipe(t_ast *ast, t_shell *mshell)
 	int		status[2];
 
 	if (!ast || !ast->left || !ast->right)
-		return (error_msg(mshell,
-				"syntax error near unexpected token `|'", 0));
+		return (error_msg(mshell, "syntax error near unexpected token `|'", 0));
 	if (pipe(pipe_fd) == -1)
 		return (error_msg(mshell, "pipe", 1));
-	if (init_child(pipe_fd, &pid[0]) == -1)
+	if (init_child(pipe_fd, &pid[0], mshell) == -1)
 		return (mshell->exit_code);
 	if (pid[0] == 0)
 		execute_child(mshell, ast, pipe_fd, 1);
-	if (init_child(pipe_fd, &pid[1]) == -1)
+	if (init_child(pipe_fd, &pid[1], mshell) == -1)
 		return (mshell->exit_code);
 	if (pid[1] == 0)
 		execute_child(mshell, ast, pipe_fd, 0);

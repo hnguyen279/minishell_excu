@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:48 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 17:06:27 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/08 22:46:07 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,7 @@ int	error_msg(t_shell *mshell, const char *msg, int use_errno)
 		ft_printf_fd(2, "minishell: %s\n", msg);
 	if (mshell)
 		mshell->exit_code = 1;
-	if (use_errno)
-		return (-1);
-	else
-		return (1);
+	return (1);
 }
 
 int	display_error_cmd(char *cmd)

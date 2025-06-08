@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 18:46:43 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/08 22:34:58 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,15 +67,11 @@ static int	init_pwd_env(t_shell *mshell)
 		env_add(mshell, "OLDPWD", NULL);
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
-	{
-		perror("minishell: getcwd");
-		return (1);
-	}
+		return ((error_msg(mshell, "getcwd", 1)));
 	if (env_add(mshell, "PWD", cwd) != 0)
 	{
 		free(cwd);
-		ft_printf_fd(2, "init_shell: failed to set PWD\n");
-		return (1);
+		return ((error_msg(mshell, "init_shell: failed to set PWD", 0)));
 	}
 	free(cwd);
 	return (0);
@@ -86,13 +82,12 @@ int	init_shell(t_shell *mshell, char **envp)
 	ft_memset(mshell, 0, sizeof(t_shell));
 	mshell->envp = env_dup(envp);
 	if (!mshell->envp)
-	{
-		ft_printf_fd(2, "init_shell: failed to duplicate env\n");
-		return (1);
-	}
+		return (error_msg(mshell, "init_shell: failed to duplicate environment",
+				0));
 	if (init_shlvl_env(mshell))
-		return (1);
+		return (error_msg(mshell, "init_shell: failed to initialize SHLVL", 0));
 	if (init_pwd_env(mshell))
-		return (1);
+		return (error_msg(mshell, "init_shell: failed to initialize PWD/OLDPWD",
+				0));
 	return (0);
 }

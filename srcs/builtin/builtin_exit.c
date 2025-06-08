@@ -102,5 +102,5 @@ void	builtin_exit(t_shell *mshell, char **token)
 	free_ast(mshell->ast, mshell);
 	mshell->ast = NULL;
 	shell_cleanup(mshell);
-	exit (mshell->exit_code);
+	exit(mshell->exit_code);
 }

@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 16:44:46 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/08 21:14:04 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
 		free(cmd_path);
 		ft_printf_fd(2, "minishell: fork: %s\n", strerror(errno));
 		mshell->exit_code = 1;
-		return (mshell->exit_code);
+		return (1);
 	}
 	if (pid == 0)
 		run_command_child(node, mshell, cmd_path);
@@ -71,7 +71,7 @@ static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
 	if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
 	{
 		if (dup2(in_fd, 0) == -1 || dup2(out_fd, 1) == -1)
-			perror("minishell: dup2 restore failed");
+			return (error_msg(mshell, "dup failed", 1));
 		safe_close_fds(in_fd, out_fd);
 		return (mshell->exit_code);
 	}
@@ -80,7 +80,7 @@ static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
 	if (!mshell->has_pipe && node->cmd && node->cmd[0])
 		env_set_last_argument(mshell, node->cmd);
 	if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
-		perror("minishell: dup2 restore failed");
+		return (error_msg(mshell, "dup failed", 1));
 	safe_close_fds(in_fd, out_fd);
 	return (mshell->exit_code);
 }

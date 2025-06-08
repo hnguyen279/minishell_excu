@@ -89,8 +89,7 @@ static char	*build_plus_equal_value(t_shell *mshell, const char *key,
 	return (new_val);
 }
 
-int	export_plus_equal(t_shell *mshell, const char *arg,
-		char *plus_equal)
+int	export_plus_equal(t_shell *mshell, const char *arg, char *plus_equal)
 {
 	char	*key;
 	char	*new_val;
