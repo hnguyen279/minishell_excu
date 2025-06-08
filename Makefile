@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
+#    By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/06/07 17:06:11 by trpham           ###   ########.fr        #
+#    Updated: 2025/06/08 18:09:53 by thi-huon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,8 +38,11 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/execution/execute_command.c \
 		$(SRCS_DIR)/execution/execute_pipe.c \
 		$(SRCS_DIR)/execution/execute_redirection.c \
+		$(SRCS_DIR)/execution/execute_builtin.c \
 		$(SRCS_DIR)/execution/find_path.c \
 		$(SRCS_DIR)/execution/utils_exe.c \
+		$(SRCS_DIR)/execution/utils_support_exe.c \
+		$(SRCS_DIR)/execution/utils_redirection.c \
 		$(SRCS_DIR)/environment/env_add.c \
 		$(SRCS_DIR)/environment/utils_env.c \
       	$(SRCS_DIR)/environment/env_init.c \
@@ -53,7 +56,10 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/builtin/builtin_unset.c \
 		$(SRCS_DIR)/builtin/builtin_exit.c \
 		$(SRCS_DIR)/builtin/builtin_export.c \
+		$(SRCS_DIR)/builtin/utils_export.c \
+		$(SRCS_DIR)/builtin/utils_cd_export.c \
 		$(SRCS_DIR)/signals/handle_signal.c \
+		$(SRCS_DIR)/signals/utils_signal.c \
 		$(SRCS_DIR)/shell/shell.c \
 		$(SRCS_DIR)/parsing/to_delete_file.c
 

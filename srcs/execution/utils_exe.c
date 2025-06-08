@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_exe.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
+/*   Updated: 2025/06/08 17:03:41 by thi-huon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/shell.h"
 
 void	free_split(char **tab)
@@ -13,58 +25,29 @@ void	free_split(char **tab)
 	free(tab);
 }
 
-int	error_msg(t_shell *mshell, const char *msg, int use_errno)
+char	**find_path(char **env)
 {
-	if (use_errno)
-		ft_printf_fd(2, "minishell: %s: %s\n", msg, strerror(errno));
-	else
-		ft_printf_fd(2, "minishell: %s\n", msg);
-	if (mshell)
-		mshell->exit_code = 1;
-	if (use_errno)
-		return (-1);
-	else
-		return (1);
-}
-
-int	display_error_cmd(char *cmd)
-{
-	if (!cmd || cmd[0] == '\0')
-	{
-		ft_printf_fd(STDERR_FILENO, "minishell: : command not found\n");
-		return (127);
-	}
-	else if (!ft_strcmp(cmd, "."))
-	{
-		ft_printf_fd(STDERR_FILENO,
-			"minishell: .: filename argument required\n"
-			".: usage: . filename [arguments]\n");
-		return (2);
-	}
-	else if (!ft_strcmp(cmd, ".."))
-	{
-		ft_printf_fd(STDERR_FILENO, "minishell: ..: command not found\n");
-		return (127);
-	}
-	else
-	{
-		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
-		return (127);
-	}
-}
-
-int	is_white_spaces_cmd(char *cmd)
-{
-	int	i;
+	int		i;
+	char	**paths;
 
 	i = 0;
-	while (cmd[i])
-	{
-		if (cmd[i] != ' ' && (cmd[i] < 9 || cmd[i] > 13))
-			return (0);
+	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
+	if (!env[i] || env[i][5] == '\0')
+	{
+		paths = (char **)malloc(sizeof(char *) * 2);
+		if (!paths)
+			return (NULL);
+		paths[0] = getcwd(NULL, 0);
+		if (!paths[0])
+		{
+			free_split(paths);
+			return (NULL);
+		}
+		paths[1] = NULL;
+		return (paths);
 	}
-	return (1);
+	return (ft_split(env[i] + 5, ':'));
 }
 
 int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
@@ -80,7 +63,7 @@ int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 		mshell->exit_code = 1;
 		return (1);
 	}
-	if (ft_strchr(redir->ori_path, '$') && ft_strchr(redir->file, ' ')
+	if (ft_strchr(redir->file, ' ') && ft_strchr(redir->ori_path, '$')
 		&& !is_fully_quoted(redir->ori_path)
 		&& !is_white_spaces_cmd(redir->file) && redir->type != REDIR_HEREDOC)
 	{
@@ -90,4 +73,28 @@ int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 		return (1);
 	}
 	return (0);
+}
+
+int	wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)
+{
+	int	sig;
+
+	if (waitpid(pid, status, 0) == -1)
+		return (error_msg(mshell, "waitpid", 1));
+	if (!update_exit_code)
+		return (0);
+	if (WIFEXITED(*status))
+		mshell->exit_code = WEXITSTATUS(*status);
+	else if (WIFSIGNALED(*status))
+	{
+		sig = WTERMSIG(*status);
+		mshell->exit_code = 128 + sig;
+		if (sig == SIGQUIT)
+			write(STDERR_FILENO, "Quit (core dumped)\n", 20);
+		else if (sig == SIGINT)
+			write(STDERR_FILENO, "\n", 1);
+	}
+	else
+		mshell->exit_code = 1;
+	return (mshell->exit_code);
 }

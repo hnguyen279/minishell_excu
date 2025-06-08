@@ -1,9 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_pwd.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 15:31:44 by thi-huon          #+#    #+#             */
+/*   Updated: 2025/06/08 15:31:46 by thi-huon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/shell.h"
 
-static int parse_pwd_args(char **token, t_shell *mshell)
+static int	parse_pwd_args(char **token, t_shell *mshell)
 {
-	int i = 1;
+	int	i;
 
+	i = 1;
 	while (token[i])
 	{
 		if (token[i][0] == '-' && token[i][1] != '\0')
@@ -18,14 +31,13 @@ static int parse_pwd_args(char **token, t_shell *mshell)
 	return (1);
 }
 
-int builtin_pwd(t_shell *mshell, char **token)
+int	builtin_pwd(t_shell *mshell, char **token)
 {
-	char *cwd;
-	const char *env_pwd;
+	char		*cwd;
+	const char	*env_pwd;
 
 	if (!parse_pwd_args(token, mshell))
 		return (mshell->exit_code);
-
 	env_pwd = env_find_value(mshell, "PWD");
 	if (env_pwd)
 	{

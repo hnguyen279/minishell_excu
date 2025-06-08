@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_pipe.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 16:06:24 by thi-huon          #+#    #+#             */
+/*   Updated: 2025/06/08 16:42:15 by thi-huon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/shell.h"
 
 static void	setup_pipe_redirection(int pipe_fd_src, int std_fd_dst)
@@ -51,30 +63,6 @@ static int	init_child(int *pipe_fd, pid_t *pid)
 		return (-1);
 	}
 	return (0);
-}
-
-int	wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)
-{
-	int	sig;
-
-	if (waitpid(pid, status, 0) == -1)
-		return (error_msg(mshell, "waitpid", 1));
-	if (!update_exit_code)
-		return (0);
-	if (WIFEXITED(*status))
-		mshell->exit_code = WEXITSTATUS(*status);
-	else if (WIFSIGNALED(*status))
-	{
-		sig = WTERMSIG(*status);
-		mshell->exit_code = 128 + sig;
-		if (sig == SIGQUIT)
-			write(STDERR_FILENO, "Quit (core dumped)\n", 20);
-		else if (sig == SIGINT)
-			write(STDERR_FILENO, "\n", 1);
-	}
-	else
-		mshell->exit_code = 1;
-	return (mshell->exit_code);
 }
 
 int	execute_pipe(t_ast *ast, t_shell *mshell)

@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_env.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 15:30:52 by thi-huon          #+#    #+#             */
+/*   Updated: 2025/06/08 15:30:54 by thi-huon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/shell.h"
 
-int builtin_env(t_shell *mshell, char **token)
+int	builtin_env(t_shell *mshell, char **token)
 {
 	if (!mshell || !token || !token[0])
 	{

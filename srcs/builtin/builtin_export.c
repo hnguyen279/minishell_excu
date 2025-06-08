@@ -1,72 +1,84 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_export.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 15:50:07 by thi-huon          #+#    #+#             */
+/*   Updated: 2025/06/08 15:52:27 by thi-huon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/shell.h"
 
-static int export_is_valid_key(const char *str)
+static int	handle_plus_equal_case(t_shell *mshell, const char *arg,
+		char *plus_equal)
 {
-    size_t i;
+	char	*key;
 
-    if (!str || str[0] == '\0' || str[0] == '=' || ft_isdigit(str[0]) || str[0] == '+')
-        return 0;
-    i = 0;
-    while (str[i] && str[i] != '=')
-    {
-        if (!ft_isalnum(str[i]) && str[i] != '_')
-            return 0;
-        i++;
-    }
-    return 1;
+	key = ft_substr(arg, 0, plus_equal - arg);
+	if (!key || !export_is_valid_key(key))
+	{
+		free(key);
+		ft_printf_fd(2, "minishell: export: `%s`: not identifier\n", arg);
+		return (1);
+	}
+	free(key);
+	return (export_plus_equal(mshell, arg, plus_equal));
 }
 
-static void export_print(const char *env)
+static int	export_handle_one(t_shell *mshell, const char *arg)
 {
-	const char *equal;
+	char	*equal;
+	char	*plus_equal;
 
-	equal = ft_strchr(env, '=');
-	if (equal)
+	if (!arg)
+		return (0);
+	if (arg[0] == '-')
 	{
-		write(STDOUT_FILENO, "declare -x ", 11);
-		write(STDOUT_FILENO, env, equal - env + 1);
-		ft_printf_fd(STDOUT_FILENO, "\"%s\"\n", equal + 1);
+		ft_printf_fd(2, "minishell: export: `%s`: invalid option\n", arg);
+		return (2);
 	}
-	else
+	plus_equal = ft_strnstr(arg, "+=", ft_strlen(arg));
+	if (plus_equal != NULL)
+		return (handle_plus_equal_case(mshell, arg, plus_equal));
+	if (!export_is_valid_key(arg))
 	{
-		ft_printf_fd(STDOUT_FILENO, "declare -x %s\n", env);
+		ft_printf_fd(2, "minishell: export: `%s`: not identifier\n", arg);
+		return (1);
 	}
+	equal = ft_strchr(arg, '=');
+	if (equal != NULL)
+		return (export_with_equal(mshell, arg, equal));
+	else if (env_add(mshell, arg, NULL) != 0)
+		return (1);
+	return (0);
 }
 
-char **copy_and_sort_envp(char **envp, size_t *out_count)
+static int	handle_export_arguments(t_shell *mshell, char **token, int argc)
 {
-	size_t i;
-	char **copy;
+	int	i;
+	int	code;
+	int	result;
 
-	i = 0;
-	*out_count = 0;
-	while (envp[*out_count])
-		(*out_count)++;
-	copy = ft_calloc(*out_count + 1, sizeof(char *));
-	if (!copy)
+	i = 1;
+	code = 0;
+	while (i < argc)
 	{
-		ft_printf_fd(2, "minishell: export: malloc failed\n");
-		return NULL;
-	}
-	while (i < *out_count)
-	{
-		copy[i] = ft_strdup(envp[i]);
-		if (!copy[i])
-		{
-			free_split(copy);
-			return NULL;
-		}
+		result = export_handle_one(mshell, token[i]);
+		if (result > code)
+			code = result;
 		i++;
 	}
-	env_sort(copy, *out_count);
-	return (copy);
+	return (code);
 }
 
-int export_standalone(char **envp)
+static int	export_standalone(char **envp)
 {
-	size_t count;
-	size_t i;
-	char **copy;
+	size_t	count;
+	size_t	i;
+	char	**copy;
 
 	count = 0;
 	i = 0;
@@ -79,164 +91,26 @@ int export_standalone(char **envp)
 			export_print(copy[i]);
 	}
 	free(copy);
-	return 0;
+	return (0);
 }
 
-static int export_plus_equal(t_shell *mshell, const char *arg, char *plus_equal)
+void	builtin_export(t_shell *mshell, char **token)
 {
-	char *key;
-	char *old_val;
-	char *new_val; 
-
-	key = ft_substr(arg, 0, plus_equal - arg);
-	if (!key)
-	{
-		ft_printf_fd(2, "minishell: export: malloc failed\n");
-		return 1;
-	}
-	old_val = env_find_value(mshell, key);
-	if (old_val)
-		new_val = ft_strjoin(old_val, plus_equal + 2);
-	else
-		new_val = ft_strdup(plus_equal + 2);
-	if (!new_val)
-	{
-		free(key);
-		ft_printf_fd(2, "minishell: export: malloc failed\n");
-		return 1;
-	}
-	env_remove(mshell, key);
-	if (env_add(mshell, key, new_val) != 0)
-	{
-		free(key);
-		free(new_val);
-		return 1;
-	}
-	free(key);
-	free(new_val);
-	return 0;
-}
-
-static int export_with_equal(t_shell *mshell, const char *arg, char *equal)
-{
-	char *key = ft_substr(arg, 0, equal - arg);
-	if (!key)
-	{
-		ft_printf_fd(2, "minishell: export: malloc failed\n");
-		return 1;
-	}
-	env_remove(mshell, key);
-	if (env_add(mshell, key, equal + 1) != 0)
-	{
-		free(key);
-		return 1;
-	}
-	free(key);
-	return 0;
-}
-
-int export_handle_one(t_shell *mshell, const char *arg)
-{
-	char *equal;
-	char *plus_equal;
-
-	if (!arg)
-		return 0;
-	if (arg[0] == '-')
-	{
-		ft_printf_fd(2, "minishell: export: `%s`: invalid option\n", arg);
-		return 2;
-	}
-	plus_equal = ft_strnstr(arg, "+=", ft_strlen(arg));
-	if (plus_equal != NULL)
-	{
-		char *key = ft_substr(arg, 0, plus_equal - arg);
-		if (!key || !export_is_valid_key(key))
-		{
-			free(key);
-			ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n", arg);
-			return 1;
-		}
-		free(key);
-		return export_plus_equal(mshell, arg, plus_equal);
-	}	
-	if (!export_is_valid_key(arg))
-	{
-		ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n", arg);
-		return 1;
-	}
-	equal = ft_strchr(arg, '=');
-	if (equal != NULL)
-		return export_with_equal(mshell, arg, equal);
-	else if (env_add(mshell, arg, NULL) != 0)
-		return 1;
-	return 0;
-}
-
-static int handle_export_arguments(t_shell *mshell, char **token, int argc)
-{
-	int i;
-	int code;
-	int result;
-
-	i = 1;
-	code = 0;
-	while (i < argc)
-	{
-		result = export_handle_one(mshell, token[i]);
-		if (result > code)
-			code = result;
-		i++;
-	}
-	return code;
-}
-
-void builtin_export(t_shell *mshell, char **token)
-{
-	int argc;
+	int	argc;
 
 	argc = 0;
 	if (!mshell || !token || !token[0])
 	{
 		ft_printf_fd(2, "minishell: export: invalid input\n");
 		mshell->exit_code = 1;
-		return;
+		return ;
 	}
 	while (token[argc])
 		argc++;
 	if (argc == 1)
 	{
 		mshell->exit_code = export_standalone(mshell->envp);
-		return;
+		return ;
 	}
 	mshell->exit_code = handle_export_arguments(mshell, token, argc);
 }
-
-// void builtin_export(t_shell *mshell, char **token)
-// {
-// 	int i;
-// 	int code;
-// 	int result;
-
-// 	i = 0;
-// 	code = 0;
-// 	if (!mshell || !token || !token[0])
-// 	{
-// 		ft_printf_fd(2, "minishell: export: invalid input\n");
-// 		mshell->exit_code = 1;
-// 		return;
-// 	}
-// 	if (!token[1])
-// 	{
-// 		mshell->exit_code = export_standalone(mshell->envp);
-// 		return;
-// 	}
-// 	while (token[i])
-// 	{
-// 		result = export_handle_one(mshell, token[i]);
-// 		if (result > code)
-// 			code = result;
-// 		i++;
-// 	}
-// 	mshell->exit_code = code;
-// }

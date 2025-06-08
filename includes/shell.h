@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 17:12:17 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/08 18:13:10 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,6 @@ char			*char_join_result_and_free(char **s1, char c);
 int				open_heredoc_pipe(t_shell *mshell, t_redirect *redir);
 // void			exe_handle_dollar_expansion(char *input, int fd_write,
 // 					t_shell *ms);
-int				is_fully_quoted(const char *str);
 char			*get_delimiter(char *file);
 char			*make_heredoc_filename(int id);
 int				process_heredocs(t_shell *mshell, t_ast *node);
@@ -244,6 +243,12 @@ int				exe_redirection(t_redirect *redir, t_shell *mshell);
 int				execute_pipe(t_ast *ast, t_shell *shell);
 int				execute_command(t_ast *node, t_shell *mshell);
 int				execute_ast(t_ast *node, t_shell *mshell);
+int				handle_single_redirection(t_shell *mshell, t_redirect *redir);
+int				execute_builtin(t_shell *mshell, char **token);
+int				is_builtin(char *cmd);
+char			*handle_path_error(t_shell *mshell, char *path, int code);
+char			**find_path(char **env);
+int				is_fully_quoted(const char *str);
 int				wait_command(t_shell *mshell, pid_t pid, int *status,
 					int update_exit_code);
 int				error_msg(t_shell *mshell, const char *msg,
@@ -261,7 +266,7 @@ void			env_swap_last(char **envp);
 void			env_print(char **envp);
 int				env_set_last_argument(t_shell *mshell, char **cmd);
 // size_t			strlen_until_char(const char *s, const char ch);
-void			ft_free_null(char ***array);
+void			free_array_null(char ***array);
 char			**realloc_env(char **envp, size_t len);
 
 /* Built-in functions */
@@ -272,10 +277,17 @@ int				builtin_pwd(t_shell *mshell, char **token);
 int				builtin_unset(t_shell *mshell, char **token);
 void			builtin_exit(t_shell *mshell, char **token);
 void			builtin_export(t_shell *mshell, char **token);
+void			update_pwd(t_shell *mshell);
+int				export_is_valid_key(const char *str);
+void			export_print(const char *env);
+char			**copy_and_sort_envp(char **envp, size_t *out_count);
+int				export_plus_equal(t_shell *mshell, const char *arg, char *plus_equal);
+int				export_with_equal(t_shell *mshell, const char *arg, char *equal);
 
 /* Signal functions */
 void			setup_signals(t_shell *mshell, int mode);
 void			sig_exit_code(t_shell *mshell);
+//int				set_signal(t_shell *mshell, void (*sigint_handler)(int), void (*sigquit_handler)(int))
 
 /* To remove block before submiting */
 void			print_cmd_list(t_cmd *head);

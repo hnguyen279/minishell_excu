@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_echo.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 15:30:20 by thi-huon          #+#    #+#             */
+/*   Updated: 2025/06/08 15:30:22 by thi-huon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/shell.h"
 
-static void print_echo_from(char **token, int i)
+static void	print_echo_from(char **token, int i)
 {
 	while (token[i])
 	{
@@ -11,11 +23,11 @@ static void print_echo_from(char **token, int i)
 	}
 }
 
-int builtin_echo(t_shell *mshell, char **token)
+int	builtin_echo(t_shell *mshell, char **token)
 {
-	int i;
-	int newline;
-	int j;
+	int	i;
+	int	newline;
+	int	j;
 
 	i = 1;
 	newline = 1;
@@ -25,7 +37,7 @@ int builtin_echo(t_shell *mshell, char **token)
 		while (token[i][j] == 'n')
 			j++;
 		if (token[i][j] != '\0')
-			break;
+			break ;
 		newline = 0;
 		i++;
 	}
@@ -35,4 +47,3 @@ int builtin_echo(t_shell *mshell, char **token)
 	mshell->exit_code = 0;
 	return (0);
 }
-

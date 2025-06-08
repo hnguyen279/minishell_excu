@@ -43,17 +43,17 @@ int	is_quoted(const char *str)
 	len = ft_strlen(str);
 	if ((str[0] == '\'' || str[0] == '"') && str[len - 1] == str[0])
 	{
-		if (len == 2) // ví dụ: "" hoặc ''
-			return 0;
+		if (len == 2)
+			return 1;
 		if (str[0] == '\'')
-			return 1; // single quote
+			return 2;
 		else
-			return 2; // double quote
+			return 3;
 	}
 	else if ((str[0] == '\'' || str[0] == '"') ||
 			 (str[len - 1] == '\'' || str[len - 1] == '"'))
-		return -1; // unmatched quote
-	return 3; // không có quote
+		return -1;
+	return 4;
 }
 
 
@@ -90,19 +90,17 @@ int prepare_delimiter(t_shell *mshell, t_redirect *redir, char **delim, int *exp
 		return error_msg(mshell, "heredoc", 1);
 	}
 
-	if (quote_type == 0 || quote_type == 1 || quote_type == 2)
+	if (quote_type == 1 || quote_type == 2 || quote_type == 3)
 	{
-		// Có quote đầy đủ → không mở rộng biến trong nội dung
 		*expand = 0;
-		*delim = get_delimiter(redir->file); // bỏ quote ở đầu và cuối
+		*delim = get_delimiter(redir->file);
 	}
 	else
 	{
-		// Không có quote → mở rộng biến trong nội dung
 		*expand = 1;
 		*delim = expand_token_value(redir->file, mshell);
 		if (!*delim)
-			*delim = ft_strdup(redir->file); // fallback
+			*delim = ft_strdup(redir->file);
 	}
 
 	if (!*delim)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:38:32 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 13:57:38 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/08 16:24:47 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	free_ast(t_ast *node, t_shell *mshell)
 		free_ast(node->right, mshell);
 	}
 	if (node->type == NODE_CMD && node->cmd)
-		ft_free_null(&node->cmd);
+		free_array_null(&node->cmd);
 	redir = node->redirects;
 	while (redir)
 	{
