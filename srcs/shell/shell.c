@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 22:34:58 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/08 23:12:09 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,15 @@ static int	init_shlvl_env(t_shell *mshell)
 	shlvl = calculate_next_shlvl(mshell);
 	shlvl_str = ft_itoa(shlvl);
 	if (!shlvl_str)
-		return (error_msg(mshell, "init_shell: malloc failed (SHLVL)", 0));
+	{
+		fd_printf_fd(2, "minishell: init_shell: malloc failed (SHLVL)\n");
+		return (1);
+	}
 	if (env_add(mshell, "SHLVL", shlvl_str) != 0)
 	{
 		free(shlvl_str);
-		return (error_msg(mshell, "init_shell: failed to set SHLVL", 0));
+		fd_printf_fd(2, "minishell: init_shell: failed to set SHLVL\n");
+		return (1);
 	}
 	free(shlvl_str);
 	return (0);
@@ -67,11 +71,15 @@ static int	init_pwd_env(t_shell *mshell)
 		env_add(mshell, "OLDPWD", NULL);
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
-		return ((error_msg(mshell, "getcwd", 1)));
+	{
+		fd_printf_fd(2, "minishell: getcwd %s\n", strerror(errno));
+		return (1);
+	}
 	if (env_add(mshell, "PWD", cwd) != 0)
 	{
 		free(cwd);
-		return ((error_msg(mshell, "init_shell: failed to set PWD", 0)));
+		fd_printf_fd(2, "minishell: init_shell: failed to set PWD\n");
+		return (1);
 	}
 	free(cwd);
 	return (0);
@@ -89,5 +97,6 @@ int	init_shell(t_shell *mshell, char **envp)
 	if (init_pwd_env(mshell))
 		return (error_msg(mshell, "init_shell: failed to initialize PWD/OLDPWD",
 				0));
+	mshell->exit_code = 0;
 	return (0);
 }
