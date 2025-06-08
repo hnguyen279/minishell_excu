@@ -122,7 +122,7 @@ static int handle_heredoc_loop(t_shell *mshell, int fd, const char *delim, int e
 		if (g_signum == SIGINT)
 		{
 			free(line);
-			return -1;
+			return (-1);
 		}
 		if (!line)
 		{
@@ -143,13 +143,14 @@ static int handle_heredoc_loop(t_shell *mshell, int fd, const char *delim, int e
 		}
 		if (write(fd, expanded, strlen(expanded)) == -1 || write(fd, "\n", 1) == -1)
 		{
-			status = error_msg(mshell, "heredoc: write", 1);
+			error_msg(mshell, "heredoc: write", 1);
+			status = 1;
 			free(expanded);
 			break;
 		}
 		free(expanded);
 	}
-	return status;
+	return (status);
 }
 
 static int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand)

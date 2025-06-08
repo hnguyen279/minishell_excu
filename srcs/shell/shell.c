@@ -1,21 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   shell.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
+/*   Updated: 2025/06/08 18:46:43 by thi-huon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/shell.h"
 
-void shell_cleanup(t_shell *mshell)
+void	shell_cleanup(t_shell *mshell)
 {
-    if (!mshell)
-        return;
-    if (mshell->envp)
-        env_free(mshell);
+	if (!mshell)
+		return ;
+	if (mshell->envp)
+		env_free(mshell);
 }
 
-static int calculate_next_shlvl(t_shell *mshell)
+static int	calculate_next_shlvl(t_shell *mshell)
 {
-	char *val;
-	int lvl;
-    int i;
+	char	*val;
+	int		lvl;
+	int		i;
 
-    val = env_find_value(mshell, "SHLVL");
-    lvl = 1;
+	val = env_find_value(mshell, "SHLVL");
+	lvl = 1;
 	if (val && val[0] != '\0')
 	{
 		i = 0;
@@ -26,33 +38,34 @@ static int calculate_next_shlvl(t_shell *mshell)
 	}
 	if (lvl < 0 || lvl > 999)
 		lvl = 1;
-	return lvl;
+	return (lvl);
 }
 
-static int init_shlvl_env(t_shell *mshell)
+static int	init_shlvl_env(t_shell *mshell)
 {
-	int shlvl;
-	char *shlvl_str;
+	int		shlvl;
+	char	*shlvl_str;
 
-    shlvl = calculate_next_shlvl(mshell);
+	shlvl = calculate_next_shlvl(mshell);
 	shlvl_str = ft_itoa(shlvl);
 	if (!shlvl_str)
-		return error_msg(mshell, "init_shell: malloc failed (SHLVL)", 0);
+		return (error_msg(mshell, "init_shell: malloc failed (SHLVL)", 0));
 	if (env_add(mshell, "SHLVL", shlvl_str) != 0)
 	{
 		free(shlvl_str);
-		return error_msg(mshell, "init_shell: failed to set SHLVL", 0);
+		return (error_msg(mshell, "init_shell: failed to set SHLVL", 0));
 	}
 	free(shlvl_str);
-	return 0;
+	return (0);
 }
 
-static int init_pwd_env(t_shell *mshell)
+static int	init_pwd_env(t_shell *mshell)
 {
+	char	*cwd;
+
 	if (!env_find_value(mshell, "OLDPWD"))
 		env_add(mshell, "OLDPWD", NULL);
-
-	char *cwd = getcwd(NULL, 0);
+	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
 		perror("minishell: getcwd");
@@ -68,7 +81,7 @@ static int init_pwd_env(t_shell *mshell)
 	return (0);
 }
 
-int init_shell(t_shell *mshell, char **envp)
+int	init_shell(t_shell *mshell, char **envp)
 {
 	ft_memset(mshell, 0, sizeof(t_shell));
 	mshell->envp = env_dup(envp);
