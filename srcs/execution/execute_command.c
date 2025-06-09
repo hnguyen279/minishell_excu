@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/09 03:49:15 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 13:02:52 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,6 @@ static int	fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
 	return (wait_command(mshell, pid, &status, 1));
 }
 
-static void	safe_close_fds(int in_fd, int out_fd)
-{
-	if (in_fd != -1)
-		close(in_fd);
-	if (out_fd != -1)
-		close(out_fd);
-}
-
 // static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
 // {
 // 	int	in_fd;
@@ -84,28 +76,6 @@ static void	safe_close_fds(int in_fd, int out_fd)
 // 	safe_close_fds(in_fd, out_fd);
 // 	return (mshell->exit_code);
 // }
-
-static int redirect_and_backup_fds(t_ast *node, t_shell *mshell, int *in_fd, int *out_fd)
-{
-	*in_fd = dup(STDIN_FILENO);
-	*out_fd = dup(STDOUT_FILENO);
-	if (*in_fd == -1 || *out_fd == -1)
-	{
-		safe_close_fds(*in_fd, *out_fd);
-		return (error_msg(mshell, "dup failed", 1));
-	}
-	if (exe_redirection(node->redirects, mshell) != 0)
-	{
-		if (dup2(*in_fd, STDIN_FILENO) == -1 || dup2(*out_fd, STDOUT_FILENO) == -1)
-		{
-			safe_close_fds(*in_fd, *out_fd);
-			return (error_msg(mshell, "dup failed", 1));
-		}
-		safe_close_fds(*in_fd, *out_fd);
-		return (mshell->exit_code);
-	}
-	return 0;
-}
 
 static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
 {

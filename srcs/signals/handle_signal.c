@@ -6,13 +6,13 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:03:24 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 18:13:55 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 12:39:09 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-volatile sig_atomic_t	g_signum = 0;
+volatile sig_atomic_t g_signum = 0;
 
 static void	handle_sigint(int sig)
 {
