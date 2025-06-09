@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:28:34 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/08 20:27:24 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 19:12:48 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,19 @@ void	print_redirect_list(t_redirect *redir_list)
 		printf("redirect type : %d\n", redir_list->type);
 		temp = temp->next;
 	}
+}
+
+int	linked_list_size(t_token *head)
+{
+	t_token	*temp;
+	int		len;
+
+	temp = head;
+	len = 0;
+	while (temp)
+	{
+		len++;
+		temp = temp->next;
+	}
+	return (len);
 }

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+         #
+#    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/06/08 18:09:53 by thi-huon         ###   ########.fr        #
+#    Updated: 2025/06/09 19:18:55 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,8 +16,8 @@ CFLAGS = -g -Wall -Wextra -Werror
 SRCS_DIR = ./srcs/
 SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/parsing/handle_input.c \
+		$(SRCS_DIR)/parsing/handle_input2.c \
 		$(SRCS_DIR)/parsing/handle_quote.c \
-		$(SRCS_DIR)/parsing/handle_quote2.c \
 		$(SRCS_DIR)/parsing/token_list.c \
 		$(SRCS_DIR)/parsing/tokenization.c \
 		$(SRCS_DIR)/parsing/helper.c \

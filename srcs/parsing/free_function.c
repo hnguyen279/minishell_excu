@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:29:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:24:28 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 19:10:53 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ void	free_token_list(t_token *tokens)
 	while (tokens)
 	{
 		tmp = tokens->next;
-		free(tokens->value);
+		free_string(tokens->value);
+		free_string(tokens->ori_value);
 		free(tokens);
 		tokens = tmp;
 	}

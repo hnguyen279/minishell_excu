@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:47:20 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 12:51:01 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 19:09:27 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ void	clear_working_history(t_token **hist_head)
 	{
 		temp = *hist_head;
 		*hist_head = (*hist_head)->next;
-		free(temp->value);
+		free_string(temp->value);
+		free_string(temp->ori_value);
 		free(temp);
 	}
 	rl_clear_history();

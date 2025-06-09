@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 13:59:52 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 18:18:44 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ char	*expand_token_value(char *str, t_shell *mshell)
 
 void	handle_dollar_sign(char *str, t_shell *mshell, char **result, int *i)
 {
-	// printf("debug 3\n"); //debug
-
 	if (str[*i + 1] == '?')
 		*result = expand_exit_code(mshell, *result, i);
 	else if (str[*i + 1] == '_' || ft_isalpha(str[*i + 1]))
@@ -81,9 +79,6 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 
 	(*i)++;
 	var_name = extract_variable_name(str, &var_name, i, &result);
-	// printf("debug 4\n"); //debug
-	// printf("%s\n", var_name); //debug
-
 	if (!var_name)
 		return (NULL);
 	else if (var_name[0] == '\0')
@@ -91,7 +86,6 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	env_value = env_find_value(mshell, var_name);
 	if (!env_value)
 		env_value = "";
-	// printf("%s\n", env_value); //debug
 	result = str_join_result_and_free(&result, env_value);
 	free_string(var_name);
 	if (!result)
