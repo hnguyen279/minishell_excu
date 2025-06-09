@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:30:06 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 15:58:29 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 13:55:32 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ static void	cd_to_home(t_shell *mshell)
 	}
 	if (chdir(home) != 0)
 	{
-		ft_printf_fd(2, "minishell: cd: %s: ", home);
-		perror("");
+		ft_printf_fd(2, "minishell: cd: %s: %s\n", home, strerror(errno));
 		mshell->exit_code = 1;
 		return ;
 	}
