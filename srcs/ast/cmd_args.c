@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 16:58:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 15:48:47 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 20:27:52 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 
 	count = count_args(*token_list);
 	args = allocate_arg_array(count);
+	// printf("return here 3\n");
 	if (!args)
 		return (NULL);
 	if (count == 0)

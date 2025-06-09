@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 15:34:40 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 19:16:49 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 20:48:11 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	skip_first_empty_vars(t_token **token_list)
 		to_free = *token_list;
 		(*token_list) = (*token_list)->next;
 		free_string(to_free->value);
+		free_string(to_free->ori_value);
 		free(to_free);
 	}
 }
@@ -51,6 +52,7 @@ void	skip_middle_empty_vars(t_token **token_list)
 			to_free = temp;
 			temp = temp->next;
 			free_string(to_free->value);
+			free_string(to_free->ori_value);
 			free(to_free);
 			prev->next = temp;
 		}

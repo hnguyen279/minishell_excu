@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 13:33:28 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 20:06:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,10 @@ int	is_valid_pipe(t_token *token)
 	t_token	*temp;
 
 	if (!token)
+	{
+		printf("broke here\n");
 		return (FALSE);
+	}
 	temp = token;
 	if (temp->type == PIPE)
 	{

@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 19:15:27 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 20:49:43 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,14 @@ void	handle_line(char *line, t_shell *mshell)
 
 	token_list = NULL;
 	if (init_and_validate_input(line, mshell, &token_list) == FALSE)
+	{
+		// printf("Failed here\n");
 		return ;
+	}
 	cmd_list = NULL;
 	tree = NULL;
 	process_valid_line(mshell, &token_list, &cmd_list, &tree);
+	// printf("free token here\n");
 	free_token_list(token_list);
 	token_list = NULL;
 	free_cmd_list(cmd_list);
@@ -56,13 +60,16 @@ int	tokenization_expansion_validation(char *line, t_shell *mshell,
 	*token_list = convert_user_input_to_token(line, mshell);
 	if (!*token_list)
 	{
+		// printf("broke  token\n");
 		mshell->exit_code = 1;
 		return (FALSE);
 	}
+	// print_linked_list(*token_list);
 	if (validate_token(*token_list) == FALSE)
 	{
 		mshell->exit_code = 2;
-		return (FALSE);
+		printf("broke here token\n");
+		// return (FALSE);
 	}
 	return (TRUE);
 }
@@ -73,9 +80,11 @@ void	process_valid_line(t_shell *mshell, t_token **token_list,
 	*cmd_list = parse_tokens_to_commands(*token_list);
 	if (!*cmd_list)
 	{
-		mshell->exit_code = 2;
+		// printf("return condition\n");
+		mshell->exit_code = 0; // was = 2
 		return ;
 	}
+	// print_cmd_list(*cmd_list);
 	*tree = convert_cmd_to_ast(*cmd_list);
 	if (!*tree)
 	{

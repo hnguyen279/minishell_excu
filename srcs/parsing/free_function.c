@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:29:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 19:10:53 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 20:44:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	free_token_list(t_token *tokens)
 		free(tokens);
 		tokens = tmp;
 	}
-	tokens = NULL;
+	// tokens = NULL;
 }
 
 void	free_cmd_list(t_cmd *head)

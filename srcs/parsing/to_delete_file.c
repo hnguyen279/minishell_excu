@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:28:34 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 19:12:48 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 20:09:48 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	print_cmd_list(t_cmd *head)
 
 	i = 0;
 	temp = head;
+	printf("PRINT CMD\n");
 	while (temp)
 	{
 		printf("args %d: ", ++i);

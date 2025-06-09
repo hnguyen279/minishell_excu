@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:22:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 19:17:12 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 19:59:51 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ char	*handle_double_quote(char *line, int *i, t_shell *mshell)
 		(*i)++;
 		return (ft_strdup(""));
 	}
+	if (substr_and_move_index(line, &part, i, start_pos) == FALSE)
+		return (NULL);
 	tmp = part;
 	part = expand_token_value(part, mshell);
 	free_string(tmp);
