@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:47:20 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:27:09 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 12:51:01 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	store_history(char *line, t_token **history_head)
 	t_token	*temp;
 
 	add_history(line);
-	new_hist = create_token(line, WORD);
+	new_hist = create_token(line, line, WORD);
 	if (!new_hist)
 	{
 		print_error("Failed to create token");

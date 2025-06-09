@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 03:52:46 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 12:48:14 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef enum e_error_type
 typedef struct s_token
 {
 	char				*value;
+	char				*ori_value;
 	t_token_type		type;
 	struct s_token		*next;
 	struct s_token		*prev;
@@ -140,15 +141,17 @@ int				tokenization_expansion_validation(char *line, t_shell *mshell,
 					t_token **tokenized_input_list);
 int				empty_variable_extension(t_shell *mshell,
 					t_token **tokenized_input_list);
-t_token			*create_token(char *s, t_token_type i);
-void			handle_pipe(t_token **token_list, int *i);
-void			handle_in_heredoc(char *line, t_token **token_list, int *i);
-void			handle_out_append(char *line, t_token **token_list, int *i);
+// t_token			*create_token(char *s, t_token_type i);
+t_token			*create_token(char *s, char *ori_s, t_token_type i);
+int				handle_pipe(t_token **token_list, int *i);
+int				handle_in_heredoc(char *line, t_token **token_list, int *i);
+int				handle_out_append(char *line, t_token **token_list, int *i);
 // char			*extract_quoted_token(char *line, int *i);
 void			add_token(t_token **tokenized_input_list, t_token *new_token);
 t_token			*convert_user_input_to_token(char *line, t_shell *mshell);
 int				handle_word(char *line, t_token **token_list, int *i,
 					t_shell *mshell);
+char			*extract_ori_word(char *line, int *i);
 char			*extract_full_word(char *line, int *i, t_shell *mshell);
 char			*handle_single_quote(char *line, int *i);
 char			*handle_double_quote(char *line, int *i, t_shell *mshell);

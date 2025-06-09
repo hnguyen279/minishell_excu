@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirects.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham	  <trpham@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/08 20:27:24 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 12:35:28 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 		return (FALSE);
 	}
 	if (add_redirects(&(*new_cmd)->redirects, redir_type,
-			(*token_list)->value) == FALSE)
+			(*token_list)->ori_value) == FALSE)
 	{
 		print_error("Failed to add redirects");
 		return (FALSE);
