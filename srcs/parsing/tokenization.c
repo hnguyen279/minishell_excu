@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 18:03:52 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 19:24:36 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,36 +101,23 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 
 	raw = extract_ori_word(line, i);
 	if (!raw)
-	{
-		print_error("Can't extract original word");
 		return (FALSE);
-	}
 	extracted_str = extract_full_word(line, i, mshell);
 	if (!extracted_str)
 	{
+		free_string(raw);
 		print_error("Can't extract expanded word");
 		return (FALSE);
 	}
 	new_token = create_token(extracted_str, raw, WORD);
+	if (!new_token)
+	{
+		free_string(raw);
+		free_string(extracted_str);
+		return (FALSE);
+	}
 	add_token(token_list, new_token);
+	free_string(raw);
 	free_string(extracted_str);
 	return (TRUE);
-}
-
-char	*extract_ori_word(char *line, int *i)
-{
-	int		start;
-	int		index;
-	char	*word;
-
-	start = *i;
-	index = *i;
-	while (line[index] && ft_isspace(line[index]))
-	{
-		index++;
-	}
-	word = ft_substr(line, start, index - start + 1);
-	if (!word)
-		return (NULL);
-	return (word);
 }
