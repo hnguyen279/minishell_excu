@@ -6,13 +6,13 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 11:27:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 12:47:35 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-t_token	*create_token(char *s, t_token_type i)
+t_token	*create_token(char *s, char *ori_s, t_token_type i)
 {
 	t_token	*new_token;
 
@@ -20,7 +20,8 @@ t_token	*create_token(char *s, t_token_type i)
 	if (!new_token)
 		return (NULL);
 	new_token->value = ft_strdup(s);
-	if (!new_token->value)
+	new_token->ori_value = ft_strdup(ori_s);
+	if (!new_token->value || !new_token->ori_value)
 		return (NULL);
 	new_token->type = i;
 	new_token->next = NULL;
@@ -32,11 +33,11 @@ void	add_token(t_token **tokenized_input_list, t_token *new_token)
 {
 	t_token	*temp;
 
-	if (!new_token)
-	{
-		print_error("Invalid token");
-		return ;
-	}
+	// if (!new_token)
+	// {
+	// 	print_error("Invalid token");
+	// 	return ;
+	// }
 	if (*tokenized_input_list == NULL)
 	{
 		*tokenized_input_list = new_token;
