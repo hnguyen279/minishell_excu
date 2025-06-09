@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 16:58:36 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 20:27:07 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ t_cmd	*parse_tokens_to_commands(t_token *tokenized_list)
 		if (temp_token_list)
 			temp_token_list = temp_token_list->next;
 	}
+	// if (ft_strcmp(cmd_list->args[0], "") == 0)
+	// printf("return here\n");
+	// print_cmd_list(cmd_list);
 	return (cmd_list);
 }
 
@@ -38,6 +41,7 @@ int	add_and_update_cmd_node(t_token **temp_token_list, t_cmd **cmd_list)
 	new_cmd = NULL;
 	current = NULL;
 	new_cmd = create_cmd();
+	// printf("return here 2\n");
 	if (!new_cmd || update_command_node(&new_cmd, temp_token_list) == FALSE)
 	{
 		free_cmd_list(*cmd_list);
@@ -94,6 +98,9 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 	if ((*new_cmd)->args[0])
 		(*new_cmd)->cmd_name = ft_strdup((*new_cmd)->args[0]);
 	else
+	{
+		printf("update command node failed \n");
 		(*new_cmd)->cmd_name = NULL;
+	}
 	return (TRUE);
 }

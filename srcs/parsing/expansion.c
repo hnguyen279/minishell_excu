@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 18:18:44 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 20:00:09 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ char	*expand_token_value(char *str, t_shell *mshell)
 		if (str[i] == '$' && str[i + 1])
 			handle_dollar_sign(str, mshell, &result, &i);
 		else
+		{
 			result = char_join_result_and_free(&result, str[i++]);
+		}
 		if (!result)
 		{
 			print_error("strjoin failed");
