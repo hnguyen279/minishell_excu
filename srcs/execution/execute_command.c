@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 21:14:04 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 03:49:15 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,33 +56,83 @@ static void	safe_close_fds(int in_fd, int out_fd)
 		close(out_fd);
 }
 
+// static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
+// {
+// 	int	in_fd;
+// 	int	out_fd;
+
+// 	in_fd = dup(STDIN_FILENO);
+// 	out_fd = dup(STDOUT_FILENO);
+// 	if (in_fd == -1 || out_fd == -1)
+// 	{
+// 		safe_close_fds(in_fd, out_fd);
+// 		return (error_msg(mshell, "dup failed", 1));
+// 	}
+// 	if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
+// 	{
+// 		if (dup2(in_fd, 0) == -1 || dup2(out_fd, 1) == -1)
+// 			return (error_msg(mshell, "dup failed", 1));
+// 		safe_close_fds(in_fd, out_fd);
+// 		return (mshell->exit_code);
+// 	}
+// 	if (is_builtin)
+// 		mshell->exit_code = execute_builtin(mshell, node->cmd);
+// 	if (!mshell->has_pipe && node->cmd && node->cmd[0])
+// 		env_set_last_argument(mshell, node->cmd);
+// 	if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
+// 		return (error_msg(mshell, "dup failed", 1));
+// 	safe_close_fds(in_fd, out_fd);
+// 	return (mshell->exit_code);
+// }
+
+static int redirect_and_backup_fds(t_ast *node, t_shell *mshell, int *in_fd, int *out_fd)
+{
+	*in_fd = dup(STDIN_FILENO);
+	*out_fd = dup(STDOUT_FILENO);
+	if (*in_fd == -1 || *out_fd == -1)
+	{
+		safe_close_fds(*in_fd, *out_fd);
+		return (error_msg(mshell, "dup failed", 1));
+	}
+	if (exe_redirection(node->redirects, mshell) != 0)
+	{
+		if (dup2(*in_fd, STDIN_FILENO) == -1 || dup2(*out_fd, STDOUT_FILENO) == -1)
+		{
+			safe_close_fds(*in_fd, *out_fd);
+			return (error_msg(mshell, "dup failed", 1));
+		}
+		safe_close_fds(*in_fd, *out_fd);
+		return (mshell->exit_code);
+	}
+	return 0;
+}
+
 static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
 {
 	int	in_fd;
 	int	out_fd;
 
-	in_fd = dup(STDIN_FILENO);
-	out_fd = dup(STDOUT_FILENO);
-	if (in_fd == -1 || out_fd == -1)
+	in_fd = -1;
+	out_fd = -1;
+	if (node->redirects)
 	{
-		safe_close_fds(in_fd, out_fd);
-		return (error_msg(mshell, "dup failed", 1));
-	}
-	if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
-	{
-		if (dup2(in_fd, 0) == -1 || dup2(out_fd, 1) == -1)
-			return (error_msg(mshell, "dup failed", 1));
-		safe_close_fds(in_fd, out_fd);
-		return (mshell->exit_code);
+		if (redirect_and_backup_fds(node, mshell, &in_fd, &out_fd) != 0)
+			return (mshell->exit_code);
 	}
 	if (is_builtin)
 		mshell->exit_code = execute_builtin(mshell, node->cmd);
 	if (!mshell->has_pipe && node->cmd && node->cmd[0])
 		env_set_last_argument(mshell, node->cmd);
-	if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
-		return (error_msg(mshell, "dup failed", 1));
-	safe_close_fds(in_fd, out_fd);
-	return (mshell->exit_code);
+	if (node->redirects)
+	{
+		if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
+		{
+			safe_close_fds(in_fd, out_fd);
+			return (error_msg(mshell, "dup failed", 1));
+		}
+		safe_close_fds(in_fd, out_fd);
+	}
+	return mshell->exit_code;
 }
 
 int	execute_command(t_ast *node, t_shell *mshell)

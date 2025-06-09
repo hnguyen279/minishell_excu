@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:20:01 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 16:20:01 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 03:54:30 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,7 @@ int	execute_builtin(t_shell *mshell, char **token)
 	else if (ft_strcmp(token[0], "env") == 0)
 		return (builtin_env(mshell, token));
 	else if (ft_strcmp(token[0], "export") == 0)
-	{
-		builtin_export(mshell, token);
-		return (mshell->exit_code);
-	}
+		return(builtin_export(mshell, token));
 	else if (ft_strcmp(token[0], "exit") == 0)
 	{
 		builtin_exit(mshell, token);

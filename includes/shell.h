@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/08 20:27:24 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 03:52:46 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,7 +276,7 @@ int				builtin_env(t_shell *mshell, char **token);
 int				builtin_pwd(t_shell *mshell, char **token);
 int				builtin_unset(t_shell *mshell, char **token);
 void			builtin_exit(t_shell *mshell, char **token);
-void			builtin_export(t_shell *mshell, char **token);
+int				builtin_export(t_shell *mshell, char **token);
 void			update_pwd(t_shell *mshell);
 int				export_is_valid_key(const char *str);
 void			export_print(const char *env);

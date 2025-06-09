@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 23:14:42 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 03:46:41 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,15 @@ int	init_shell(t_shell *mshell, char **envp)
 		return (error_msg(mshell, "init_shell: failed to duplicate environment",
 				0));
 	if (init_shlvl_env(mshell))
-		return (error_msg(mshell, "init_shell: failed to initialize SHLVL", 0));
+	{
+		mshell->exit_code = 1;
+		return (1);
+	}
 	if (init_pwd_env(mshell))
-		return (error_msg(mshell, "init_shell: failed to initialize PWD/OLDPWD",
-				0));
+	{
+		mshell->exit_code = 1;
+		return (1);
+	}
 	mshell->exit_code = 0;
 	return (0);
 }

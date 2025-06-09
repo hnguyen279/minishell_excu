@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:50:07 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 15:52:27 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 03:52:06 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	handle_plus_equal_case(t_shell *mshell, const char *arg,
 	if (!key || !export_is_valid_key(key))
 	{
 		free(key);
-		ft_printf_fd(2, "minishell: export: `%s`: not identifier\n", arg);
+		ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n", arg);
 		return (1);
 	}
 	free(key);
@@ -94,23 +94,20 @@ static int	export_standalone(char **envp)
 	return (0);
 }
 
-void	builtin_export(t_shell *mshell, char **token)
+int	builtin_export(t_shell *mshell, char **token)
 {
 	int	argc;
 
-	argc = 0;
 	if (!mshell || !token || !token[0])
 	{
 		ft_printf_fd(2, "minishell: export: invalid input\n");
-		mshell->exit_code = 1;
-		return ;
+		return (1);
 	}
+	argc = 0;
 	while (token[argc])
 		argc++;
 	if (argc == 1)
-	{
-		mshell->exit_code = export_standalone(mshell->envp);
-		return ;
-	}
-	mshell->exit_code = handle_export_arguments(mshell, token, argc);
+		return (export_standalone(mshell->envp));
+	else
+		return (handle_export_arguments(mshell, token, argc));
 }
