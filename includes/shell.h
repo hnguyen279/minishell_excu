@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 03:52:46 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 13:03:58 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,6 +249,8 @@ int				is_builtin(char *cmd);
 char			*handle_path_error(t_shell *mshell, char *path, int code);
 char			**find_path(char **env);
 int				is_fully_quoted(const char *str);
+void			safe_close_fds(int in_fd, int out_fd);
+int 			redirect_and_backup_fds(t_ast *node, t_shell *mshell, int *in_fd, int *out_fd);
 int				wait_command(t_shell *mshell, pid_t pid, int *status,
 					int update_exit_code);
 int				error_msg(t_shell *mshell, const char *msg,
