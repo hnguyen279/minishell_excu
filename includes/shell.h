@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 14:32:59 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 17:53:14 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct s_token
 	struct s_token		*prev;
 	// int					in_single_quote; // true if in and false if not
 	// int					in_double_quote;
+	// int					is_expansion; //0 not expansion, 1 is expansion from var
 }	t_token;
 
 typedef enum e_redirect_type
@@ -138,9 +139,13 @@ void			run_ast_pipeline(t_shell *mshell, t_ast *tree);
 
 /* Tokenization */
 int				tokenization_expansion_validation(char *line, t_shell *mshell,
-					t_token **tokenized_input_list);
-int				empty_variable_extension(t_shell *mshell,
-					t_token **tokenized_input_list);
+					t_token **token_list);
+// int				empty_variable_extension(t_shell *mshell, t_token **token_list);
+// int				empty_variable_skip(t_shell *mshell, t_token **token_list);
+int				skip_expanded_empty_var(t_token **token_list);
+void			skip_first_empty_vars(t_token **token_list);
+void			skip_middle_empty_vars(t_token **token_list);
+
 // t_token			*create_token(char *s, t_token_type i);
 t_token			*create_token(char *s, char *ori_s, t_token_type i);
 int				handle_pipe(t_token **token_list, int *i);
@@ -197,10 +202,12 @@ int				fill_args_loop(t_token **token_list, char **args,
 // 					char *file);
 // int				check_redir_type_before_parsing(t_cmd **new_cmd,
 // 					t_token **token_list, t_redirect_type *redir_type);
-int	check_redir_type_before_parsing(t_cmd **new_cmd, t_token **token_list,
-		t_redirect_type *redir_type);
-int	add_redirects(t_redirect **redir_list, t_redirect_type type, t_token **token_list);
-int	create_redirect(t_redirect **new_redir, t_token **token_list, t_redirect_type type);
+int				check_redir_type_before_parsing(t_cmd **new_cmd,
+					t_token **token_list, t_redirect_type *redir_type);
+int				add_redirects(t_redirect **redir_list, t_redirect_type type,
+					t_token **token_list);
+int				create_redirect(t_redirect **new_redir, t_token **token_list,
+					t_redirect_type type);
 t_redirect_type	token_to_redirect_type(t_token_type token_type);
 int				parse_redirection(t_cmd **new_cmd, t_token **token_list);
 // int				create_redirect(t_redirect **new_redir, char *file,
@@ -223,6 +230,7 @@ int				array_size(char **arr);
 void			print_error(char *msg);
 int				ft_isspace(char c);
 int				ft_isspecial(char c);
+int				linked_list_size(t_token *head);
 
 /* Helper functions to free */
 void			free_string(char *s);

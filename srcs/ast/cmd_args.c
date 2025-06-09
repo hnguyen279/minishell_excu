@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 16:58:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 17:09:17 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 15:48:47 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	fill_args_loop(t_token **token_list, char **args, t_cmd **new_cmd)
 		if ((*token_list)->type == WORD)
 		{
 			args[count] = ft_strdup((*token_list)->value);
-			if (!*args[count])
+			if (!args[count])
 			{
 				print_error("Fill argurment malloc error");
 				free_array(args, count);

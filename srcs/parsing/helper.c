@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/07 12:35:49 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/09 17:45:11 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,6 @@ int	array_size(char **arr)
 		i++;
 	}
 	return (i);
-}
-
-int	calculate_linked_list_size(t_token *head)
-{
-	t_token	*temp;
-	int		len;
-
-	temp = head;
-	len = 0;
-	while (temp)
-	{
-		len++;
-		temp = temp->next;
-	}
-	return (len);
 }
 
 void	print_error(char *msg)
