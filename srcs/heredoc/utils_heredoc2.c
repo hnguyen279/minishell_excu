@@ -99,7 +99,7 @@ int prepare_delimiter(t_redirect *redir, char **delim, int *expand)
 		return (1);
 	}
 	//debug
-	printf("prepare_delimiter: delim = [%s], expand = %d\n", *delim, *expand);
+	// printf("prepare_delimiter: delim = [%s], expand = %d\n", *delim, *expand);
 	return 0;
 }
 

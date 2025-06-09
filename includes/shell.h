@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 13:03:58 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/09 14:32:59 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,14 +193,18 @@ char			**fill_args(t_cmd **new_cmd, t_token **token_list);
 char			**allocate_arg_array(int count);
 int				fill_args_loop(t_token **token_list, char **args,
 					t_cmd **new_cmd);
-int				add_redirects(t_redirect **redir_list, t_redirect_type type,
-					char *file);
-int				check_redir_type_before_parsing(t_cmd **new_cmd,
-					t_token **token_list, t_redirect_type *redir_type);
+// int				add_redirects(t_redirect **redir_list, t_redirect_type type,
+// 					char *file);
+// int				check_redir_type_before_parsing(t_cmd **new_cmd,
+// 					t_token **token_list, t_redirect_type *redir_type);
+int	check_redir_type_before_parsing(t_cmd **new_cmd, t_token **token_list,
+		t_redirect_type *redir_type);
+int	add_redirects(t_redirect **redir_list, t_redirect_type type, t_token **token_list);
+int	create_redirect(t_redirect **new_redir, t_token **token_list, t_redirect_type type);
 t_redirect_type	token_to_redirect_type(t_token_type token_type);
 int				parse_redirection(t_cmd **new_cmd, t_token **token_list);
-int				create_redirect(t_redirect **new_redir, char *file,
-					t_redirect_type type);
+// int				create_redirect(t_redirect **new_redir, char *file,
+// 					t_redirect_type type);
 int				handle_redirect(t_cmd **new_cmd, t_token **token_list,
 					char **args, int count);
 
