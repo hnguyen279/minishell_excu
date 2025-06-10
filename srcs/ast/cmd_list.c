@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 11:08:28 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:26:50 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,17 @@ t_cmd	*parse_tokens_to_commands(t_token *tokenized_list)
 	temp_token_list = NULL;
 	cmd_list = NULL;
 	temp_token_list = tokenized_list;
+	// print_linked_list(temp_token_list);
 	while (temp_token_list)
 	{
+		// printf("cmd name: %s\n", temp_token_list->value); //debug
 		if (add_and_update_cmd_node(&temp_token_list, &cmd_list) == FALSE)
 			return (NULL);
 		if (temp_token_list)
+		{
+			// printf("token value: %s\n", temp_token_list->value); //debug
 			temp_token_list = temp_token_list->next;
+		}
 	}
 	// if (ft_strcmp(cmd_list->args[0], "") == 0)
 	// printf("return here\n");
@@ -99,7 +104,7 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 		(*new_cmd)->cmd_name = ft_strdup((*new_cmd)->args[0]);
 	else
 	{
-		printf("update command node failed \n");
+		// printf("update command node failed \n");
 		(*new_cmd)->cmd_name = NULL;
 	}
 	return (TRUE);

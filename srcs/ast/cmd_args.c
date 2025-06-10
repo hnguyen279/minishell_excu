@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 16:58:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 11:07:56 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:34:41 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,16 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 	char	**args;
 
 	count = count_args(*token_list);
+	// print_linked_list(*token_list);
+	// printf("return count arg %d\n", count);
 	args = allocate_arg_array(count);
-	// printf("return here 3\n");
 	if (!args)
 		return (NULL);
 	if (count == 0)
 		return (args);
 	if (fill_args_loop(token_list, args, new_cmd) == FALSE)
 		return (NULL);
+	// print_array(args); //debug
 	return (args);
 }
 
@@ -62,6 +64,7 @@ int	fill_args_loop(t_token **token_list, char **args, t_cmd **new_cmd)
 	{
 		if ((*token_list)->type == WORD)
 		{
+			// printf("args: %s\n", (*token_list)->value); //debug
 			args[count] = ft_strdup((*token_list)->value);
 			if (!args[count])
 			{

@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 11:27:36 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:35:00 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ int	count_args(t_token *tokenized_input_list)
 	int		count;
 
 	temp = tokenized_input_list;
+	// print_linked_list(temp);
 	count = 0;
 	while (temp && temp->type != PIPE)
 	{

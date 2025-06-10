@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:28:34 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 20:09:48 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 15:46:42 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	print_array(char **arr)
 	int	i;
 
 	i = 0;
+	printf("ARR: \n");
 	while (arr[i])
 	{
 		printf("%s, ", arr[i]);
@@ -50,7 +51,7 @@ void	print_cmd_list(t_cmd *head)
 	printf("PRINT CMD\n");
 	while (temp)
 	{
-		printf("args %d: ", ++i);
+		printf("args : %d\n ", ++i);
 		print_array(temp->args);
 		printf("cmd_name: %s\n", temp->cmd_name);
 		print_redirect_list(temp->redirects);
