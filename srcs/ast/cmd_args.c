@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 16:58:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 20:27:52 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 11:07:56 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	fill_args_loop(t_token **token_list, char **args, t_cmd **new_cmd)
 			args[count] = ft_strdup((*token_list)->value);
 			if (!args[count])
 			{
-				print_error("Fill argurment malloc error");
+				print_error("Strdup malloc error");
 				free_array(args, count);
 				return (FALSE);
 			}
@@ -87,7 +87,7 @@ int	handle_redirect(t_cmd **new_cmd, t_token **token_list, char **args,
 {
 	if (parse_redirection(new_cmd, token_list) == FALSE)
 	{
-		print_error("Parse redirection failed \n");
+		// print_error("Parse redirection failed \n");
 		free_array(args, count);
 		return (FALSE);
 	}

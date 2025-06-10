@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 14:15:05 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 11:44:33 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@ int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 			&redir_type) == FALSE)
 		return (FALSE);
 	(*token_list) = (*token_list)->next;
-	if (!*token_list || (*token_list)->type != WORD || !(*token_list)->value
-		|| !*(*token_list)->value)
+	printf("token value %s\n", (*token_list)->value);
+	// if (!*token_list || (*token_list)->type != WORD || !(*token_list)->value
+	// 	|| !*(*token_list)->value)
+	if (!*token_list || (*token_list)->type != WORD || !(*token_list)->value)
 	{
 		print_error("Invalid or missing file after redirection");
 		return (FALSE);

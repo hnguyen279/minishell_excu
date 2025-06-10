@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 20:49:43 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 11:35:55 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ int	tokenization_expansion_validation(char *line, t_shell *mshell,
 	if (validate_token(*token_list) == FALSE)
 	{
 		mshell->exit_code = 2;
-		printf("broke here token\n");
-		// return (FALSE);
+		// printf("broke here token\n");
+		return (FALSE);
 	}
 	return (TRUE);
 }
