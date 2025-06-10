@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 18:26:23 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 18:04:29 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,16 @@ t_token	*create_token(char *s, char *ori_s, t_token_type i)
 	if (!new_token)
 		return (NULL);
 	new_token->value = ft_strdup(s);
+	//debug
+	//printf("value=%s\n", new_token->value);
 	if (!new_token->value)
 	{
 		free(new_token);
 		return (NULL);
 	}
 	new_token->ori_value = ft_strdup(ori_s);
+	//debug
+	//printf("ori_value=%s\n", new_token->ori_value);
 	if (!new_token->ori_value)
 	{
 		free_string(new_token->value);
@@ -84,7 +88,9 @@ char *extract_ori_word(char *line, int *i)
 
 	start = *i;
 	index = *i;
-	while (line[*i] && ft_isspace(line[*i]) && ft_isspecial(line[*i]))
+
+	while (line[index] && ft_isspace(line[index])
+		&& line[index] != '|' && line[index] != '<' && line[index] != '>')
 	{
 		// if (line[*i] == '$' && (line[*i + 1] == '\'' || line[*i + 1] == '"'))
 		// 	(*i)++;
