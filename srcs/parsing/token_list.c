@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 19:17:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 20:08:28 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ char	*extract_original_value_with_quote(char *line, int *index)
 		print_error("Unclosed quote");
 		return (NULL);
 	}
+	(*index)++;
 	res = ft_substr(line, start, *index);
 	if (!res)
 		return (NULL);
