@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_input2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 15:34:40 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 20:06:18 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 22:17:51 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,15 @@ void	skip_first_empty_vars(t_token **token_list)
 int echo_with_n(t_token *token_list)
 {
 	t_token	*current;
-	int		i;
+	// int		i;
 
 	current = token_list;
-	i = 0;
+	// i = 0;
 	while (current)
 	{
 		if (ft_strcmp(current->value, "") == 0 && current->next
 			&& (current->next->value)[0] == '-'
-			& (current->next->value)[1] == 'n')
+			&& (current->next->value)[1] == 'n')
 			return (TRUE);
 		current = current->next;
 	}

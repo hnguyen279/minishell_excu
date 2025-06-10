@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:48 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/10 13:43:19 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/10 22:30:35 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	display_error_cmd(char *cmd)
 {
 	if (!cmd || cmd[0] == '\0')
 	{
-		ft_printf_fd(STDERR_FILENO, "minishell: : command not found\n");
+		ft_printf_fd(STDERR_FILENO, "minishell: Command '' not found\n");
 		return (127);
 	}
 	else if (!ft_strcmp(cmd, "."))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 18:52:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 22:12:39 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,8 +158,8 @@ t_token			*convert_user_input_to_token(char *line, t_shell *mshell);
 int				handle_word(char *line, t_token **token_list, int *i,
 					t_shell *mshell);
 char			*extract_ori_word(char *line, int *i);
-char	*extract_original_value_with_quote(char *line, int *index);
-char	*extract_original_without_quote(char *line, int *index);
+//char	*extract_original_value_with_quote(char *line, int *index);
+//char	*extract_original_without_quote(char *line, int *index);
 
 char			*extract_full_word(char *line, int *i, t_shell *mshell);
 char			*handle_single_quote(char *line, int *i);
@@ -294,7 +294,7 @@ char			**realloc_env(char **envp, size_t len);
 int				builtin_cd(t_shell *mshell, char **token);
 int				builtin_echo(t_shell *mshell, char **token);
 int				builtin_env(t_shell *mshell, char **token);
-int				builtin_pwd(t_shell *mshell, char **token);
+int				builtin_pwd(t_shell *mshell);
 int				builtin_unset(t_shell *mshell, char **token);
 void			builtin_exit(t_shell *mshell, char **token);
 int				builtin_export(t_shell *mshell, char **token);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_input.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 11:40:07 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 22:16:27 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,14 +81,16 @@ int	is_valid_pipe(t_token *token)
 	temp = token;
 	if (temp->type == PIPE)
 	{
-		print_error("Unexpected token '|'");
+		//print_error("Unexpected token '|'");
+		print_token_error(temp);
 		return (FALSE);
 	}
 	while (temp)
 	{
 		if (temp->type == PIPE && temp->next == NULL)
 		{
-			print_error("Unexpected token '|'");
+			//print_error("Unexpected token '|'");
+			print_token_error(temp);
 			return (FALSE);
 		}
 		// if (temp->type == PIPE && (temp->next->type == PIPE))
@@ -115,7 +117,8 @@ int	is_valid_redirection(t_token *token_list)
 		{
 			if (!current->next || current->next->type != WORD)
 			{
-				print_error("Syntax error near redirection");
+				//print_error("Syntax error near redirection");
+				print_token_error(current->next);
 				return (FALSE);
 			}
 			current = current->next;

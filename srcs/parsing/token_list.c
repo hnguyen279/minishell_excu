@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 20:08:28 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 22:19:50 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,67 +80,98 @@ int	count_args(t_token *tokenized_input_list)
 	return (count);
 }
 
+// char *extract_ori_word(char *line, int *i)
+// {
+// 	int		start;
+// 	int		index;
+// 	char	*word;
+
+// 	start = *i;
+// 	index = *i;
+	
+// 	if (line[index] == '\'' || line[index] == '"')
+// 	{
+// 		word = extract_original_value_with_quote(line, &index);
+// 	}
+// 	else
+// 	{
+// 		word = extract_original_without_quote(line, &index);
+// 	}
+// 	if (!word)
+// 		return (NULL);
+// 	return (word);
+// }
+
+// char	*extract_original_value_with_quote(char *line, int *index)
+// {
+// 	char	quote;
+// 	char	*res;
+// 	int		start;
+	
+// 	quote = line[*index];
+// 	res = NULL;
+// 	start = *index;
+// 	(*index)++;
+// 	while (line[*index] && line[*index] != quote)
+// 	{
+// 		(*index)++;
+// 	}
+// 	if (!line[*index])
+// 	{
+// 		print_error("Unclosed quote");
+// 		return (NULL);
+// 	}
+// 	(*index)++;
+// 	res = ft_substr(line, start, *index);
+// 	if (!res)
+// 		return (NULL);
+// 	return (res);
+// }
+
+// char	*extract_original_without_quote(char *line, int *index)
+// {
+// 	char	*res;
+// 	int		start;
+	
+// 	res = NULL;
+// 	start = *index;
+// 	while (line[*index] && ft_isspace(line[*index]) == FALSE && ft_isspecial(line[*index]) == FALSE)
+// 	{
+// 		(*index)++;
+// 	}
+// 	res = ft_substr(line, start, *index - start);
+// 	if (!res)
+// 		return (NULL);
+// 	return (res);
+// }
+
 char *extract_ori_word(char *line, int *i)
 {
 	int		start;
 	int		index;
+	char	quote;
 	char	*word;
 
 	start = *i;
 	index = *i;
-	
-	if (line[index] == '\'' || line[index] == '"')
+
+	while (line[index])
 	{
-		word = extract_original_value_with_quote(line, &index);
+		if (line[index] == '\'' || line[index] == '"')
+		{
+			quote = line[index++];
+			while (line[index] && line[index] != quote)
+				index++;
+			if (line[index])
+				index++;
+		}
+		else if (!ft_isspace(line[index]) || !ft_isspecial(line[index]))
+			break;
+		else
+			index++;
 	}
-	else
-	{
-		word = extract_original_without_quote(line, &index);
-	}
+	word = ft_substr(line, start, index - start);
 	if (!word)
 		return (NULL);
 	return (word);
-}
-
-char	*extract_original_value_with_quote(char *line, int *index)
-{
-	char	quote;
-	char	*res;
-	int		start;
-	
-	quote = line[*index];
-	res = NULL;
-	start = *index;
-	(*index)++;
-	while (line[*index] && line[*index] != quote)
-	{
-		(*index)++;
-	}
-	if (!line[*index])
-	{
-		print_error("Unclosed quote");
-		return (NULL);
-	}
-	(*index)++;
-	res = ft_substr(line, start, *index);
-	if (!res)
-		return (NULL);
-	return (res);
-}
-
-char	*extract_original_without_quote(char *line, int *index)
-{
-	char	*res;
-	int		start;
-	
-	res = NULL;
-	start = *index;
-	while (line[*index] && ft_isspace(line[*index]) == FALSE && ft_isspecial(line[*index]) == FALSE)
-	{
-		(*index)++;
-	}
-	res = ft_substr(line, start, *index - start);
-	if (!res)
-		return (NULL);
-	return (res);
 }

@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:20:01 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/09 03:54:30 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/10 22:14:25 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	execute_builtin(t_shell *mshell, char **token)
 	else if (ft_strcmp(token[0], "echo") == 0)
 		return (builtin_echo(mshell, token));
 	else if (ft_strcmp(token[0], "pwd") == 0)
-		return (builtin_pwd(mshell, token));
+		return (builtin_pwd(mshell));
 	else if (ft_strcmp(token[0], "unset") == 0)
 		return (builtin_unset(mshell, token));
 	else if (ft_strcmp(token[0], "env") == 0)
