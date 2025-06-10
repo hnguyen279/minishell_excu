@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 18:04:29 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:17:32 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,69 +88,58 @@ char *extract_ori_word(char *line, int *i)
 
 	start = *i;
 	index = *i;
-
-	while (line[index] && ft_isspace(line[index])
-		&& line[index] != '|' && line[index] != '<' && line[index] != '>')
-	{
-		// if (line[*i] == '$' && (line[*i + 1] == '\'' || line[*i + 1] == '"'))
-		// 	(*i)++;
-		if (line[index] == '\'' || line[index] == '"')
-		{
-			word
-			
-		}
-		else if ()
-			part = handle_double_quote(line, i, mshell);
-		else
-			part = extract_unquoted_word(line, i, mshell);
-		if (!part)
-		{
-			free(result);
-			return (NULL);
-		}
-		result = str_join_result_and_free(&result, part);
-		free(part);
-	}
 	
+	if (line[index] == '\'' || line[index] == '"')
+	{
+		word = extract_original_value_with_quote(line, &index);
+	}
+	else
+	{
+		word = extract_original_without_quote(line, &index);
+	}
+	if (!word)
+		return (NULL);
 	return (word);
 }
 
-int	*extract_with_quote(char *line, int *index)
+char	*extract_original_value_with_quote(char *line, int *index)
 {
 	char	quote;
-	char	*
+	char	*res;
+	int		start;
 	
 	quote = line[*index];
+	res = NULL;
+	start = *index;
 	(*index)++;
 	while (line[*index] && line[*index] != quote)
 	{
 		(*index)++;
 	}
-	(*index)++;
 	if (!line[*index])
 	{
 		print_error("Unclosed quote");
 		return (NULL);
 	}
-	
-	
+	res = ft_substr(line, start, *index);
+	if (!res)
+		return (NULL);
+	return (res);
 }
 
-// char	*extract_ori_word(char *line, int *i)
-// {
-// 	int		start;
-// 	int		index;
-// 	char	*word;
-
-// 	start = *i;
-// 	index = *i;
-// 	while (line[index])
-// 	{
-// 		//printf("letter %c\n", line[index]);
-// 		index++;
-// 	}
-// 	word = ft_substr(line, start, index - start + 1);
-// 	if (!word)
-// 		return (NULL);
-// 	return (word);
-// }
+char	*extract_original_without_quote(char *line, int *index)
+{
+	char	*res;
+	int		start;
+	
+	res = NULL;
+	start = *index;
+	while (line[*index] && ft_isspace(line[*index]) == FALSE && ft_isspecial(line[*index]) == FALSE)
+	{
+		(*index)++;
+	}
+	res = ft_substr(line, start, *index - start);
+	if (!res)
+		return (NULL);
+	return (res);
+}
