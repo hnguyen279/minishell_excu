@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:50:07 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/09 03:52:06 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/10 12:19:09 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int	export_handle_one(t_shell *mshell, const char *arg)
 		return (handle_plus_equal_case(mshell, arg, plus_equal));
 	if (!export_is_valid_key(arg))
 	{
-		ft_printf_fd(2, "minishell: export: `%s`: not identifier\n", arg);
+		ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n", arg);
 		return (1);
 	}
 	equal = ft_strchr(arg, '=');
@@ -89,6 +89,7 @@ static int	export_standalone(char **envp)
 	{
 		if (copy[i][0] != '_' || (copy[i][1] != '\0' && copy[i][1] != '='))
 			export_print(copy[i]);
+		i++;
 	}
 	free(copy);
 	return (0);
