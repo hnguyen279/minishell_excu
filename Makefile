@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/06/09 19:18:55 by trpham           ###   ########.fr        #
+#    Updated: 2025/06/10 16:21:29 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,7 +61,8 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/signals/handle_signal.c \
 		$(SRCS_DIR)/signals/utils_signal.c \
 		$(SRCS_DIR)/shell/shell.c \
-		$(SRCS_DIR)/parsing/to_delete_file.c
+		$(SRCS_DIR)/parsing/to_delete_file.c \
+		$(SRCS_DIR)/main_test.c
 
 OBJS = $(SRCS:%.c=%.o)
 
