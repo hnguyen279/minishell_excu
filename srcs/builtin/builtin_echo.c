@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:30:20 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 22:17:32 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:14:16 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ int	builtin_echo(t_shell *mshell, char **token)
 
 	i = 1;
 	newline = 1;
+	//debug
+	// for (int i = 0; token[i]; i++)
+	// 	printf("token[%d] = %s\n", i, token[i]);
 	while (token[i] && token[i][0] == '-' && token[i][1] == 'n')
 	{
 		j = 2;

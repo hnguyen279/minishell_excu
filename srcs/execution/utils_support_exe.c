@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:48 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 22:46:07 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:43:19 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	is_fully_quoted(const char *str)
 				&& str[len - 1] <= 13)))
 		len--;
 	if (str[len - 1] != quote)
-		return (0);
+		return (-1); //check again
 	return (1);
 }
 

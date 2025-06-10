@@ -66,6 +66,10 @@ char *get_delimiter(char *file)
 
 	len = strlen(file);
 
+	while((file[len - 1] == ' ') || (file[len -1] >= 9 && file[len - 1] <= 13))
+		len--;
+	//debug
+	// printf("len = %ld\n", len);
 	if (len >= 2 &&
 		(file[0] == '\'' || file[0] == '"') &&
 		file[len - 1] == file[0])
@@ -73,7 +77,7 @@ char *get_delimiter(char *file)
 		return ft_substr(file, 1, len - 2);
 	}
 
-	return ft_strdup(file);
+	return ft_substr(file, 0, len);
 }
 
 
@@ -81,14 +85,14 @@ int prepare_delimiter(t_redirect *redir, char **delim, int *expand)
 {
 	int quote_type;
 
-	quote_type = is_quoted(redir->ori_file);
+	quote_type = is_fully_quoted(redir->ori_file);
 	if (quote_type == -1)
 	{
 		ft_printf_fd(2, "minishell: heredoc: unmatched quote in delimiter: %s\n", redir->ori_file);
 		return (1);
 	}
 
-	if (quote_type == 1 || quote_type == 2 || quote_type == 3)
+	if (quote_type == 1)
 		*expand = 0;
 	else
 		*expand = 1;
@@ -99,7 +103,7 @@ int prepare_delimiter(t_redirect *redir, char **delim, int *expand)
 		return (1);
 	}
 	//debug
-	// printf("prepare_delimiter: delim = [%s], expand = %d\n", *delim, *expand);
+	//printf("prepare_delimiter: delim = [%s], expand = %d\n", *delim, *expand);
 	return 0;
 }
 

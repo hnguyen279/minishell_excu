@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 11:27:36 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 14:05:38 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ char	*extract_ori_word(char *line, int *i)
 	index = *i;
 	while (line[index])
 	{
-		// printf("letter %c\n", line[index]);
+		//printf("letter %c\n", line[index]);
 		index++;
 	}
 	word = ft_substr(line, start, index - start + 1);

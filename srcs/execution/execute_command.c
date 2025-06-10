@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/09 13:02:52 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:14:29 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,9 @@ int	execute_command(t_ast *node, t_shell *mshell)
 {
 	char	*cmd_path;
 
+	//debug
+	// for (int i = 0; node->cmd[i]; i++)
+	// 	printf("cmd[%d] = [%s]\n", i, node->cmd[i]);
 	if (!node->cmd || !node->cmd[0])
 	{
 		if (node->redirects)
