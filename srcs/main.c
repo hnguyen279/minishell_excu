@@ -74,6 +74,11 @@ void	shell_interactive(t_shell *mshell)
 			printf("exit\n");
 			break ;
 		}
+		if (line[0] == '\0') // Ctrl+C → empty str//need?
+		{
+			free(line);
+			continue;
+		}
 		if (line[0] != '\0')
 		{
 			store_history(line, &history_head);
