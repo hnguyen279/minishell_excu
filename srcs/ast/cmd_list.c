@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 20:27:07 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 11:08:28 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 {
 	if (!*new_cmd)
 	{
-		print_error("Failed creating new_cmd");
+		// print_error("Failed creating new_cmd");
 		return (FALSE);
 	}
 	else if (!*temp_token_list)
@@ -92,7 +92,7 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 	(*new_cmd)->args = fill_args(new_cmd, temp_token_list);
 	if (!(*new_cmd)->args)
 	{
-		print_error("Failed to update new cmd args");
+		// print_error("Failed to update new cmd args");
 		return (FALSE);
 	}
 	if ((*new_cmd)->args[0])
