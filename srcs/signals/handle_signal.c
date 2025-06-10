@@ -49,13 +49,13 @@ static int	set_signal(t_shell *mshell, void (*sigint_handler)(int),
 	struct sigaction	sa_quit;
 
 	sa_int.sa_handler = sigint_handler;
-	sa_int.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+	sa_int.sa_flags = SA_RESTART;
 	if (sigemptyset(&sa_int.sa_mask) == -1)
 		error_msg(mshell, "sigemptyset", 1);
 	if (sigaction(SIGINT, &sa_int, NULL) == -1)
 		error_msg(mshell, "sigaction(SIGINT)", 1);
 	sa_quit.sa_handler = sigquit_handler;
-	sa_quit.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+	sa_quit.sa_flags = SA_RESTART;
 	if (sigemptyset(&sa_quit.sa_mask) == -1)
 		error_msg(mshell, "sigemptyset", 1);
 	if (sigaction(SIGQUIT, &sa_quit, NULL) == -1)
