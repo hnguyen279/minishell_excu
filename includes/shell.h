@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 17:53:14 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 16:47:47 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,7 @@ int				tokenization_expansion_validation(char *line, t_shell *mshell,
 int				skip_expanded_empty_var(t_token **token_list);
 void			skip_first_empty_vars(t_token **token_list);
 void			skip_middle_empty_vars(t_token **token_list);
+int 			echo_with_n(t_token *token_list);
 
 // t_token			*create_token(char *s, t_token_type i);
 t_token			*create_token(char *s, char *ori_s, t_token_type i);
@@ -161,8 +162,8 @@ char			*extract_full_word(char *line, int *i, t_shell *mshell);
 char			*handle_single_quote(char *line, int *i);
 char			*handle_double_quote(char *line, int *i, t_shell *mshell);
 char			*extract_unquoted_word(char *line, int *i, t_shell *mshell);
-int				empty_single_quote_check(char **part, int *i, int start_pos);
-int				empty_double_quote_check(char **part, int *i, int start_pos);
+// int				empty_single_quote_check(char **part, int *i, int start_pos);
+// int				empty_double_quote_check(char **part, int *i, int start_pos);
 int				substr_and_move_index(char *line, char **part, int *i,
 					int start_pos);
 

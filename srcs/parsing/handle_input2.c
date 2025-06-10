@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 15:34:40 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 20:48:11 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 17:01:28 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,16 @@
 
 int	skip_expanded_empty_var(t_token **token_list)
 {
-	if (ft_strcmp((*token_list)->ori_value, "\"\"")
-		&& ft_strcmp((*token_list)->ori_value, "\'\'"))
+	int	with_n;
+	// // print_linked_list(*token_list);
+	
+	with_n = echo_with_n(*token_list);
+	if (ft_strcmp((*token_list)->ori_value, "\"\"") != 0
+		&& ft_strcmp((*token_list)->ori_value, "\'\'") != 0)
 	{
 		skip_first_empty_vars(token_list);
-		skip_middle_empty_vars(token_list);
+		if (with_n == FALSE)
+			skip_middle_empty_vars(token_list);
 	}
 	return (TRUE);
 }
@@ -35,6 +40,24 @@ void	skip_first_empty_vars(t_token **token_list)
 		free_string(to_free->ori_value);
 		free(to_free);
 	}
+}
+
+int echo_with_n(t_token *token_list)
+{
+	t_token	*current;
+	int		i;
+
+	current = token_list;
+	i = 0;
+	while (current)
+	{
+		if (ft_strcmp(current->value, "") == 0 && current->next
+			&& (current->next->value)[0] == '-'
+			& (current->next->value)[1] == 'n')
+			return (TRUE);
+		current = current->next;
+	}
+	return (FALSE);
 }
 
 void	skip_middle_empty_vars(t_token **token_list)

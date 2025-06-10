@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
 /*   Updated: 2025/06/10 18:04:29 by thi-huon         ###   ########.fr       */
@@ -69,6 +69,7 @@ int	count_args(t_token *tokenized_input_list)
 	int		count;
 
 	temp = tokenized_input_list;
+	// print_linked_list(temp);
 	count = 0;
 	while (temp && temp->type != PIPE)
 	{
@@ -79,7 +80,7 @@ int	count_args(t_token *tokenized_input_list)
 	return (count);
 }
 
-char	*extract_ori_word(char *line, int *i)
+char *extract_ori_word(char *line, int *i)
 {
 	int		start;
 	int		index;
@@ -87,14 +88,69 @@ char	*extract_ori_word(char *line, int *i)
 
 	start = *i;
 	index = *i;
+
 	while (line[index] && ft_isspace(line[index])
 		&& line[index] != '|' && line[index] != '<' && line[index] != '>')
 	{
-		//printf("letter %c\n", line[index]);
-		index++;
+		// if (line[*i] == '$' && (line[*i + 1] == '\'' || line[*i + 1] == '"'))
+		// 	(*i)++;
+		if (line[index] == '\'' || line[index] == '"')
+		{
+			word
+			
+		}
+		else if ()
+			part = handle_double_quote(line, i, mshell);
+		else
+			part = extract_unquoted_word(line, i, mshell);
+		if (!part)
+		{
+			free(result);
+			return (NULL);
+		}
+		result = str_join_result_and_free(&result, part);
+		free(part);
 	}
-	word = ft_substr(line, start, index - start + 1);
-	if (!word)
-		return (NULL);
+	
 	return (word);
 }
+
+int	*extract_with_quote(char *line, int *index)
+{
+	char	quote;
+	char	*
+	
+	quote = line[*index];
+	(*index)++;
+	while (line[*index] && line[*index] != quote)
+	{
+		(*index)++;
+	}
+	(*index)++;
+	if (!line[*index])
+	{
+		print_error("Unclosed quote");
+		return (NULL);
+	}
+	
+	
+}
+
+// char	*extract_ori_word(char *line, int *i)
+// {
+// 	int		start;
+// 	int		index;
+// 	char	*word;
+
+// 	start = *i;
+// 	index = *i;
+// 	while (line[index])
+// 	{
+// 		//printf("letter %c\n", line[index]);
+// 		index++;
+// 	}
+// 	word = ft_substr(line, start, index - start + 1);
+// 	if (!word)
+// 		return (NULL);
+// 	return (word);
+// }
