@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 15:35:00 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/10 16:14:34 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ char	*extract_ori_word(char *line, int *i)
 	index = *i;
 	while (line[index])
 	{
-		// printf("letter %c\n", line[index]);
+		//printf("letter %c\n", line[index]);
 		index++;
 	}
 	word = ft_substr(line, start, index - start + 1);
