@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 10:50:46 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/11 19:08:51 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,10 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 		else
 			is_token_list = handle_word(line, &token_list, &i, mshell);
 		if (is_token_list == FALSE)
-		{
 			return (NULL);
-		}
 	}
-	// print_linked_list(token_list);
+	if (retokenizer(&token_list) == FALSE)
+		return (NULL);
 	return (token_list);
 }
 

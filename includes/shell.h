@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 11:50:05 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/11 18:53:19 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,11 @@ void			skip_first_empty_vars(t_token **token_list);
 void			skip_middle_empty_vars(t_token **token_list);
 int 			echo_with_n(t_token *token_list);
 int 			check_quote_original_value(char *s);
+t_token	*replace_token_with_new_arr(t_token *current, char **arr);
+int	retokenizer(t_token **token_list);
+int	link_split_token(t_token **current, t_token **prev_token,
+		t_token **next_token, t_token **token_list);
+
 
 // t_token			*create_token(char *s, t_token_type i);
 t_token			*create_token(char *s, char *ori_s, t_token_type i);
@@ -240,6 +245,7 @@ int				linked_list_size(t_token *head);
 /* Helper functions to free */
 void			free_string(char *s);
 void			free_array(char **arr, int i);
+void	free_token(t_token *token);
 void			free_token_list(t_token *tokens);
 void			free_cmd_list(t_cmd *head);
 char			*str_join_result_and_free(char **s1, char *s2);

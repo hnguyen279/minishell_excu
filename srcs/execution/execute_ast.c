@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:04 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 16:06:06 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/11 17:31:00 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@ int	execute_ast(t_ast *node, t_shell *mshell)
 		return (0);
 	if (node->type == NODE_PIPE)
 	{
+		// printf("in pipe node\n"); //debug
 		mshell->has_pipe = 1;
 		return (execute_pipe(node, mshell));
 	}
 	else if (node->type == NODE_CMD)
 	{
+		// printf("in cmd node\n"); //debug
 		mshell->has_pipe = 0;
 		return (execute_command(node, mshell));
 	}

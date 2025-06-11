@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 11:39:35 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:27:01 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ char	*expand_token_value(char *str, t_shell *mshell)
 			return (NULL);
 		}
 	}
-	printf("result : %s\n", result); //debug
+	// printf("result : %s\n", result); //debug
+	
 	return (result);
 }
 
