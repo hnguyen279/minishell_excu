@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/09 20:00:09 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/11 11:39:35 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ char	*expand_token_value(char *str, t_shell *mshell)
 			return (NULL);
 		}
 	}
+	printf("result : %s\n", result); //debug
 	return (result);
 }
 
@@ -101,7 +102,20 @@ char	*extract_variable_name(char **str, char **var_name, int *i,
 	int		start;
 
 	start = *i;
-	while (ft_isalpha((*str)[*i]) || (*str)[*i] == '_')
+	// printf("value char: %c\n", (*str)[*i]);
+	if (!ft_isalpha((*str)[*i]) && (*str)[*i] != '_')
+	{
+		// printf("not here\n");
+		*var_name = ft_strdup("");
+		if (!*var_name)
+		{
+			print_error("Strdup failed");
+			return (NULL);
+		}
+		return (*var_name);
+	}
+	(*i)++;
+	while (ft_isalnum((*str)[*i]) || (*str)[*i] == '_')
 		(*i)++;
 	*var_name = ft_substr(*str, start, (*i) - start);
 	if (!*var_name)
@@ -118,5 +132,6 @@ char	*extract_variable_name(char **str, char **var_name, int *i,
 		free_string(*var_name);
 		return (*result);
 	}
+	// printf("var name : %s\n", *var_name); //debug
 	return (*var_name);
 }

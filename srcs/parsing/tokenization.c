@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 19:11:18 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/11 10:50:46 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 			is_token_list = handle_word(line, &token_list, &i, mshell);
 		if (is_token_list == FALSE)
 		{
-			// printf("here work 3\n");
 			return (NULL);
 		}
 	}
@@ -99,12 +98,10 @@ int	handle_out_append(char *line, t_token **token_list, int *i)
 
 int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 {
-	char	*extracted_str = NULL; // fixed herre
-	char	*raw = NULL;
-	t_token	*new_token = NULL;
+	char	*extracted_str; // fixed herre
+	char	*raw;
+	t_token	*new_token;
 
-	
-	// printf("line :%s\n", line);
 	raw = extract_ori_word(line, i);
 	if (!raw)
 		return (FALSE);
@@ -115,18 +112,14 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 		print_error("Can't extract expanded word");
 		return (FALSE);
 	}
-	// printf("token value :%s\n", extracted_str);
 	new_token = create_token(extracted_str, raw, WORD);
 	if (!new_token)
 	{
-		// printf("here worng 1\n");
 		free_string(raw);
 		free_string(extracted_str);
 		return (FALSE);
 	}
-	// printf("here work 1\n");
 	add_token(token_list, new_token);
-	// printf("here work 2\n");
 	free_string(raw);
 	free_string(extracted_str);
 	return (TRUE);

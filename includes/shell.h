@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 22:12:39 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/11 11:50:05 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ int				skip_expanded_empty_var(t_token **token_list);
 void			skip_first_empty_vars(t_token **token_list);
 void			skip_middle_empty_vars(t_token **token_list);
 int 			echo_with_n(t_token *token_list);
+int 			check_quote_original_value(char *s);
 
 // t_token			*create_token(char *s, t_token_type i);
 t_token			*create_token(char *s, char *ori_s, t_token_type i);

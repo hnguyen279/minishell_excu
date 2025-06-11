@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_input2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 15:34:40 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 22:17:51 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/11 11:49:58 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ int	skip_expanded_empty_var(t_token **token_list)
 	// // print_linked_list(*token_list);
 	
 	with_n = echo_with_n(*token_list);
-	if (ft_strcmp((*token_list)->ori_value, "\"\"") != 0
-		&& ft_strcmp((*token_list)->ori_value, "\'\'") != 0)
+	if (check_quote_original_value((*token_list)->ori_value) == FALSE)
 	{
 		skip_first_empty_vars(token_list);
 		if (with_n == FALSE)
@@ -42,13 +41,18 @@ void	skip_first_empty_vars(t_token **token_list)
 	}
 }
 
+int check_quote_original_value(char *s)
+{
+	if (*s == '"' || *s == '\'')
+		return (TRUE);
+	return (FALSE);
+}
+
 int echo_with_n(t_token *token_list)
 {
 	t_token	*current;
-	// int		i;
 
 	current = token_list;
-	// i = 0;
 	while (current)
 	{
 		if (ft_strcmp(current->value, "") == 0 && current->next

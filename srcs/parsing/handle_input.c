@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 20:07:02 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/11 11:35:58 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	process_valid_line(t_shell *mshell, t_token **token_list,
 		mshell->exit_code = 0; // was = 2
 		return ;
 	}
-	// print_cmd_list(*cmd_list);
+	print_cmd_list(*cmd_list);
 	*tree = convert_cmd_to_ast(*cmd_list);
 	if (!*tree)
 	{
