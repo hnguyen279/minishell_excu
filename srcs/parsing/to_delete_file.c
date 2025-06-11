@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:28:34 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/10 17:55:05 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/11 16:38:33 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	print_array(char **arr)
 	int	i;
 
 	i = 0;
-	printf("ARR: \n");
+	printf("ARR: ");
 	while (arr[i])
 	{
 		printf("%s, ", arr[i]);

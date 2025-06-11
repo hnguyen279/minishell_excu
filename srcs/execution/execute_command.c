@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_command.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/10 15:14:29 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/11 17:30:16 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,10 +122,14 @@ int	execute_command(t_ast *node, t_shell *mshell)
 		return (mshell->exit_code);
 	}
 	if (is_builtin(node->cmd[0]))
+	{
+		// printf("in builtin\n"); //debug
 		return (execute_with_redirect(node, mshell, 1));
+	}
 	cmd_path = find_cmd_path(mshell, node->cmd[0]);
 	if (!cmd_path)
 		return (mshell->exit_code);
+	// printf("cmd path\n"); //debug
 	mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
 	if (!mshell->has_pipe && node->cmd && node->cmd[0])
 		env_set_last_argument(mshell, node->cmd);
