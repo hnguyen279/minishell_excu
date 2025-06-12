@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:29:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 16:24:31 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 18:11:21 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,5 @@ void	free_token(t_token *token)
 	free_string(token->value);
 	free_string(token->ori_value);
 	free(token);
-	token = NULL;
+	// token = NULL; //not set null here?
 }

@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:28:34 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 16:38:33 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 18:19:18 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void	print_linked_list(t_token *head)
 	while (temp)
 	{
 		if (temp)
-			printf("Input tokens value: %s, ori_value: %s type: %d \n", temp->value, temp->ori_value
-				, temp->type);
+			printf("Input tokens value: %s, ori_value: %s type: %d \n",
+				temp->value, temp->ori_value, temp->type);
 		temp = temp->next;
 	}
 }

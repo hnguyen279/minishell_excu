@@ -1,5 +1,13 @@
 {
 	"files.associations": {
-		"shell.h": "c"
+		"shell.h": "c",
+		"token.h": "c",
+		"chrono": "c",
+		"compare": "c",
+		"string": "c",
+		"cmath": "c",
+		"limits": "c",
+		"ratio": "c",
+		"type_traits": "c"
 	}
 }

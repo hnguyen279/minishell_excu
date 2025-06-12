@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 15:34:40 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 11:49:58 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 18:12:00 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int	skip_expanded_empty_var(t_token **token_list)
 {
 	int	with_n;
-	// // print_linked_list(*token_list);
 	
 	with_n = echo_with_n(*token_list);
 	if (check_quote_original_value((*token_list)->ori_value) == FALSE)
@@ -41,14 +40,14 @@ void	skip_first_empty_vars(t_token **token_list)
 	}
 }
 
-int check_quote_original_value(char *s)
+int	check_quote_original_value(char *s)
 {
 	if (*s == '"' || *s == '\'')
 		return (TRUE);
 	return (FALSE);
 }
 
-int echo_with_n(t_token *token_list)
+int	echo_with_n(t_token *token_list)
 {
 	t_token	*current;
 

@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/06/11 19:09:26 by trpham           ###   ########.fr        #
+#    Updated: 2025/06/12 18:03:00 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,6 +62,8 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/signals/handle_signal.c \
 		$(SRCS_DIR)/signals/utils_signal.c \
 		$(SRCS_DIR)/shell/shell.c \
+		$(SRCS_DIR)/shell/shell2.c \
+		$(SRCS_DIR)/shell/user_input.c \
 		$(SRCS_DIR)/parsing/to_delete_file.c \
 		$(SRCS_DIR)/main_test.c
 
@@ -73,7 +75,9 @@ LIBFT_DIR = ./libft
 LIBFT_NAME = $(LIBFT_DIR)/libft.a
 
 HEADERS_DIR = ./includes
-HEADERS = $(HEADERS_DIR)/shell.h
+HEADERS = $(HEADERS_DIR)/shell.h \
+			$(HEADERS_DIR)/token.h \
+			$(HEADERS_DIR)/parsing.h
 
 LDFLAGS = -lreadline
 	
