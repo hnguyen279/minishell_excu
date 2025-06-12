@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:48 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 07:38:55 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/12 20:41:35 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,32 +37,6 @@ int	error_msg(t_shell *mshell, const char *msg, int use_errno)
 	return (1);
 }
 
-int	display_error_cmd(char *cmd)
-{
-	if (!cmd || cmd[0] == '\0')
-	{
-		ft_printf_fd(STDERR_FILENO, "minishell: Command '' not found\n");
-		return (127);
-	}
-	else if (!ft_strcmp(cmd, "."))
-	{
-		ft_printf_fd(STDERR_FILENO,
-			"minishell: .: filename argument required\n"
-			".: usage: . filename [arguments]\n");
-		return (2);
-	}
-	else if (!ft_strcmp(cmd, ".."))
-	{
-		ft_printf_fd(STDERR_FILENO, "minishell: ..: command not found\n");
-		return (127);
-	}
-	else
-	{
-		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
-		return (127);
-	}
-}
-
 char	*handle_path_error(t_shell *mshell, char *path, int code)
 {
 	if (code == 126)
@@ -73,12 +47,27 @@ char	*handle_path_error(t_shell *mshell, char *path, int code)
 	return (NULL);
 }
 
+static int	check_intermediate_quote(const char *str, size_t start, size_t end,
+		char quote)
+{
+	size_t	i;
+
+	i = start;
+	while (i < end)
+	{
+		if (str[i] == quote)
+			return (2);
+		i++;
+	}
+	return (-1);
+}
+
 int	is_fully_quoted(const char *str)
 {
 	size_t	i;
 	size_t	len;
 	char	quote;
-	
+
 	i = 0;
 	if (!str || !*str)
 		return (0);
@@ -88,17 +77,10 @@ int	is_fully_quoted(const char *str)
 	if (str[i] != '\'' && str[i] != '"')
 		return (0);
 	quote = str[i++];
-	while (len > i && (str[len - 1] == ' ' || (str[len - 1] >= 9 && str[len - 1] <= 13)))
+	while (len > i && ((str[len - 1] == ' ')
+			|| (str[len - 1] >= 9 && str[len - 1] <= 13)))
 		len--;
 	if (str[len - 1] != quote)
-	{
-		while (i < len - 1)
-		{
-			if (str[i] == quote)
-				return (2);
-			i++;
-		}
-		return (-1);
-	}
+		return (check_intermediate_quote(str, i, len - 1, quote));
 	return (1);
-} 
+}

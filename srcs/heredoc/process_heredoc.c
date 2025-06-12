@@ -1,32 +1,37 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   process_heredoc.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/12 20:05:56 by thi-huon          #+#    #+#             */
+/*   Updated: 2025/06/12 20:05:57 by thi-huon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/shell.h"
 
-char	*make_heredoc_filename(int id)
+static int	open_heredoc_pipe(t_shell *mshell, t_redirect *redir)
 {
-	const char	*prefix;
-	char		*id_str;
-	char		*path;
-	int			i;
-	int			j;
+	char	*path;
+	char	*delim;
+	int		fd;
+	int		expand;
+	int		status;
 
-	prefix = "/tmp/.heredoc_";
-	i = 0;
-	j = 0;
-	id_str = ft_itoa(id);
-	if (!id_str)
-		return (NULL);
-	path = malloc(ft_strlen(prefix) + ft_strlen(id_str) + 1);
-	if (!path)
-		return (free(id_str), NULL);
-	while (prefix[i])
-	{
-		path[i] = prefix[i];
-		i++;
-	}
-	while (id_str[j])
-		path[i++] = id_str[j++];
-	path[i] = '\0';
-	free(id_str);
-	return (path);
+	if (!redir || !redir->ori_file)
+		return (error_msg(mshell, "heredoc: no delimiter", 0));
+	if (create_tmp_file(mshell, redir, &path, &fd))
+		return (1);
+	if (prepare_delimiter(redir, &delim, &expand))
+		return (cleanup_heredoc_failure(redir, fd, path));
+	status = write_heredoc(mshell, fd, delim, expand);
+	if (status != 0)
+		return (cleanup_heredoc_failure(redir, fd, path));
+	close(fd);
+	mshell->exit_code = 0;
+	return (0);
 }
 
 int	process_heredocs(t_shell *mshell, t_ast *node)

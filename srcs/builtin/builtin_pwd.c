@@ -14,8 +14,8 @@
 
 int	builtin_pwd(t_shell *mshell)
 {
-	char		*cwd;
-	
+	char	*cwd;
+
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{

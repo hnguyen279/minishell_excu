@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:30:20 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/10 17:02:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 20:48:25 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ int	builtin_echo(t_shell *mshell, char **token)
 
 	i = 1;
 	newline = 1;
-	// printf("debug in echo \n");
-	// print_array(token);//debug
 	while (token[i] && token[i][0] == '-' && token[i][1] == 'n')
 	{
 		j = 2;

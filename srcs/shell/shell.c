@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 18:28:52 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 22:29:13 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,19 @@ void	shell_interactive(t_shell *mshell)
 	while (1)
 	{
 		line = read_user_input(mshell);
+		// //for test
+		// if (isatty(fileno(stdin)))
+		// 	line = readline("");
+		// else
+		// {
+		// 	char *raw_line = get_next_line(fileno(stdin)); 
+
+		// 	if (!raw_line)
+		// 		break ;
+		// 	line = ft_strtrim(raw_line, "\n");
+		// 	free(raw_line);
+		// }
+		// ////
 		if (!line) // Ctrl+D
 		{
 			printf("exit\n");

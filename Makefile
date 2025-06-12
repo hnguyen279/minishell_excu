@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
+#    By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/06/12 18:03:00 by trpham           ###   ########.fr        #
+#    Updated: 2025/06/12 20:12:39 by thi-huon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,8 +33,9 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/ast/cmd_args.c \
 		$(SRCS_DIR)/ast/redirects.c \
 		$(SRCS_DIR)/heredoc/process_heredoc.c \
-		$(SRCS_DIR)/heredoc/utils_heredoc.c \
-		$(SRCS_DIR)/heredoc/utils_heredoc2.c \
+		$(SRCS_DIR)/heredoc/utils_and_heredoc_file.c \
+		$(SRCS_DIR)/heredoc/prepare_delimiter.c \
+		$(SRCS_DIR)/heredoc/heredoc_loop.c \
 		$(SRCS_DIR)/execution/execute_ast.c \
 		$(SRCS_DIR)/execution/execute_command.c \
 		$(SRCS_DIR)/execution/execute_pipe.c \

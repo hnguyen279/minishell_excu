@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 18:10:31 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 20:53:12 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,12 +105,12 @@ char			*str_join_result_and_free(char **s1, char *s2);
 char			*char_join_result_and_free(char **s1, char c);
 
 /* Heredoc functions */
-int				open_heredoc_pipe(t_shell *mshell, t_redirect *redir);
-// void			exe_handle_dollar_expansion(char *input, int fd_write,
-// 					t_shell *ms);
-char			*get_delimiter(char *file);
-char			*make_heredoc_filename(int id);
-int				process_heredocs(t_shell *mshell, t_ast *node);
+int create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int *fd);
+int cleanup_heredoc_failure(t_redirect *redir, int fd, const char *path);
+int write_heredoc(t_shell *mshell, int fd, const char *delim, int expand);
+int	prepare_delimiter(t_redirect *redir, char **delim, int *expand);
+int	process_heredocs(t_shell *mshell, t_ast *node);
+
 
 /* Execution functions */
 void			free_split(char **tab);
@@ -136,8 +136,8 @@ int				error_msg(t_shell *mshell, const char *msg,
 					int use_errno);
 
 /* Env functions */
-int				init_shlvl_env(t_shell *mshell); // T remove static int??
-int				init_pwd_env(t_shell *mshell); // T remove static int??
+int				init_shlvl_env(t_shell *mshell);
+int				init_pwd_env(t_shell *mshell);
 void			env_free(t_shell *mshell);
 char			**env_dup(char **envp);
 char			*env_find_variable(t_shell *mshell, const char *key, size_t *i);
@@ -148,7 +148,6 @@ void			env_sort(char **envp, size_t len);
 void			env_swap_last(char **envp);
 void			env_print(char **envp);
 int				env_set_last_argument(t_shell *mshell, char **cmd);
-// size_t			strlen_until_char(const char *s, const char ch);
 void			free_array_null(char ***array);
 char			**realloc_env(char **envp, size_t len);
 
@@ -166,11 +165,12 @@ void			export_print(const char *env);
 char			**copy_and_sort_envp(char **envp, size_t *out_count);
 int				export_plus_equal(t_shell *mshell, const char *arg, char *plus_equal);
 int				export_with_equal(t_shell *mshell, const char *arg, char *equal);
+int	handle_plus_equal_case(t_shell *mshell, const char *arg, char *plus_equal);
+int	handle_equal_case(t_shell *mshell, const char *arg, char *equal);
 
 /* Signal functions */
 void			setup_signals(t_shell *mshell, int mode);
 void			sig_exit_code(t_shell *mshell);
-//int				set_signal(t_shell *mshell, void (*sigint_handler)(int), void (*sigquit_handler)(int))
 
 /* To remove block before submiting */
 void			print_cmd_list(t_cmd *head);

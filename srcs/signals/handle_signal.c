@@ -6,13 +6,13 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:03:24 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/09 12:39:09 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/12 20:44:35 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-volatile sig_atomic_t g_signum = 0;
+volatile sig_atomic_t	g_signum = 0;
 
 static void	handle_sigint(int sig)
 {
@@ -36,7 +36,6 @@ static int	reset_readline_heredoc(void)
 {
 	if (g_signum == SIGINT)
 	{
-		// write(STDOUT_FILENO, "\n", 1);
 		rl_done = 1;
 	}
 	return (0);

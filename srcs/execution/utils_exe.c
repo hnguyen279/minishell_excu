@@ -6,24 +6,11 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 20:27:24 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/12 20:41:42 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
-
-void	free_split(char **tab)
-{
-	int	i;
-
-	i = 0;
-	while (tab && tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
-}
 
 char	**find_path(char **env)
 {
@@ -97,4 +84,43 @@ int	wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)
 	else
 		mshell->exit_code = 1;
 	return (mshell->exit_code);
+}
+
+int	display_error_cmd(char *cmd)
+{
+	if (!cmd || cmd[0] == '\0')
+	{
+		ft_printf_fd(STDERR_FILENO, "minishell: Command '' not found\n");
+		return (127);
+	}
+	else if (!ft_strcmp(cmd, "."))
+	{
+		ft_printf_fd(STDERR_FILENO,
+			"minishell: .: filename argument required\n"
+			".: usage: . filename [arguments]\n");
+		return (2);
+	}
+	else if (!ft_strcmp(cmd, ".."))
+	{
+		ft_printf_fd(STDERR_FILENO, "minishell: ..: command not found\n");
+		return (127);
+	}
+	else
+	{
+		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
+		return (127);
+	}
+}
+
+void	free_split(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab && tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
 }

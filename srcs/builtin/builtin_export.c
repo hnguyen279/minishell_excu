@@ -6,48 +6,11 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:50:07 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 04:17:24 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/12 20:51:31 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
-
-static int	handle_plus_equal_case(t_shell *mshell, const char *arg,
-		char *plus_equal)
-{
-	char	*key;
-
-	key = ft_substr(arg, 0, plus_equal - arg);
-	if (!key)
-		return (1);
-	if (!export_is_valid_key(key))
-	{
-		free(key);
-		ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n",
-			arg);
-		return (1);
-	}
-	free(key);
-	return (export_plus_equal(mshell, arg, plus_equal));
-}
-
-static int	handle_equal_case(t_shell *mshell, const char *arg, char *equal)
-{
-	char	*key;
-
-	key = ft_substr(arg, 0, equal - arg);
-	if (!key)
-		return (1);
-	if (!export_is_valid_key(key))
-	{
-		free(key);
-		ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n",
-			arg);
-		return (1);
-	}
-	free(key);
-	return (export_with_equal(mshell, arg, equal));
-}
 
 static int	export_handle_one(t_shell *mshell, const char *arg)
 {
@@ -76,7 +39,7 @@ static int	export_handle_one(t_shell *mshell, const char *arg)
 	return (0);
 }
 
-void	move_underscore_last(char **envp, int i, int j, int len)
+static void	move_underscore_last(char **envp, int i, int j, int len)
 {
 	char	*temp;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_command.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/11 17:30:16 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 20:39:55 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,35 +48,6 @@ static int	fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
 	return (wait_command(mshell, pid, &status, 1));
 }
 
-// static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
-// {
-// 	int	in_fd;
-// 	int	out_fd;
-
-// 	in_fd = dup(STDIN_FILENO);
-// 	out_fd = dup(STDOUT_FILENO);
-// 	if (in_fd == -1 || out_fd == -1)
-// 	{
-// 		safe_close_fds(in_fd, out_fd);
-// 		return (error_msg(mshell, "dup failed", 1));
-// 	}
-// 	if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
-// 	{
-// 		if (dup2(in_fd, 0) == -1 || dup2(out_fd, 1) == -1)
-// 			return (error_msg(mshell, "dup failed", 1));
-// 		safe_close_fds(in_fd, out_fd);
-// 		return (mshell->exit_code);
-// 	}
-// 	if (is_builtin)
-// 		mshell->exit_code = execute_builtin(mshell, node->cmd);
-// 	if (!mshell->has_pipe && node->cmd && node->cmd[0])
-// 		env_set_last_argument(mshell, node->cmd);
-// 	if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
-// 		return (error_msg(mshell, "dup failed", 1));
-// 	safe_close_fds(in_fd, out_fd);
-// 	return (mshell->exit_code);
-// }
-
 static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
 {
 	int	in_fd;
@@ -95,23 +66,21 @@ static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
 		env_set_last_argument(mshell, node->cmd);
 	if (node->redirects)
 	{
-		if (dup2(in_fd, STDIN_FILENO) == -1 || dup2(out_fd, STDOUT_FILENO) == -1)
+		if ((dup2(in_fd, STDIN_FILENO) == -1)
+			|| (dup2(out_fd, STDOUT_FILENO) == -1))
 		{
 			safe_close_fds(in_fd, out_fd);
 			return (error_msg(mshell, "dup failed", 1));
 		}
 		safe_close_fds(in_fd, out_fd);
 	}
-	return mshell->exit_code;
+	return (mshell->exit_code);
 }
 
 int	execute_command(t_ast *node, t_shell *mshell)
 {
 	char	*cmd_path;
 
-	//debug
-	// for (int i = 0; node->cmd[i]; i++)
-	// 	printf("cmd[%d] = [%s]\n", i, node->cmd[i]);
 	if (!node->cmd || !node->cmd[0])
 	{
 		if (node->redirects)
@@ -123,13 +92,11 @@ int	execute_command(t_ast *node, t_shell *mshell)
 	}
 	if (is_builtin(node->cmd[0]))
 	{
-		// printf("in builtin\n"); //debug
 		return (execute_with_redirect(node, mshell, 1));
 	}
 	cmd_path = find_cmd_path(mshell, node->cmd[0]);
 	if (!cmd_path)
 		return (mshell->exit_code);
-	// printf("cmd path\n"); //debug
 	mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
 	if (!mshell->has_pipe && node->cmd && node->cmd[0])
 		env_set_last_argument(mshell, node->cmd);
