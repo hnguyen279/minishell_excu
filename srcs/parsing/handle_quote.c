@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:22:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 18:12:23 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 18:20:46 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ char	*extract_full_word(char *line, int *i, t_shell *mshell)
 		result = str_join_result_and_free(&result, part);
 		free(part);
 	}
-	// printf("result :%s\n", result);
 	return (result);
 }
 
@@ -113,7 +112,6 @@ char	*extract_unquoted_word(char *line, int *i, t_shell *mshell)
 	part = ft_substr(line, start_pos, *i - start_pos);
 	if (!part)
 		return (NULL);
-	// printf("part %s\n", part); //debug
 	tmp = part;
 	part = expand_token_value(part, mshell);
 	free_string(tmp);

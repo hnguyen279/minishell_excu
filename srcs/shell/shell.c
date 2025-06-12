@@ -3,87 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/09 03:46:41 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/12 18:28:52 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
-
-void	shell_cleanup(t_shell *mshell)
-{
-	if (!mshell)
-		return ;
-	if (mshell->envp)
-		env_free(mshell);
-}
-
-static int	calculate_next_shlvl(t_shell *mshell)
-{
-	char	*val;
-	int		lvl;
-	int		i;
-
-	val = env_find_value(mshell, "SHLVL");
-	lvl = 1;
-	if (val && val[0] != '\0')
-	{
-		i = 0;
-		while (val[i] && ft_isdigit(val[i]))
-			i++;
-		if (val[i] == '\0')
-			lvl = ft_atoi(val) + 1;
-	}
-	if (lvl < 0 || lvl > 999)
-		lvl = 1;
-	return (lvl);
-}
-
-static int	init_shlvl_env(t_shell *mshell)
-{
-	int		shlvl;
-	char	*shlvl_str;
-
-	shlvl = calculate_next_shlvl(mshell);
-	shlvl_str = ft_itoa(shlvl);
-	if (!shlvl_str)
-	{
-		ft_printf_fd(2, "minishell: init_shell: malloc failed (SHLVL)\n");
-		return (1);
-	}
-	if (env_add(mshell, "SHLVL", shlvl_str) != 0)
-	{
-		free(shlvl_str);
-		ft_printf_fd(2, "minishell: init_shell: failed to set SHLVL\n");
-		return (1);
-	}
-	free(shlvl_str);
-	return (0);
-}
-
-static int	init_pwd_env(t_shell *mshell)
-{
-	char	*cwd;
-
-	if (!env_find_value(mshell, "OLDPWD"))
-		env_add(mshell, "OLDPWD", NULL);
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-	{
-		ft_printf_fd(2, "minishell: getcwd %s\n", strerror(errno));
-		return (1);
-	}
-	if (env_add(mshell, "PWD", cwd) != 0)
-	{
-		free(cwd);
-		ft_printf_fd(2, "minishell: init_shell: failed to set PWD\n");
-		return (1);
-	}
-	free(cwd);
-	return (0);
-}
 
 int	init_shell(t_shell *mshell, char **envp)
 {
@@ -105,3 +32,78 @@ int	init_shell(t_shell *mshell, char **envp)
 	mshell->exit_code = 0;
 	return (0);
 }
+
+void	shell_cleanup(t_shell *mshell)
+{
+	if (!mshell)
+		return ;
+	if (mshell->envp)
+		env_free(mshell);
+}
+
+void	shell_interactive(t_shell *mshell)
+{
+	char	*line;
+	t_token	*history_head;
+	int		status;
+
+	history_head = NULL;
+	while (1)
+	{
+		line = read_user_input(mshell);
+		if (!line) // Ctrl+D
+		{
+			printf("exit\n");
+			break ;
+		}
+		status = process_user_line(line, &history_head, mshell);
+		free_string(line);
+		if (status == FALSE)
+			break;
+	}
+	clear_working_history(&history_head);
+}
+
+
+// save old main for testing
+// void	shell_interactive(t_shell *mshell)
+// {
+// 	char	*line;
+// 	t_token	*history_head;
+
+// 	history_head = NULL;
+// 	while (1)
+// 	{
+// 		g_signum = 0;
+// 		line = readline("minishell$ ");
+// 		if (g_signum) // check siganl after readline for Ctrl C in main shell
+// 			sig_exit_code(mshell);
+// 		line = read_user_input(mshell);
+// 		if (!line) // Ctrl+D
+// 		{
+// 			printf("exit\n");
+// 			break ;
+// 		}
+// 		if (line[0] == '\0') // Ctrl+C → empty str//need?
+// 		{
+// 			free(line);
+// 			continue;
+// 		}
+// 		if (line[0] != '\0')
+// 		{
+// 			store_history(line, &history_head);
+// 			if (handle_special_command_line(line, &history_head) == TRUE)
+// 			{
+// 				if (ft_strcmp(line, "exit") == 0)
+// 				{
+// 					free_string(line);
+// 					break ;
+// 				}
+// 			}
+// 			else
+// 				handle_line(line, mshell);
+// 		}
+// 		free_string(line);
+// 	}
+// 	clear_working_history(&history_head);
+// }

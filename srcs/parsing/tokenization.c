@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 19:08:51 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 18:18:08 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,10 +97,11 @@ int	handle_out_append(char *line, t_token **token_list, int *i)
 
 int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 {
-	char	*extracted_str; // fixed herre
+	char	*extracted_str;
 	char	*raw;
 	t_token	*new_token;
 
+	new_token = NULL;
 	raw = extract_ori_word(line, i);
 	if (!raw)
 		return (FALSE);

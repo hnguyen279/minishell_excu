@@ -6,12 +6,11 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:08:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 19:10:07 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 18:15:52 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
-
 
 int	retokenizer(t_token **token_list)
 {
@@ -25,14 +24,11 @@ int	retokenizer(t_token **token_list)
 	while (current)
 	{
 		next_token = current->next;
-		if (current->type == WORD && ft_strchr(current->value, ' ')
-			&& (current->ori_value) && *(current->ori_value) == '$') //recheck this condition
+		if (check_split_token_condition(&current, &prev_token) == TRUE)
 		{
-			if (link_split_token(&current, &prev_token, &next_token, token_list) == FALSE)
-			{
+			if (handle_split_token(&current, &prev_token, &next_token,
+					token_list) == FALSE)
 				return (FALSE);
-			}
-			current = current->next;
 		}
 		else
 		{
@@ -43,13 +39,36 @@ int	retokenizer(t_token **token_list)
 	return (TRUE);
 }
 
+int	check_split_token_condition(t_token **current, t_token **prev_token)
+{
+	if ((*current)->type == WORD && ft_strchr((*current)->value, ' ')
+		&& ((*current)->ori_value) && *((*current)->ori_value) == '$'
+		&& (!(*prev_token)
+			|| ((*prev_token) && ((*prev_token)->type) != REDIR_HEREDOC_TOKEN)))
+		return (TRUE);
+	return (FALSE);
+}
+
+int	handle_split_token(t_token **current, t_token **prev_token,
+		t_token **next_token, t_token **token_list)
+{
+	t_token	*temp;
+
+	if (link_split_token(current, prev_token, next_token, token_list) == FALSE)
+		return (FALSE);
+	temp = *current;
+	*current = (*current)->next;
+	free_token(temp);
+	return (TRUE);
+}
+
 int	link_split_token(t_token **current, t_token **prev_token,
 		t_token **next_token, t_token **token_list)
 {
 	t_token	*temp;
 	char	**arr_word;
 	t_token	*new_last;
-	
+
 	arr_word = ft_split((*current)->value, ' ');
 	if (!arr_word)
 		return (FALSE);
@@ -65,7 +84,6 @@ int	link_split_token(t_token **current, t_token **prev_token,
 		new_last = new_last->next;
 	new_last->next = *next_token;
 	*prev_token = new_last;
-	// free_token_list(temp);
 	return (TRUE);
 }
 
@@ -75,7 +93,7 @@ t_token	*replace_token_with_new_arr(t_token *current, char **arr)
 	t_token	*prev = NULL;
 	t_token	*new_token = NULL;
 	int		i;
-	
+
 	i = 0;
 	while (arr[i])
 	{
@@ -95,8 +113,5 @@ t_token	*replace_token_with_new_arr(t_token *current, char **arr)
 		i++;
 	}
 	free_array(arr, i);
-	// printf("----------------------------\n"); //debug
-	// printf("The split token list\n"); //debug
-	// // print_linked_list(new_head); //debug
 	return (new_head);
 }

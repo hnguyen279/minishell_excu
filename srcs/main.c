@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 19:12:03 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 18:19:59 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,77 +55,4 @@ void	cleanup_heredoc_tempfiles(t_ast *tree)
 	}
 	cleanup_heredoc_tempfiles(tree->left);
 	cleanup_heredoc_tempfiles(tree->right);
-}
-
-void	shell_interactive(t_shell *mshell)
-{
-	char	*line;
-	t_token	*history_head;
-
-	history_head = NULL;
-	while (1)
-	{
-		g_signum = 0;
-		line = readline("minishell$ ");
-		if (g_signum) // check siganl after readline for Ctrl C in main shell
-			sig_exit_code(mshell);
-		if (!line) // Ctrl+D
-		{
-			printf("exit\n");
-			break ;
-		}
-		if (line[0] == '\0') // Ctrl+C → empty str//need?
-		{
-			free(line);
-			continue;
-		}
-		if (line[0] != '\0')
-		{
-			store_history(line, &history_head);
-			if (handle_special_command_line(line, &history_head) == TRUE)
-			{
-				if (ft_strcmp(line, "exit") == 0)
-				{
-					free_string(line);
-					break ;
-				}
-			}
-			else
-				handle_line(line, mshell);
-		}
-		free_string(line);
-	}
-	clear_working_history(&history_head);
-}
-
-int	handle_special_command_line(char *line, t_token **history_head)
-{
-	if (ft_strcmp(line, "exit") == 0)
-		return (TRUE);
-	else if (ft_strcmp(line, "history") == 0)
-	{
-		print_working_history(*history_head);
-		return (TRUE);
-	}
-	else if (ft_strcmp(line, "history -c") == 0)
-	{
-		clear_working_history(history_head);
-		return (TRUE);
-	}
-	return (FALSE);
-}
-
-void	run_ast_pipeline(t_shell *mshell, t_ast *tree)
-{
-	if (process_heredocs(mshell, tree))
-	{
-		cleanup_heredoc_tempfiles(tree);
-		mshell->exit_code = 130;
-		return ;
-	}
-	execute_ast(tree, mshell);
-	cleanup_heredoc_tempfiles(tree);
-	if (tree->cmd && tree->cmd[0] && !mshell->has_pipe)
-		// tree->type == NODE_CMD &&
-		env_set_last_argument(mshell, tree->cmd);
 }

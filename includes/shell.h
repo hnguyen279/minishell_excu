@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 18:53:19 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 18:10:31 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@
 # include <unistd.h>
 # include <limits.h>
 
+# include "token.h"
+# include "parsing.h"
+
 # define TRUE 0
 # define FALSE -1
 # define FD_READ 0
@@ -36,50 +39,6 @@
 # define MODE_CHILD 2
 
 extern volatile sig_atomic_t	g_signum;
-
-typedef enum e_token_type
-{
-	NONE = 0,
-	PIPE = 1,
-	WORD = 2,
-	REDIR_IN_TOKEN = 3,
-	REDIR_OUT_TOKEN = 4,
-	REDIR_APPEND_TOKEN = 5,
-	REDIR_HEREDOC_TOKEN = 6
-}	t_token_type;
-
-typedef enum e_error_type
-{
-	ERR_NONE = 0,
-	ERR_MALLOC = 1,
-	ERR_QUOTE = 2,
-	ERR_PIPE = 3,
-	ERR_REDIR = 4,
-	ERR_SYNTAX = 5,
-	ERR_FORK = 6
-}	t_error_type;
-
-typedef struct s_token
-{
-	char				*value;
-	char				*ori_value;
-	t_token_type		type;
-	struct s_token		*next;
-	struct s_token		*prev;
-	// int					in_single_quote; // true if in and false if not
-	// int					in_double_quote;
-	// int					is_expansion; //0 not expansion, 1 is expansion from var
-}	t_token;
-
-typedef enum e_redirect_type
-{
-	REDIR_IN,
-	REDIR_OUT,
-	REDIR_APPEND,
-	REDIR_HEREDOC,
-	REDIR_INVALID
-}	t_redirect_type;
-
 typedef struct s_redirect
 {
 	int					fd;
@@ -89,31 +48,6 @@ typedef struct s_redirect
 	char				*tmp_file;
 	struct s_redirect	*next;
 }	t_redirect;
-
-typedef struct s_cmd
-{
-	char				*cmd_name;
-	char				**args;
-	t_redirect			*redirects;
-	struct s_cmd		*next;
-}	t_cmd;
-
-typedef enum e_node_type
-{
-	NODE_NONE = 0,
-	NODE_CMD,
-	NODE_PIPE
-}	t_node_type;
-
-typedef struct s_ast
-{
-	t_node_type			type;
-	char				**cmd;
-	t_redirect			*redirects;
-	struct s_ast		*left;
-	struct s_ast		*right;
-}	t_ast;
-
 typedef struct s_shell
 {
 	int					exit_code;
@@ -127,8 +61,11 @@ typedef struct s_shell
 int				init_shell(t_shell *mshell, char **envp);
 void			shell_interactive(t_shell *mshell);
 void			shell_cleanup(t_shell *mshell);
+void			cleanup_heredoc_tempfiles(t_ast *tree);
 
 /* Handle user input */
+char			*read_user_input(t_shell *mshell);
+int				process_user_line(char *line, t_token **history_head, t_shell *mshell);
 int				handle_special_command_line(char *line, t_token **history_head);
 void			handle_line(char *line, t_shell *mshell);
 int				init_and_validate_input(char *line, t_shell *mshell,
@@ -136,55 +73,6 @@ int				init_and_validate_input(char *line, t_shell *mshell,
 void			process_valid_line(t_shell *mshell,	t_token **oken_list,
 					t_cmd **cmd_list, t_ast **tree);
 void			run_ast_pipeline(t_shell *mshell, t_ast *tree);
-
-/* Tokenization */
-int				tokenization_expansion_validation(char *line, t_shell *mshell,
-					t_token **token_list);
-// int				empty_variable_extension(t_shell *mshell, t_token **token_list);
-// int				empty_variable_skip(t_shell *mshell, t_token **token_list);
-int				skip_expanded_empty_var(t_token **token_list);
-void			skip_first_empty_vars(t_token **token_list);
-void			skip_middle_empty_vars(t_token **token_list);
-int 			echo_with_n(t_token *token_list);
-int 			check_quote_original_value(char *s);
-t_token	*replace_token_with_new_arr(t_token *current, char **arr);
-int	retokenizer(t_token **token_list);
-int	link_split_token(t_token **current, t_token **prev_token,
-		t_token **next_token, t_token **token_list);
-
-
-// t_token			*create_token(char *s, t_token_type i);
-t_token			*create_token(char *s, char *ori_s, t_token_type i);
-int				handle_pipe(t_token **token_list, int *i);
-int				handle_in_heredoc(char *line, t_token **token_list, int *i);
-int				handle_out_append(char *line, t_token **token_list, int *i);
-// char			*extract_quoted_token(char *line, int *i);
-void			add_token(t_token **tokenized_input_list, t_token *new_token);
-t_token			*convert_user_input_to_token(char *line, t_shell *mshell);
-int				handle_word(char *line, t_token **token_list, int *i,
-					t_shell *mshell);
-char			*extract_ori_word(char *line, int *i);
-//char	*extract_original_value_with_quote(char *line, int *index);
-//char	*extract_original_without_quote(char *line, int *index);
-
-char			*extract_full_word(char *line, int *i, t_shell *mshell);
-char			*handle_single_quote(char *line, int *i);
-char			*handle_double_quote(char *line, int *i, t_shell *mshell);
-char			*extract_unquoted_word(char *line, int *i, t_shell *mshell);
-// int				empty_single_quote_check(char **part, int *i, int start_pos);
-// int				empty_double_quote_check(char **part, int *i, int start_pos);
-int				substr_and_move_index(char *line, char **part, int *i,
-					int start_pos);
-
-/* Expansion token */
-char			*expand_token_value(char *str, t_shell	*mshell);
-void			handle_dollar_sign(char *str, t_shell *mshell, char **result,
-					int *i);
-char			*handle_env_variable(char **str, t_shell *mshell, int *i,
-					char *result);
-char			*expand_exit_code(t_shell *mshell, char	*result, int *i);
-char			*extract_variable_name(char **str, char **var_name, int *i,
-					char **result);
 
 /* Validate input */
 int				validate_token(t_token *token);
@@ -194,41 +82,6 @@ int				is_redirection(t_token *token);
 int				is_valid_redirection(t_token *token_list);
 int				validate_quote(char *line);
 int				is_operator(t_token *token);
-// int				is_valid_parentheses(t_token *token_list);
-// int				validate_parentheses_pair(char *line);
-
-/* Parsing */
-t_cmd			*parse_tokens_to_commands(t_token *tokenized_list);
-t_cmd			*create_cmd(void);
-int				update_command_node(t_cmd **new_cmd, t_token **temp_token_list);
-int				add_and_update_cmd_node(t_token **temp_token_list,
-					t_cmd **cmd_list);
-int				count_args(t_token *tokenized_input_list);
-char			**fill_args(t_cmd **new_cmd, t_token **token_list);
-char			**allocate_arg_array(int count);
-int				fill_args_loop(t_token **token_list, char **args,
-					t_cmd **new_cmd);
-// int				add_redirects(t_redirect **redir_list, t_redirect_type type,
-// 					char *file);
-// int				check_redir_type_before_parsing(t_cmd **new_cmd,
-// 					t_token **token_list, t_redirect_type *redir_type);
-int				check_redir_type_before_parsing(t_cmd **new_cmd,
-					t_token **token_list, t_redirect_type *redir_type);
-int				add_redirects(t_redirect **redir_list, t_redirect_type type,
-					t_token **token_list);
-int				create_redirect(t_redirect **new_redir, t_token **token_list,
-					t_redirect_type type);
-t_redirect_type	token_to_redirect_type(t_token_type token_type);
-int				parse_redirection(t_cmd **new_cmd, t_token **token_list);
-// int				create_redirect(t_redirect **new_redir, char *file,
-// 					t_redirect_type type);
-int				handle_redirect(t_cmd **new_cmd, t_token **token_list,
-					char **args, int count);
-
-/* Abstract Syntax Tree */
-t_ast			*create_ast_node(int type);
-t_ast			*convert_cmd_to_ast(t_cmd *cmd_list);
-void			free_ast(t_ast *node, t_shell *mshell);
 
 /* Working history functions */
 void			store_history(char *line, t_token **history_head);
@@ -245,7 +98,7 @@ int				linked_list_size(t_token *head);
 /* Helper functions to free */
 void			free_string(char *s);
 void			free_array(char **arr, int i);
-void	free_token(t_token *token);
+void			free_token(t_token *token);
 void			free_token_list(t_token *tokens);
 void			free_cmd_list(t_cmd *head);
 char			*str_join_result_and_free(char **s1, char *s2);
@@ -283,6 +136,8 @@ int				error_msg(t_shell *mshell, const char *msg,
 					int use_errno);
 
 /* Env functions */
+int				init_shlvl_env(t_shell *mshell); // T remove static int??
+int				init_pwd_env(t_shell *mshell); // T remove static int??
 void			env_free(t_shell *mshell);
 char			**env_dup(char **envp);
 char			*env_find_variable(t_shell *mshell, const char *key, size_t *i);

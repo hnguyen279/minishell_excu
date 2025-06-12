@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/11 10:32:41 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/12 18:22:11 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,12 @@ t_token	*create_token(char *s, char *ori_s, t_token_type i)
 	if (!new_token)
 		return (NULL);
 	new_token->value = ft_strdup(s);
-	//debug
-	//printf("value=%s\n", new_token->value);
 	if (!new_token->value)
 	{
 		free(new_token);
 		return (NULL);
 	}
 	new_token->ori_value = ft_strdup(ori_s);
-	//debug
-	//printf("ori_value=%s\n", new_token->ori_value);
 	if (!new_token->ori_value)
 	{
 		free_string(new_token->value);
@@ -69,7 +65,6 @@ int	count_args(t_token *tokenized_input_list)
 	int		count;
 
 	temp = tokenized_input_list;
-	// print_linked_list(temp);
 	count = 0;
 	while (temp && temp->type != PIPE)
 	{
@@ -78,6 +73,36 @@ int	count_args(t_token *tokenized_input_list)
 		temp = temp->next;
 	}
 	return (count);
+}
+
+char	*extract_ori_word(char *line, int *i)
+{
+	int		start;
+	int		index;
+	char	quote;
+	char	*word;
+
+	start = *i;
+	index = *i;
+	while (line[index])
+	{
+		if (line[index] == '\'' || line[index] == '"')
+		{
+			quote = line[index++];
+			while (line[index] && line[index] != quote)
+				index++;
+			if (line[index])
+				index++;
+		}
+		else if (!ft_isspace(line[index]) || !ft_isspecial(line[index]))
+			break ;
+		else
+			index++;
+	}
+	word = ft_substr(line, start, index - start);
+	if (!word)
+		return (NULL);
+	return (word);
 }
 
 // char *extract_ori_word(char *line, int *i)
@@ -135,7 +160,8 @@ int	count_args(t_token *tokenized_input_list)
 	
 // 	res = NULL;
 // 	start = *index;
-// 	while (line[*index] && ft_isspace(line[*index]) == FALSE && ft_isspecial(line[*index]) == FALSE)
+// 	while (line[*index] && ft_isspace(line[*index]) == FALSE 
+// 		&& ft_isspecial(line[*index]) == FALSE)
 // 	{
 // 		(*index)++;
 // 	}
@@ -144,33 +170,3 @@ int	count_args(t_token *tokenized_input_list)
 // 		return (NULL);
 // 	return (res);
 // }
-
-char *extract_ori_word(char *line, int *i)
-{
-	int		start;
-	int		index;
-	char	quote;
-	char	*word;
-
-	start = *i;
-	index = *i;
-	while (line[index])
-	{
-		if (line[index] == '\'' || line[index] == '"')
-		{
-			quote = line[index++];
-			while (line[index] && line[index] != quote)
-				index++;
-			if (line[index])
-				index++;
-		}
-		else if (!ft_isspace(line[index]) || !ft_isspecial(line[index]))
-			break;
-		else
-			index++;
-	}
-	word = ft_substr(line, start, index - start);
-	if (!word)
-		return (NULL);
-	return (word);
-}
