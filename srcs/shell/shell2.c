@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:57:09 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 18:10:02 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/13 00:36:20 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,6 @@ int	init_pwd_env(t_shell *mshell)
 {
 	char	*cwd;
 
-	if (!env_find_value(mshell, "OLDPWD"))
-		env_add(mshell, "OLDPWD", NULL);
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{

@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:04:29 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 16:04:31 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 00:14:27 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static char	*make_env_entry(const char *key, const char *value)
 	len = ft_strlen(key) + 2;
 	if (value)
 		len += ft_strlen(value);
-	entry = ft_calloc(1, len);
+	entry = ft_calloc(1, len + 1);
 	if (!entry)
 		return (NULL);
 	ft_strlcat(entry, key, len);

@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 20:41:42 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 00:53:41 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,12 @@
 char	**find_path(char **env)
 {
 	int		i;
-	char	**paths;
 
 	i = 0;
 	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
 	if (!env[i] || env[i][5] == '\0')
-	{
-		paths = (char **)malloc(sizeof(char *) * 2);
-		if (!paths)
-			return (NULL);
-		paths[0] = getcwd(NULL, 0);
-		if (!paths[0])
-		{
-			free_split(paths);
-			return (NULL);
-		}
-		paths[1] = NULL;
-		return (paths);
-	}
+		return (NULL);
 	return (ft_split(env[i] + 5, ':'));
 }
 
@@ -88,7 +75,9 @@ int	wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)
 
 int	display_error_cmd(char *cmd)
 {
-	if (!cmd || cmd[0] == '\0')
+	if (!cmd)
+		return (0);
+	if (cmd[0] == '\0')
 	{
 		ft_printf_fd(STDERR_FILENO, "minishell: Command '' not found\n");
 		return (127);

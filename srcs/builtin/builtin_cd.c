@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:30:06 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/09 13:55:32 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 00:18:13 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,5 +117,6 @@ int	builtin_cd(t_shell *mshell, char **token)
 		cd_to_oldpwd(mshell);
 	else
 		cd_to_path(mshell, token[1]);
+	env_add(mshell, "_", "cd");
 	return (mshell->exit_code);
 }
