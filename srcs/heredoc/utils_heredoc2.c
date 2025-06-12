@@ -34,52 +34,42 @@ static int create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int 
 	return (error_msg(mshell, "cannot create heredoc file", 0));
 }
 
-int	is_quoted(const char *str)
-{
-	size_t	len;
 
-	if (!str || !str[0])
-		return (0);
-	len = ft_strlen(str);
-	if ((str[0] == '\'' || str[0] == '"') && str[len - 1] == str[0])
+static void	process_quote_and_copy(const char *word, char *res, int *i, int *j)
+{
+	char	quote;
+
+	quote = word[*i];
+	(*i)++;
+	while (word[*i] && word[*i] != quote)
+		res[(*j)++] = word[(*i)++];
+	if (word[*i] == quote)
+		(*i)++;
+}
+
+char	*get_delimiter(char *word)
+{
+	int		i;
+	int		j;
+	char	*res;
+
+	if (!word)
+		return (NULL);
+	res = malloc(ft_strlen(word) + 1);
+	if (!res)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (word[i])
 	{
-		if (len == 2)
-			return 1;
-		if (str[0] == '\'')
-			return 2;
+		if (word[i] == '\'' || word[i] == '"')
+			process_quote_and_copy(word, res, &i, &j);
 		else
-			return 3;
+			res[j++] = word[i++];
 	}
-	else if ((str[0] == '\'' || str[0] == '"') ||
-			 (str[len - 1] == '\'' || str[len - 1] == '"'))
-		return -1;
-	return 4;
+	res[j] = '\0';
+	return (res);
 }
-
-
-char *get_delimiter(char *file)
-{
-	size_t len;
-
-	if (!file)
-		return NULL;
-
-	len = strlen(file);
-
-	while((file[len - 1] == ' ') || (file[len -1] >= 9 && file[len - 1] <= 13))
-		len--;
-	//debug
-	// printf("len = %ld\n", len);
-	if (len >= 2 &&
-		(file[0] == '\'' || file[0] == '"') &&
-		file[len - 1] == file[0])
-	{
-		return ft_substr(file, 1, len - 2);
-	}
-
-	return ft_substr(file, 0, len);
-}
-
 
 int prepare_delimiter(t_redirect *redir, char **delim, int *expand)
 {
@@ -91,8 +81,7 @@ int prepare_delimiter(t_redirect *redir, char **delim, int *expand)
 		ft_printf_fd(2, "minishell: heredoc: unmatched quote in delimiter: %s\n", redir->ori_file);
 		return (1);
 	}
-
-	if (quote_type == 1)
+	if (quote_type == 1 || quote_type == 2)
 		*expand = 0;
 	else
 		*expand = 1;
@@ -107,45 +96,88 @@ int prepare_delimiter(t_redirect *redir, char **delim, int *expand)
 	return 0;
 }
 
-static int handle_heredoc_loop(t_shell *mshell, int fd, const char *delim, int expand)
+static int	write_expanded_line(t_shell *mshell, int fd, char *expanded, char *eof)
+{
+	if (write(fd, expanded, strlen(expanded)) == -1 || write(fd, "\n", 1) == -1)
+	{
+		error_msg(mshell, "heredoc: write", 1);
+		free(expanded);
+		free(eof);
+		return (1);
+	}
+	free(expanded);
+	free(eof);
+	return (0);
+}
+
+static int	process_line(t_shell *mshell, int fd, const char *delim, char *line, int expand)
+{
+	char *expanded;
+	char *eof;
+
+	eof = ft_strdup(line);
+	if (!eof)
+		return (error_msg(mshell, "heredoc: expansion failed", 0));
+	if (expand)
+		expanded = expand_token_value(line, mshell);
+	else
+		expanded = ft_strdup(line);
+	if (!expanded)
+	{
+		free(eof);
+		return (error_msg(mshell, "heredoc: expansion failed", 0));
+	}
+	if (ft_strcmp(eof, delim) == 0)
+	{
+		free(expanded);
+		free(eof);
+		return (2); // signal to break loop
+	}
+	return write_expanded_line(mshell, fd, expanded, eof);
+}
+
+static int	check_heredoc_line(char *line, const char *delim)
+{
+	if (g_signum == SIGINT)
+	{
+		free(line);
+		return (-1); // aborted by Ctrl+C
+	}
+	if (!line)
+	{
+		ft_printf_fd(STDERR_FILENO,
+			"minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
+			delim);
+		return (1); // warning: EOF
+	}
+	return (0); // valid line
+}
+
+static int	handle_heredoc_loop(t_shell *mshell, int fd, const char *delim, int expand)
 {
 	char *line;
-	char *expanded;
-	int status = 0;
+	int status;
+	int result;
+	int check;
 
+	status = 0;
 	while (1)
 	{
 		line = readline("> ");
-		if (g_signum == SIGINT)
-		{
-			free(line);
+		check = check_heredoc_line(line, delim);
+		if (check == -1)
 			return (-1);
-		}
-		if (!line)
-		{
-			ft_printf_fd(2, "minishell: warning: here-document delimited by end-of-file (wanted `%s`)\n", delim);
+		if (check == 1)
 			break;
-		}
-		if (expand)
-			expanded = expand_token_value(line, mshell);
-		else
-			expanded = ft_strdup(line);
+		result = process_line(mshell, fd, delim, line, expand);
 		free(line);
-		if (!expanded)
-			return error_msg(mshell, "heredoc: expansion failed", 0);
-		if (ft_strcmp(expanded, delim) == 0)
-		{
-			free(expanded);
+		if (result == 2)
 			break;
-		}
-		if (write(fd, expanded, strlen(expanded)) == -1 || write(fd, "\n", 1) == -1)
+		if (result != 0)
 		{
-			error_msg(mshell, "heredoc: write", 1);
 			status = 1;
-			free(expanded);
 			break;
 		}
-		free(expanded);
 	}
 	return (status);
 }

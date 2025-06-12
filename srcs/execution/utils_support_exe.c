@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:48 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/10 22:30:35 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/12 07:38:55 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,29 +23,6 @@ int	is_white_spaces_cmd(char *cmd)
 			return (0);
 		i++;
 	}
-	return (1);
-}
-
-int	is_fully_quoted(const char *str)
-{
-	size_t	i;
-	size_t	len;
-	char	quote;
-
-	i = 0;
-	if (!str || !*str)
-		return (0);
-	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] != '\'' && str[i] != '"')
-		return (0);
-	quote = str[i++];
-	len = ft_strlen(str);
-	while (len > i && (str[len - 1] == ' ' || (str[len - 1] >= 9
-				&& str[len - 1] <= 13)))
-		len--;
-	if (str[len - 1] != quote)
-		return (-1); //check again
 	return (1);
 }
 
@@ -95,3 +72,33 @@ char	*handle_path_error(t_shell *mshell, char *path, int code)
 	mshell->exit_code = code;
 	return (NULL);
 }
+
+int	is_fully_quoted(const char *str)
+{
+	size_t	i;
+	size_t	len;
+	char	quote;
+	
+	i = 0;
+	if (!str || !*str)
+		return (0);
+	len = strlen(str);
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] != '\'' && str[i] != '"')
+		return (0);
+	quote = str[i++];
+	while (len > i && (str[len - 1] == ' ' || (str[len - 1] >= 9 && str[len - 1] <= 13)))
+		len--;
+	if (str[len - 1] != quote)
+	{
+		while (i < len - 1)
+		{
+			if (str[i] == quote)
+				return (2);
+			i++;
+		}
+		return (-1);
+	}
+	return (1);
+} 

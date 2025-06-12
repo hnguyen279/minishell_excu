@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:50:07 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/10 12:19:09 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/12 04:17:24 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,35 @@ static int	handle_plus_equal_case(t_shell *mshell, const char *arg,
 	char	*key;
 
 	key = ft_substr(arg, 0, plus_equal - arg);
-	if (!key || !export_is_valid_key(key))
+	if (!key)
+		return (1);
+	if (!export_is_valid_key(key))
 	{
 		free(key);
-		ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n", arg);
+		ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n",
+			arg);
 		return (1);
 	}
 	free(key);
 	return (export_plus_equal(mshell, arg, plus_equal));
+}
+
+static int	handle_equal_case(t_shell *mshell, const char *arg, char *equal)
+{
+	char	*key;
+
+	key = ft_substr(arg, 0, equal - arg);
+	if (!key)
+		return (1);
+	if (!export_is_valid_key(key))
+	{
+		free(key);
+		ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n",
+			arg);
+		return (1);
+	}
+	free(key);
+	return (export_with_equal(mshell, arg, equal));
 }
 
 static int	export_handle_one(t_shell *mshell, const char *arg)
@@ -43,17 +64,44 @@ static int	export_handle_one(t_shell *mshell, const char *arg)
 	plus_equal = ft_strnstr(arg, "+=", ft_strlen(arg));
 	if (plus_equal != NULL)
 		return (handle_plus_equal_case(mshell, arg, plus_equal));
-	if (!export_is_valid_key(arg))
-	{
-		ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n", arg);
-		return (1);
-	}
 	equal = ft_strchr(arg, '=');
 	if (equal != NULL)
-		return (export_with_equal(mshell, arg, equal));
-	else if (env_add(mshell, arg, NULL) != 0)
+		return (handle_equal_case(mshell, arg, equal));
+	else if (!export_is_valid_key(arg))
+	{
+		ft_printf_fd(2, "minishell: export: `%s`: not a valid identifier\n",
+			arg);
 		return (1);
+	}
 	return (0);
+}
+
+void	move_underscore_last(char **envp, int i, int j, int len)
+{
+	char	*temp;
+
+	if (!envp)
+		return ;
+	while (envp[len])
+		len++;
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], "_=", 2) == 0)
+		{
+			if (i == len - 1)
+				return ;
+			temp = envp[i];
+			j = i;
+			while (j < len - 1)
+			{
+				envp[j] = envp[j + 1];
+				j++;
+			}
+			envp[len - 1] = temp;
+			return ;
+		}
+		i++;
+	}
 }
 
 static int	handle_export_arguments(t_shell *mshell, char **token, int argc)
@@ -71,6 +119,7 @@ static int	handle_export_arguments(t_shell *mshell, char **token, int argc)
 			code = result;
 		i++;
 	}
+	move_underscore_last(mshell->envp, 0, 0, 0);
 	return (code);
 }
 
@@ -91,7 +140,7 @@ static int	export_standalone(char **envp)
 			export_print(copy[i]);
 		i++;
 	}
-	free(copy);
+	free_split(copy);
 	return (0);
 }
 
@@ -106,7 +155,9 @@ int	builtin_export(t_shell *mshell, char **token)
 	}
 	argc = 0;
 	while (token[argc])
+	{
 		argc++;
+	}
 	if (argc == 1)
 		return (export_standalone(mshell->envp));
 	else
