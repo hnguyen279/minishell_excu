@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_input.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 17:09:08 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 23:09:03 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	tokenization_expansion_validation(char *line, t_shell *mshell,
 void	process_valid_line(t_shell *mshell, t_token **token_list,
 		t_cmd **cmd_list, t_ast **tree)
 {
-	print_linked_list(*token_list); //debug
+	// print_linked_list(*token_list); //debug
 	*cmd_list = parse_tokens_to_commands(*token_list);
 	// *cmd_list = NULL;
 	if (!*cmd_list)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/13 03:34:25 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 23:07:47 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ char	*find_cmd_path(t_shell *mshell, char *cmd)
 		return (handle_path_error(mshell, cmd, 127));
 	if (access(cmd_path, X_OK) != 0)
 	{
-		free(cmd_path);
+		// free(cmd_path); // recheck, cmd_path is used after free
 		return (handle_path_error(mshell, cmd_path, 126));
 	}
 	return (cmd_path);
