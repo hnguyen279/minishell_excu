@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 21:30:01 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 17:19:28 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int				tokenization_expansion_validation(char *line, t_shell *mshell,
 					t_token **token_list);
 int				skip_expanded_empty_var(t_token **token_list);
 void			skip_middle_empty_vars(t_token **token_list);
+void			skip_first_empty_vars(t_token **token_list);
 t_token			*create_token(char *s, char *ori_s, t_token_type i);
 int				handle_pipe(t_token **token_list, int *i);
 int				handle_in_heredoc(char *line, t_token **token_list, int *i);
