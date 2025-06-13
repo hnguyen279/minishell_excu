@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_support_exe.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:48 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 20:41:35 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 13:35:09 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	is_fully_quoted(const char *str)
 	i = 0;
 	if (!str || !*str)
 		return (0);
-	len = strlen(str);
+	len = ft_strlen(str);
 	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
 		i++;
 	if (str[i] != '\'' && str[i] != '"')

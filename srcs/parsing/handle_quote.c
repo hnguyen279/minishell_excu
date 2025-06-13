@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:22:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 18:20:46 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/13 13:51:37 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ char	*extract_full_word(char *line, int *i, t_shell *mshell)
 		if (line[*i] == '$' && (line[*i + 1] == '\'' || line[*i + 1] == '"'))
 			(*i)++;
 		if (line[*i] == '\'')
+		{
+			
 			part = handle_single_quote(line, i);
+		}
 		else if (line[*i] == '"')
 			part = handle_double_quote(line, i, mshell);
 		else

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_command.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 20:39:55 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 15:38:41 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	run_command_child(t_ast *node, t_shell *mshell, char *cmd_path)
 		if (errno == ENOENT)
 			exit(127);
 		if (errno == EACCES)
-			exit(126);
+			exit(126); // recheck
 		exit(1);
 	}
 }

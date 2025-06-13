@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_and_heredoc_file.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 20:06:06 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 20:06:07 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 14:23:33 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int *fd)
 	int		attempt;
 
 	attempt = 0;
-	while (attempt < 1000)
+	while (attempt < 10000) 
 	{
 		name = make_heredoc_filename(mshell->heredoc_index + attempt);
 		if (!name)
