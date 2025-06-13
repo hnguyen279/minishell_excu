@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/13 00:53:41 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 03:39:24 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,25 @@
 char	**find_path(char **env)
 {
 	int		i;
+	char	**paths;
 
 	i = 0;
 	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
 	if (!env[i] || env[i][5] == '\0')
-		return (NULL);
+	{
+		paths = (char **)malloc(sizeof(char *) * 2);
+		if (!paths)
+			return (NULL);
+		paths[0] = getcwd(NULL, 0);
+		if (!paths[0])
+		{
+			free_split(paths);
+			return (NULL);
+		}
+		paths[1] = NULL;
+		return (paths);
+	}
 	return (ft_split(env[i] + 5, ':'));
 }
 

@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/13 01:13:07 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 03:34:25 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ char	*find_cmd_path(t_shell *mshell, char *cmd)
 	char	*cmd_path;
 
 	//debug
-	printf("cmd = [%s]\n", cmd);
+	//printf("cmd = [%s]\n", cmd); //
 	if (!cmd || cmd[0] == '\0' || !ft_strcmp(cmd, ".") || !ft_strcmp(cmd, ".."))
 		return (mshell->exit_code = display_error_cmd(cmd), NULL);
 	if (check_is_directory(mshell, cmd) != EXIT_SUCCESS)
