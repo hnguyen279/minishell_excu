@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_exe.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/13 03:39:24 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/13 15:25:23 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 	return (0);
 }
 
-int	wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)
+int	wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)	
 {
 	int	sig;
 

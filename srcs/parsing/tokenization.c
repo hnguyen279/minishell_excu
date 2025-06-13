@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 18:18:08 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/13 10:45:41 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 	int		is_token_list;
 
 	token_list = NULL;
+	is_token_list = FALSE;
 	i = 0;
 	while (line[i])
 	{

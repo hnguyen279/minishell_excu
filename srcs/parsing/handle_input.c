@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 18:19:52 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/13 15:12:01 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void	handle_line(char *line, t_shell *mshell)
 int	init_and_validate_input(char *line, t_shell *mshell, t_token **token_list)
 {
 	mshell->heredoc_index = 0;
+	// if (ft_strcmp(line, " ") == 0)
+	// 	return (FALSE); // or true?
 	if (validate_quote(line) == FALSE)
 	{
 		mshell->exit_code = 2;
@@ -78,10 +80,11 @@ void	process_valid_line(t_shell *mshell, t_token **token_list,
 		mshell->exit_code = 0; // was = 2
 		return ;
 	}
+	// print_cmd_list(*cmd_list);
 	*tree = convert_cmd_to_ast(*cmd_list);
 	if (!*tree)
 	{
-		mshell->exit_code = 2;
+		mshell->exit_code = 0; // was 2
 		return ;
 	}
 	run_ast_pipeline(mshell, *tree);

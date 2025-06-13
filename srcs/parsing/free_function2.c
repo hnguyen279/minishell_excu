@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 22:36:56 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/06 22:37:50 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/13 13:28:24 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	*char_join_result_and_free(char **s1, char c)
 	char	*joined_str;
 	char	*s2;
 
-	s2 = calloc(2, 1);
+	s2 = ft_calloc(2, 1);
 	s2[0] = c;
 	joined_str = str_join_result_and_free(s1, s2);
 	free_string(s2);
