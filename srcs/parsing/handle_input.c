@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_input.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 15:12:01 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/13 17:09:08 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,14 +77,14 @@ void	process_valid_line(t_shell *mshell, t_token **token_list,
 	*cmd_list = parse_tokens_to_commands(*token_list);
 	if (!*cmd_list)
 	{
-		mshell->exit_code = 0; // was = 2
+		mshell->exit_code = 0; // yes return 0 -> true
 		return ;
 	}
 	// print_cmd_list(*cmd_list);
 	*tree = convert_cmd_to_ast(*cmd_list);
 	if (!*tree)
 	{
-		mshell->exit_code = 0; // was 2
+		mshell->exit_code = 1; // for fail by our code
 		return ;
 	}
 	run_ast_pipeline(mshell, *tree);
