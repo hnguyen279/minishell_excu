@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 15:12:01 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/13 16:27:02 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,15 @@ int	tokenization_expansion_validation(char *line, t_shell *mshell,
 void	process_valid_line(t_shell *mshell, t_token **token_list,
 		t_cmd **cmd_list, t_ast **tree)
 {
+	print_linked_list(*token_list); //debug
 	*cmd_list = parse_tokens_to_commands(*token_list);
+	// *cmd_list = NULL;
 	if (!*cmd_list)
 	{
 		mshell->exit_code = 0; // was = 2
 		return ;
 	}
-	// print_cmd_list(*cmd_list);
+	// print_cmd_list(*cmd_list); //debug
 	*tree = convert_cmd_to_ast(*cmd_list);
 	if (!*tree)
 	{

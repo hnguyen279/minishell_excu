@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:08:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 18:15:52 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/13 16:26:42 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	retokenizer(t_token **token_list)
 		next_token = current->next;
 		if (check_split_token_condition(&current, &prev_token) == TRUE)
 		{
+			printf("should split token \n"); //debug
 			if (handle_split_token(&current, &prev_token, &next_token,
 					token_list) == FALSE)
 				return (FALSE);
