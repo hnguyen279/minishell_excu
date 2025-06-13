@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   handle_input2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 15:34:40 by trpham            #+#    #+#             */
 /*   Updated: 2025/06/13 17:55:42 by thi-huon         ###   ########.fr       */
@@ -94,4 +94,19 @@ int	skip_expanded_empty_var(t_token **token_list)
 		skip_middle_empty_vars(token_list);
 	}
 	return (TRUE);
+}
+
+void	skip_first_empty_vars(t_token **token_list) //test
+
+{
+	t_token	*to_free;
+	
+	while (*token_list && ft_strcmp((*token_list)->value, "") == 0)
+	{
+		to_free = *token_list;
+		(*token_list) = (*token_list)->next;
+		free_string(to_free->value);
+		free_string(to_free->ori_value);
+		free(to_free);
+	}
 }

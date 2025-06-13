@@ -74,13 +74,15 @@ int	tokenization_expansion_validation(char *line, t_shell *mshell,
 void	process_valid_line(t_shell *mshell, t_token **token_list,
 		t_cmd **cmd_list, t_ast **tree)
 {
+	print_linked_list(*token_list); //debug
 	*cmd_list = parse_tokens_to_commands(*token_list);
+	// *cmd_list = NULL;
 	if (!*cmd_list)
 	{
 		mshell->exit_code = 0; // yes return 0 -> true
 		return ;
 	}
-	// print_cmd_list(*cmd_list);
+	// print_cmd_list(*cmd_list); //debug
 	*tree = convert_cmd_to_ast(*cmd_list);
 	if (!*tree)
 	{
