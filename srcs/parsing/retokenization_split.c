@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:08:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 14:16:38 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 17:16:13 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ int	check_split_token_condition(t_token **current, t_token **prev_token)
 {
 	if ((*current)->type == WORD && ft_strchr((*current)->value, ' ')
 		&& ((*current)->ori_value) && ft_strchr((*current)->ori_value, '$')
+		&& !ft_strnstr((*current)->ori_value, "$ ", ft_strlen((*current)->ori_value))
 		&& (!(*prev_token)
 			|| ((*prev_token) && ((*prev_token)->type) != REDIR_HEREDOC_TOKEN)))
 		return (TRUE);
