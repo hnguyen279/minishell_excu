@@ -77,6 +77,6 @@ void	clear_working_history(t_token **hist_head)
 		free_string(temp->ori_value);
 		free(temp);
 	}
-	printf("clean wokring history\n");
+	// printf("clean wokring history\n"); //debug
 	rl_clear_history();
 }
