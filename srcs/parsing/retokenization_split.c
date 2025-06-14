@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:08:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 16:26:42 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 14:16:38 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int	retokenizer(t_token **token_list)
 		next_token = current->next;
 		if (check_split_token_condition(&current, &prev_token) == TRUE)
 		{
-			printf("should split token \n"); //debug
 			if (handle_split_token(&current, &prev_token, &next_token,
 					token_list) == FALSE)
 				return (FALSE);
@@ -43,7 +42,7 @@ int	retokenizer(t_token **token_list)
 int	check_split_token_condition(t_token **current, t_token **prev_token)
 {
 	if ((*current)->type == WORD && ft_strchr((*current)->value, ' ')
-		&& ((*current)->ori_value) && *((*current)->ori_value) == '$'
+		&& ((*current)->ori_value) && ft_strchr((*current)->ori_value, '$')
 		&& (!(*prev_token)
 			|| ((*prev_token) && ((*prev_token)->type) != REDIR_HEREDOC_TOKEN)))
 		return (TRUE);
@@ -73,6 +72,7 @@ int	link_split_token(t_token **current, t_token **prev_token,
 	arr_word = ft_split((*current)->value, ' ');
 	if (!arr_word)
 		return (FALSE);
+	// print_array(arr_word); //debug
 	temp = replace_token_with_new_arr(*current, arr_word);
 	if (!temp)
 		return (FALSE);

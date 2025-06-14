@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 17:19:28 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/14 15:50:11 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOKEN_H
 # define TOKEN_H
 
-
+typedef struct s_shell	t_shell;
 typedef enum e_token_type
 {
 	NONE = 0,
@@ -25,17 +25,6 @@ typedef enum e_token_type
 	REDIR_HEREDOC_TOKEN = 6
 }	t_token_type;
 
-// typedef enum e_error_type
-// {
-// 	ERR_NONE = 0,
-// 	ERR_MALLOC = 1,
-// 	ERR_QUOTE = 2,
-// 	ERR_PIPE = 3,
-// 	ERR_REDIR = 4,
-// 	ERR_SYNTAX = 5,
-// 	ERR_FORK = 6
-// }	t_error_type;
-
 typedef struct s_token
 {
 	char				*value;
@@ -45,11 +34,22 @@ typedef struct s_token
 	struct s_token		*prev;
 }	t_token;
 
-typedef struct s_shell	t_shell;
+typedef struct s_expand
+{
+	char	*line;
+	char	*ori_value;
+	char	*result;
+	int		is_expanded;
+	int		i;
+	
+}	t_expand;
+
 
 /* Tokenization */
-int				tokenization_expansion_validation(char *line, t_shell *mshell,
-					t_token **token_list);
+// int				tokenization_expansion_validation(char *line, t_shell *mshell,
+// 					t_token **token_list);
+// int	init_and_validate_input(char *line, t_shell *mshell);
+int	tokenization_expansion_validation(char *line, t_shell *mshell);
 int				skip_expanded_empty_var(t_token **token_list);
 void			skip_middle_empty_vars(t_token **token_list);
 void			skip_first_empty_vars(t_token **token_list);
@@ -61,6 +61,7 @@ void			add_token(t_token **tokenized_input_list, t_token *new_token);
 t_token			*convert_user_input_to_token(char *line, t_shell *mshell);
 int				handle_word(char *line, t_token **token_list, int *i,
 					t_shell *mshell);
+// int	reset_exp(t_expand exp);
 char			*extract_ori_word(char *line, int *i);
 char			*extract_full_word(char *line, int *i, t_shell *mshell);
 char			*handle_single_quote(char *line, int *i);
@@ -68,7 +69,8 @@ char			*handle_double_quote(char *line, int *i, t_shell *mshell);
 char			*extract_unquoted_word(char *line, int *i, t_shell *mshell);
 int				substr_and_move_index(char *line, char **part, int *i,
 					int start_pos);
-
+void	int_exp(t_expand exp);
+void	reset_exp(t_expand exp);
 /* Expansion token */
 char			*expand_token_value(char *str, t_shell	*mshell);
 void			handle_dollar_sign(char *str, t_shell *mshell, char **result,

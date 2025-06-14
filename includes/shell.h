@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 08:03:47 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/14 12:39:37 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,15 +64,18 @@ typedef struct s_shell
 int				init_shell(t_shell *mshell, char **envp);
 void			shell_interactive(t_shell *mshell);
 void			shell_cleanup(t_shell *mshell);
+void loop_clean(t_shell *mshell);
 void			cleanup_heredoc_tempfiles(t_ast *tree);
 
 /* Handle user input */
 char			*read_user_input(t_shell *mshell);
-int				process_user_line(char *line, t_token **history_head, t_shell *mshell);
+int	process_user_line(char *line, t_shell *mshell);
+// int				process_user_line(char *line, t_token **history_head, t_shell *mshell);
 int				handle_special_command_line(char *line, t_token **history_head);
-void			handle_line(char *line, t_shell *mshell);
-int				init_and_validate_input(char *line, t_shell *mshell,
-					t_token **token_list);
+// void			handle_line(char *line, t_shell *mshell);
+int	init_and_validate_input(char *line, t_shell *mshell);
+// int				init_and_validate_input(char *line, t_shell *mshell,
+					// t_token **token_list);
 //void			process_valid_line(t_shell *mshell,	t_token **token_list,
 //					t_cmd **cmd_list, t_ast **tree);
 //void			run_ast_pipeline(t_shell *mshell, t_ast *tree);

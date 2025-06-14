@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenization.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 17:55:15 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/14 16:04:47 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 	int		is_token_list;
 
 	token_list = NULL;
-	//is_token_list = FALSE;   //confirm T? we need it? it made fail test "minishell$         echo $ABC"""""" -n"
+	is_token_list = TRUE;   //retest "minishell$         echo $ABC"""""" -n" before submit
 	i = 0;
 	while (line[i])
 	{
@@ -36,8 +36,10 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 		if (is_token_list == FALSE)
 			return (NULL);
 	}
+	print_linked_list(token_list); //debug
 	if (retokenizer(&token_list) == FALSE)
 		return (NULL);
+	print_linked_list(token_list); //debug
 	return (token_list);
 }
 
@@ -96,6 +98,38 @@ int	handle_out_append(char *line, t_token **token_list, int *i)
 	return (TRUE);
 }
 
+// int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
+// {
+// 	t_token	*new_token;
+// 	t_expand exp;
+
+// 	new_token = NULL;
+// 	init_exp(exp);
+// 	exp.i = *i;
+// 	exp.line = ft_strdup(line);
+// 	if (!exp.line)
+// 		return (FALSE);
+// 	exp.ori_value = extract_ori_word(line, i);
+// 	if (!exp.ori_value)
+// 		return (FALSE);
+// 	exp.result = extract_full_word(&exp, mshell);
+// 	if (!exp.result)
+// 	{
+// 		free_string(exp.ori_value);
+// 		print_error("Can't extract expanded word");
+// 		return (FALSE);
+// 	}
+// 	new_token = create_token(exp.result, exp.ori_value, WORD);
+// 	if (!new_token)
+// 	{
+// 		reset_exp(exp);
+// 		return (FALSE);
+// 	}
+// 	add_token(token_list, new_token);
+// 	reset_exp(exp);
+// 	return (TRUE);
+// }
+
 int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 {
 	char	*extracted_str;
@@ -125,3 +159,4 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 	free_string(extracted_str);
 	return (TRUE);
 }
+

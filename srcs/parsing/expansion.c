@@ -6,13 +6,37 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 18:18:31 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 15:44:04 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/shell.h"
 
-char	*expand_token_value(char *str, t_shell *mshell)
+// char	*expand_token_value(char *str, t_shell *mshell)
+// {
+// 	int		i;
+// 	char	*result;
+
+// 	i = 0;
+// 	result = ft_strdup("");
+// 	if (!result)
+// 		return (NULL);
+// 	while (str[i])
+// 	{
+// 		if (str[i] == '$' && str[i + 1])
+// 			handle_dollar_sign(str, mshell, &result, &i);
+// 		else
+// 			result = char_join_result_and_free(&result, str[i++]);
+// 		if (!result)
+// 		{
+// 			print_error("strjoin failed");
+// 			return (NULL);
+// 		}
+// 	}
+// 	return (result);
+// }
+
+char	*expand_token_value(char *str, t_shell *mshell, t_expand *exp)
 {
 	int		i;
 	char	*result;
@@ -26,9 +50,7 @@ char	*expand_token_value(char *str, t_shell *mshell)
 		if (str[i] == '$' && str[i + 1])
 			handle_dollar_sign(str, mshell, &result, &i);
 		else
-		{
 			result = char_join_result_and_free(&result, str[i++]);
-		}
 		if (!result)
 		{
 			print_error("strjoin failed");
