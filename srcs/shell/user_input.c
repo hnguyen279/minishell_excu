@@ -6,51 +6,68 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:58:16 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 16:02:48 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 19:25:17 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-char	*read_user_input(t_shell *mshell)
-{
-	char	*line;
-	
-	g_signum = 0;
-	line = readline("minishell$ ");
-	if (g_signum) // check siganl after readline for Ctrl C in main shell
-		sig_exit_code(mshell);
-	return (line);
-}
-
-int	process_user_line(char *line, t_token **history_head, t_shell *mshell)
-{
-	if (line[0] == '\0') // Ctrl+C → empty str//need?
-		return (TRUE);
-	store_history(line, history_head);
-	if (handle_special_command_line(line, history_head) == TRUE)
-	{
-		if (ft_strcmp(line, "exit") == 0)
-			return (FALSE);
-	}
-	else
-		handle_line(line, mshell);
-	return (TRUE);
-}
-
-int	handle_special_command_line(char *line, t_token **history_head)
+int	process_user_line(char *line, t_shell *mshell)
 {
 	if (ft_strcmp(line, "exit") == 0)
-		return (TRUE);
+		return (FALSE);
 	else if (ft_strcmp(line, "history") == 0)
 	{
-		print_working_history(*history_head);
+		print_working_history(mshell->history_head);
 		return (TRUE);
 	}
 	else if (ft_strcmp(line, "history -c") == 0)
 	{
-		clear_working_history(history_head);
+		clear_working_history(&mshell->history_head);
 		return (TRUE);
 	}
-	return (FALSE);
+	else
+	{
+		if (init_and_validate_input(line, mshell) == FALSE)
+			return (TRUE); //not false
+		process_valid_line(mshell);
+		return (TRUE);
+	}
+}
+
+int	init_and_validate_input(char *line, t_shell *mshell)
+{
+	mshell->heredoc_index = 0;
+	if (validate_quote(line) == FALSE)
+	{
+		mshell->exit_code = 2;
+		return (FALSE);
+	}
+	if (tokenization_expansion_validation(line, mshell) == FALSE 
+			|| skip_expanded_empty_var(&mshell->token_list) == FALSE)
+	{
+		// free_token_list(*token_list);
+		// *token_list = NULL; //clear loop in shell interactive
+		return (FALSE);
+	}
+	return (TRUE);
+}
+
+int	tokenization_expansion_validation(char *line, t_shell *mshell)
+{
+	mshell->token_list = convert_user_input_to_token(line, mshell);
+	if (!mshell->token_list)
+	{
+		mshell->exit_code = 1;
+		return (FALSE);
+	}
+	// mshell->token_list = *token_list;
+	// print_linked_list(mshell->token_list);
+	if (validate_token(mshell->token_list) == FALSE)
+	{
+		mshell->exit_code = 2;
+		return (FALSE);
+	}
+	// print_linked_list(mshell->token_list);
+	return (TRUE);
 }

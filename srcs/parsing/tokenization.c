@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenization.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 17:55:15 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/14 21:46:24 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 	int		is_token_list;
 
 	token_list = NULL;
-	//is_token_list = FALSE;   //confirm T? we need it? it made fail test "minishell$         echo $ABC"""""" -n"
+	is_token_list = TRUE;   //retest "minishell$         echo $ABC"""""" -n" before submit
 	i = 0;
 	while (line[i])
 	{
@@ -36,8 +36,10 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 		if (is_token_list == FALSE)
 			return (NULL);
 	}
+	// print_linked_list(token_list); //debug
 	if (retokenizer(&token_list) == FALSE)
 		return (NULL);
+	// print_linked_list(token_list); //debug
 	return (token_list);
 }
 
@@ -107,12 +109,18 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 	if (!raw)
 		return (FALSE);
 	extracted_str = extract_full_word(line, i, mshell);
+	
 	if (!extracted_str)
 	{
 		free_string(raw);
 		print_error("Can't extract expanded word");
 		return (FALSE);
 	}
+	// if (ft_strchr(raw, '"') || ft_strchr(raw, '\''))
+	// 	extracted_str = ft_strtrim(extracted_str, " \t\n"); //recheck
+	// if (!extracted_str)
+	// 	return (FALSE);
+	// printf("extracted wold [%s]\n", extracted_str); //debug
 	new_token = create_token(extracted_str, raw, WORD);
 	if (!new_token)
 	{
@@ -125,3 +133,4 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 	free_string(extracted_str);
 	return (TRUE);
 }
+

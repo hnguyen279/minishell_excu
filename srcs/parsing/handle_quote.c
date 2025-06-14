@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:22:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 13:51:37 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 20:54:15 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,7 @@ char	*extract_full_word(char *line, int *i, t_shell *mshell)
 		if (line[*i] == '$' && (line[*i + 1] == '\'' || line[*i + 1] == '"'))
 			(*i)++;
 		if (line[*i] == '\'')
-		{
-			
 			part = handle_single_quote(line, i);
-		}
 		else if (line[*i] == '"')
 			part = handle_double_quote(line, i, mshell);
 		else
@@ -98,12 +95,14 @@ char	*handle_double_quote(char *line, int *i, t_shell *mshell)
 	return (part);
 }
 
+
 char	*extract_unquoted_word(char *line, int *i, t_shell *mshell)
 {
 	int		start_pos;
 	char	*part;
 	char	*tmp;
 
+	part = NULL;
 	start_pos = *i;
 	while (line[*i])
 	{
@@ -120,6 +119,7 @@ char	*extract_unquoted_word(char *line, int *i, t_shell *mshell)
 	free_string(tmp);
 	return (part);
 }
+
 
 int	substr_and_move_index(char *line, char **part, int *i, int start_pos)
 {

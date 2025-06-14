@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:47:20 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 08:06:45 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/14 13:00:59 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	clear_working_history(t_token **hist_head)
 		free_string(temp->ori_value);
 		free(temp);
 	}
+	*hist_head = NULL;
 	// printf("clean wokring history\n"); //debug
-	rl_clear_history();
+	// rl_clear_history();
 }

@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 18:18:31 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 21:10:24 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,7 @@ char	*expand_token_value(char *str, t_shell *mshell)
 		if (str[i] == '$' && str[i + 1])
 			handle_dollar_sign(str, mshell, &result, &i);
 		else
-		{
 			result = char_join_result_and_free(&result, str[i++]);
-		}
 		if (!result)
 		{
 			print_error("strjoin failed");
@@ -47,7 +45,9 @@ void	handle_dollar_sign(char *str, t_shell *mshell, char **result, int *i)
 	else if (ft_isdigit(str[*i + 1]))
 	{
 		*i += 2;
-		*result = char_join_result_and_free(result, str[(*i)++]);
+		// *result = char_join_result_and_free(result, str[(*i)]); //recheck, if not failed then can remove
+		// if (str[*i]) //test echo 6546 $6 353rthth
+		// (*i)++;
 	}
 	else
 		*result = char_join_result_and_free(result, str[(*i)++]);
