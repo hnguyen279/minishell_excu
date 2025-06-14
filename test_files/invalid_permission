@@ -8,7 +8,6 @@ includes
 libft
 Makefile
 minishell
-minishell_tester
 myscript.sh
 readl.supp
 srcs
@@ -28,7 +27,6 @@ includes
 libft
 Makefile
 minishell
-minishell_tester
 myscript.sh
 readl.supp
 srcs

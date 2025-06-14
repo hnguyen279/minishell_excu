@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:08:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 17:16:13 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 18:32:26 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,28 @@ int	retokenizer(t_token **token_list)
 	return (TRUE);
 }
 
+// int	check_split_token_condition(t_token **current, t_token **prev_token)
+// {
+// 	if ((*current)->type == WORD && ft_strchr((*current)->value, ' ')
+// 		&& ((*current)->ori_value) && ft_strchr((*current)->ori_value, '$')
+// 		&& !ft_strnstr((*current)->ori_value, "$ ", ft_strlen((*current)->ori_value))
+// 		&& (!(*prev_token)
+// 			|| ((*prev_token) && ((*prev_token)->type) != REDIR_HEREDOC_TOKEN)))
+// 		return (TRUE);
+// 	return (FALSE);
+// }
+
+/* bash doesn't perform split on quoted token */
 int	check_split_token_condition(t_token **current, t_token **prev_token)
 {
-	if ((*current)->type == WORD && ft_strchr((*current)->value, ' ')
-		&& ((*current)->ori_value) && ft_strchr((*current)->ori_value, '$')
-		&& !ft_strnstr((*current)->ori_value, "$ ", ft_strlen((*current)->ori_value))
-		&& (!(*prev_token)
-			|| ((*prev_token) && ((*prev_token)->type) != REDIR_HEREDOC_TOKEN)))
+	if ((*current)->type != WORD)
+		return (FALSE);
+	if (*prev_token && (*prev_token)->type == REDIR_HEREDOC_TOKEN)
+		return (FALSE);
+	if (ft_strchr((*current)->ori_value, '"') || ft_strchr((*current)->ori_value, '\'')) // echo " '$USER' "
+		return (FALSE); 
+	if ((*current)->ori_value && ft_strchr((*current)->ori_value, '$')
+		&& ft_strchr((*current)->value, ' '))
 		return (TRUE);
 	return (FALSE);
 }
