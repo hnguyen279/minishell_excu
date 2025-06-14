@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:15:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 17:34:28 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 03:49:52 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int				handle_redirect(t_cmd **new_cmd, t_token **token_list,
 /* Abstract Syntax Tree */
 t_ast			*create_ast_node(int type);
 t_ast			*convert_cmd_to_ast(t_cmd *cmd_list);
-void			free_ast(t_ast *node, t_shell *mshell);
+//void			free_ast(t_ast *node, t_shell *mshell);
+void			free_ast(t_ast *node);
 
 #endif

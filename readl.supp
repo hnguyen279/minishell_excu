@@ -1,11 +1,13 @@
 {
-    leak readline
-    Memcheck:Leak 
+    <readline>
+    Memcheck:Leak
     ...
     fun:readline
+
 }
+
 {
-    leak add_history
+    <addhistory>
     Memcheck:Leak
     ...
     fun:add_history

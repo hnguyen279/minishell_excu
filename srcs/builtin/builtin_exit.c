@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:31:27 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 22:28:59 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/14 06:12:28 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,9 @@ void	builtin_exit(t_shell *mshell, char **token)
 	}
 	else if (token[1])
 		mshell->exit_code = to_valid_exit_code(code);
-	free_ast(mshell->ast, mshell);
-	mshell->ast = NULL;
+	
+	
 	shell_cleanup(mshell);
+
 	exit(mshell->exit_code);
 }
