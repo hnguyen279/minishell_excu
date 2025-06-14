@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 00:00:56 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/14 08:03:47 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,10 @@ typedef struct s_shell
 	char				**envp;
 	int					heredoc_index;
 	int					has_pipe;
-	t_ast				*ast;
+	t_ast				*tree;
+	t_token				*token_list;
+	t_cmd				*cmd_list;
+	t_token				*history_head; //--> dont know??
 }	t_shell;
 
 /* Shell initialization */
@@ -70,9 +73,13 @@ int				handle_special_command_line(char *line, t_token **history_head);
 void			handle_line(char *line, t_shell *mshell);
 int				init_and_validate_input(char *line, t_shell *mshell,
 					t_token **token_list);
-void			process_valid_line(t_shell *mshell,	t_token **oken_list,
-					t_cmd **cmd_list, t_ast **tree);
-void			run_ast_pipeline(t_shell *mshell, t_ast *tree);
+//void			process_valid_line(t_shell *mshell,	t_token **token_list,
+//					t_cmd **cmd_list, t_ast **tree);
+//void			run_ast_pipeline(t_shell *mshell, t_ast *tree);
+
+void	process_valid_line(t_shell *mshell);
+
+void			run_ast_pipeline(t_shell *mshell);
 
 /* Validate input */
 int				validate_token(t_token *token);
@@ -119,7 +126,7 @@ int				is_white_spaces_cmd(char *cmd);
 int				is_ambiguous_redirect(t_shell *mshell, t_redirect *redir);
 char			*find_cmd_path(t_shell *mshell, char *cmd);
 int				exe_redirection(t_redirect *redir, t_shell *mshell);
-int				execute_pipe(t_ast *ast, t_shell *shell);
+int				execute_pipe(t_ast *node, t_shell *shell);
 int				execute_command(t_ast *node, t_shell *mshell);
 int				execute_ast(t_ast *node, t_shell *mshell);
 int				handle_single_redirection(t_shell *mshell, t_redirect *redir);

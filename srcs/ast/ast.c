@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:38:32 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/08 20:27:24 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 03:47:05 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,34 @@ t_ast	*convert_cmd_to_ast(t_cmd *cmd_list)
 	return (pipe_node);
 }
 
-void	free_ast(t_ast *node, t_shell *mshell)
+// void	free_ast(t_ast *node, t_shell *mshell)
+// {
+// 	t_redirect	*redir;
+// 	t_redirect	*next;
+
+// 	if (!node)
+// 		return ;
+// 	if (node->type == NODE_PIPE)
+// 	{
+// 		free_ast(node->left, mshell);
+// 		free_ast(node->right, mshell);
+// 	}
+// 	if (node->type == NODE_CMD && node->cmd)
+// 		free_array_null(&node->cmd);
+// 	redir = node->redirects;
+// 	while (redir)
+// 	{
+// 		next = redir->next;
+// 		free_string(redir->file);
+// 		free_string(redir->tmp_file);
+// 		free_string(redir->ori_file);
+// 		free(redir);
+// 		redir = next;
+// 	}
+// 	free(node);
+// }
+
+void	free_ast(t_ast *node)
 {
 	t_redirect	*redir;
 	t_redirect	*next;
@@ -46,8 +73,8 @@ void	free_ast(t_ast *node, t_shell *mshell)
 		return ;
 	if (node->type == NODE_PIPE)
 	{
-		free_ast(node->left, mshell);
-		free_ast(node->right, mshell);
+		free_ast(node->left);
+		free_ast(node->right);
 	}
 	if (node->type == NODE_CMD && node->cmd)
 		free_array_null(&node->cmd);
@@ -63,6 +90,7 @@ void	free_ast(t_ast *node, t_shell *mshell)
 	}
 	free(node);
 }
+
 
 t_ast	*create_ast_node(int type)
 {

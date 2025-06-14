@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/13 16:03:01 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 08:07:46 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,39 @@ int	init_shell(t_shell *mshell, char **envp)
 	return (0);
 }
 
-void	shell_cleanup(t_shell *mshell)
+// void	shell_cleanup(t_shell *mshell)
+// {
+// 	if (!mshell)
+// 		return ;
+// 	if (mshell->envp)
+// 		env_free(mshell);
+// }
+
+void shell_cleanup(t_shell *mshell)
 {
 	if (!mshell)
 		return ;
+	if (mshell->history_head) //check again free every when out?
+		clear_working_history(&mshell->history_head); //--> need or not
+	if (mshell->token_list)
+		free_token_list(mshell->token_list);
+	if (mshell->cmd_list)
+		free_cmd_list(mshell->cmd_list);
+	if (mshell->tree)
+		free_ast(mshell->tree);
 	if (mshell->envp)
 		env_free(mshell);
 }
 
+
 void	shell_interactive(t_shell *mshell)
 {
 	char	*line;
-	t_token	*history_head;
 	int		status;
+	//t_token	*history_head;
 
-	history_head = NULL;
+	//history_head = NULL;
+	mshell->history_head = NULL;
 	while (1)
 	{
 		line = read_user_input(mshell);
@@ -69,12 +87,23 @@ void	shell_interactive(t_shell *mshell)
 			printf("exit\n");
 			break ;
 		}
-		status = process_user_line(line, &history_head, mshell);
+		status = process_user_line(line, &mshell->history_head, mshell);
 		free_string(line);
+
+
+		///check again need or not
+		free_token_list(mshell->token_list);		
+		free_cmd_list(mshell->cmd_list);
+		free_ast(mshell->tree);
+		mshell->cmd_list = NULL;
+		mshell->token_list = NULL;
+		mshell->tree = NULL;
+
 		if (status == FALSE)
 			break;
+		
 	}
-	clear_working_history(&history_head);
+	//clear_working_history(&history_head);
 }
 
 

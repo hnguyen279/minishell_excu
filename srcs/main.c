@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 18:19:59 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 06:22:45 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,19 @@ int	main(int ac, char *av[], char *env[])
 	if (init_shell(&mshell, env))
 	{
 		shell_cleanup(&mshell);
+
+
 		return (EXIT_FAILURE);
 	}
 	(void)av;
 	setup_signals(&mshell, MODE_INTERACTIVE);
 	shell_interactive(&mshell);
+	
+
+
 	shell_cleanup(&mshell);
+
+	
 	return (mshell.exit_code);
 }
 
