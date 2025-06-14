@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:58:16 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 19:08:42 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 19:25:17 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,6 @@ int	tokenization_expansion_validation(char *line, t_shell *mshell)
 		mshell->exit_code = 2;
 		return (FALSE);
 	}
-	print_linked_list(mshell->token_list);
+	// print_linked_list(mshell->token_list);
 	return (TRUE);
 }

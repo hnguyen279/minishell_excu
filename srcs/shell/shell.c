@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/14 18:38:25 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 21:56:24 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,37 +49,6 @@ void shell_cleanup(t_shell *mshell)
 		env_free(mshell);
 }
 
-void	shell_interactive(t_shell *mshell)
-{
-	char	*line;
-	int		status;
-
-	while (1)
-	{
-		line = read_user_input(mshell);
-		if (!line) // Ctrl+D
-		{
-			printf("exit\n");
-			break ;
-		}
-		if (line[0] != '\0') // Ctrl+C → empty str//need?
-		{
-			store_history(line, &mshell->history_head);
-			status = process_user_line(line, mshell);
-			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
-			if (status == FALSE)
-			{
-				free(line);
-				break;
-			}
-		}
-		free(line);
-	}
-	rl_clear_history();
-}
-
-
-/////for test
 // void	shell_interactive(t_shell *mshell)
 // {
 // 	char	*line;
@@ -87,20 +56,7 @@ void	shell_interactive(t_shell *mshell)
 
 // 	while (1)
 // 	{
-// 		// line = read_user_input(mshell);
-// 		// //for test
-// 		if (isatty(fileno(stdin)))
-// 			line = readline("");
-// 		else
-// 		{
-// 			char *raw_line = get_next_line(fileno(stdin)); 
-
-// 			if (!raw_line)
-// 				break ;
-// 			line = ft_strtrim(raw_line, "\n");
-// 			free(raw_line);
-// 		}
-// 		///////////
+// 		line = read_user_input(mshell);
 // 		if (!line) // Ctrl+D
 // 		{
 // 			printf("exit\n");
@@ -121,6 +77,50 @@ void	shell_interactive(t_shell *mshell)
 // 	}
 // 	rl_clear_history();
 // }
+
+
+/////for test
+void	shell_interactive(t_shell *mshell)
+{
+	char	*line;
+	int		status;
+
+	while (1)
+	{
+		// line = read_user_input(mshell);
+		// //for test
+		if (isatty(fileno(stdin)))
+			line = readline("");
+		else
+		{
+			char *raw_line = get_next_line(fileno(stdin)); 
+
+			if (!raw_line)
+				break ;
+			line = ft_strtrim(raw_line, "\n");
+			free(raw_line);
+		}
+		///////////
+		if (!line) // Ctrl+D
+		{
+			printf("exit\n");
+			break ;
+		}
+		if (line[0] != '\0') // Ctrl+C → empty str//need?
+		{
+			store_history(line, &mshell->history_head);
+			status = process_user_line(line, mshell);
+			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
+			if (status == FALSE)
+			{
+				free(line);
+				break;
+			}
+		}
+		free(line);
+	}
+	rl_clear_history();
+}
 
 char	*read_user_input(t_shell *mshell)
 {

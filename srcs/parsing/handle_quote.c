@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:22:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 17:07:22 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/14 20:54:15 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ char	*extract_unquoted_word(char *line, int *i, t_shell *mshell)
 	char	*part;
 	char	*tmp;
 
+	part = NULL;
 	start_pos = *i;
 	while (line[*i])
 	{
