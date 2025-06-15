@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 14:09:53 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 22:21:23 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 static void	run_command_child(t_ast *node, t_shell *mshell, char *cmd_path)
 {
 	setup_signals(mshell, MODE_CHILD);
-	if (node->redirects && exe_redirection(node->redirects, mshell) != 0) 
+	if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
 	{
-		shell_cleanup(mshell);//shoul cleaupn shell or not?? ****note
+		shell_cleanup(mshell); // shoul cleaupn shell or not?? ****note
 		exit(mshell->exit_code);
 	}
 	if (execve(cmd_path, node->cmd, mshell->envp) == -1)

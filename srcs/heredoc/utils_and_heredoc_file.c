@@ -58,7 +58,7 @@ int	create_tmp_file(t_shell *mshell, t_redirect *redir, char **path, int *fd)
 	int		attempt;
 
 	attempt = 0;
-	while (attempt < 10000) 
+	while (attempt < 10000)
 	{
 		name = make_heredoc_filename(mshell->heredoc_index + attempt);
 		if (!name)

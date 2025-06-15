@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 14:45:18 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 22:20:08 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 	return (0);
 }
 
-int	wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)	
+int	wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)
 {
 	int	sig;
 
@@ -97,8 +97,7 @@ int	display_error_cmd(char *cmd)
 	}
 	else if (!ft_strcmp(cmd, "."))
 	{
-		ft_printf_fd(2,
-			"minishell: .: filename argument required\n"
+		ft_printf_fd(2, "minishell: .: filename argument required\n"
 			".: usage: . filename [arguments]\n");
 		return (2);
 	}

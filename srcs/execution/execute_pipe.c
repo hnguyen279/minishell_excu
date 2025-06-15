@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:24 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 13:51:44 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 22:23:17 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ static void	setup_pipe_redirection(int pipe_fd_src, int std_fd_dst)
 	close(pipe_fd_src);
 }
 
-static t_ast	*prepare_child_execution(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
+static t_ast	*prepare_child_execution(t_shell *mshell, t_ast *node,
+										int *pipe_fd, int left)
 {
 	t_ast	*child;
 
@@ -49,7 +50,6 @@ static t_ast	*prepare_child_execution(t_shell *mshell, t_ast *node, int *pipe_fd
 	}
 	return (child);
 }
-
 
 static void	execute_child(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
 {

@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:30:06 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 19:28:19 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 22:08:27 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,13 @@ static int	pwd_manual(t_shell *mshell, const char *fallback_path)
 
 static void	cd_to_path(t_shell *mshell, char *path)
 {
-	char *cwd;
+	char	*cwd;
 
 	if (chdir(path) != 0)
 	{
 		ft_printf_fd(2, "minishell: cd: %s: %s\n", path, strerror(errno));
 		mshell->exit_code = 1;
-		return;
+		return ;
 	}
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
@@ -103,7 +103,7 @@ static void	cd_to_path(t_shell *mshell, char *path)
 		if (pwd_manual(mshell, path))
 		{
 			mshell->exit_code = 1;
-			return;
+			return ;
 		}
 	}
 	else
@@ -112,7 +112,6 @@ static void	cd_to_path(t_shell *mshell, char *path)
 		update_pwd(mshell);
 	}
 }
-
 
 int	builtin_cd(t_shell *mshell, char **token)
 {

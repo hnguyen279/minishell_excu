@@ -87,7 +87,8 @@ static int	redirect_heredoc(t_redirect *redir, t_shell *mshell)
 	fd = open(redir->tmp_file, O_RDONLY);
 	if (fd == -1)
 	{
-		ft_printf_fd(2, "minishell: %s: %s\n", redir->tmp_file, strerror(errno));
+		ft_printf_fd(2, "minishell: %s: %s\n", redir->tmp_file,
+			strerror(errno));
 		return (1);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)

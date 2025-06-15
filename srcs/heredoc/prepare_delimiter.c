@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 20:05:46 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 20:17:33 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 22:29:36 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,9 @@ static char	*get_delimiter(char *word)
 		return (NULL);
 	i = 0;
 	j = 0;
+	if (word[i] && word[i + 1] && (word[i] == '$')
+		&& (word[i + 1] == '"' || word[i + 1] == '\''))
+		i++;
 	while (word[i])
 	{
 		if (word[i] == '\'' || word[i] == '"')
@@ -55,8 +58,7 @@ int	prepare_delimiter(t_redirect *redir, char **delim, int *expand)
 	quote_type = is_fully_quoted(redir->ori_file);
 	if (quote_type == -1)
 	{
-		ft_printf_fd(2,
-			"minishell: heredoc: unmatched quote in delimiter: %s\n",
+		ft_printf_fd(2, "minishell: heredoc: unmatched quote: %s\n",
 			redir->ori_file);
 		return (1);
 	}

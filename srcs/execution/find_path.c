@@ -80,8 +80,7 @@ static int	check_is_directory(t_shell *mshell, char *cmd)
 		}
 		else if (stat(cmd, &statbuf) == 0 && access(cmd, X_OK) != 0)
 		{
-			ft_printf_fd(2, "minishell: %s: Permission denied\n",
-				cmd);
+			ft_printf_fd(2, "minishell: %s: Permission denied\n", cmd);
 			mshell->exit_code = 126;
 			return (126);
 		}
@@ -113,8 +112,8 @@ char	*find_cmd_path(t_shell *mshell, char *cmd)
 	if (access(cmd_path, X_OK) != 0)
 	{
 		handle_path_error(mshell, cmd_path, 126);
-		free(cmd_path); // recheck, cmd_path is used after free --> H was check move here
-		return (NULL);
+		free(cmd_path); // recheck,
+		cmd_path is used after free-- > H was check move here return (NULL);
 	}
 	return (cmd_path);
 }

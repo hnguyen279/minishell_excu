@@ -14,7 +14,7 @@
 
 void	update_pwd(t_shell *mshell)
 {
-	char		*cwd;
+	char	*cwd;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
@@ -22,8 +22,8 @@ void	update_pwd(t_shell *mshell)
 	if (!cwd)
 	{
 		mshell->exit_code = 1;
-		return;
-	}	
+		return ;
+	}
 	free(mshell->old_pwd);
 	mshell->old_pwd = ft_strdup(mshell->curr_pwd);
 	free(mshell->curr_pwd);
@@ -33,7 +33,7 @@ void	update_pwd(t_shell *mshell)
 	{
 		ft_printf_fd(2, "minishell: updated pwd fail\n");
 		mshell->exit_code = 1;
-		return;
+		return ;
 	}
 	if (env_find_value(mshell, "PWD"))
 		env_add(mshell, "OLDPWD", env_find_value(mshell, "PWD"));
@@ -45,7 +45,6 @@ void	update_pwd(t_shell *mshell)
 	// 	env_add(mshell, "OLDPWD", mshell->old_pwd);
 	mshell->exit_code = 0;
 }
-
 
 int	export_with_equal(t_shell *mshell, const char *arg, char *equal)
 {
@@ -67,8 +66,7 @@ int	export_with_equal(t_shell *mshell, const char *arg, char *equal)
 	return (0);
 }
 
-int	handle_plus_equal_case(t_shell *mshell, const char *arg,
-		char *plus_equal)
+int	handle_plus_equal_case(t_shell *mshell, const char *arg, char *plus_equal)
 {
 	char	*key;
 
