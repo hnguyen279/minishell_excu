@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 12:39:37 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/15 18:37:16 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ typedef struct s_shell
 	t_token				*token_list;
 	t_cmd				*cmd_list;
 	t_token				*history_head; //--> dont know??
+	char				*curr_pwd;       // internal PWD
+    char				*old_pwd;   // internal OLDPWD
 }	t_shell;
 
 /* Shell initialization */
@@ -129,7 +131,7 @@ int				is_white_spaces_cmd(char *cmd);
 int				is_ambiguous_redirect(t_shell *mshell, t_redirect *redir);
 char			*find_cmd_path(t_shell *mshell, char *cmd);
 int				exe_redirection(t_redirect *redir, t_shell *mshell);
-int				execute_pipe(t_ast *node, t_shell *shell);
+int				execute_pipe(t_ast *node, t_shell *mshell);
 int				execute_command(t_ast *node, t_shell *mshell);
 int				execute_ast(t_ast *node, t_shell *mshell);
 int				handle_single_redirection(t_shell *mshell, t_redirect *redir);

@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:17:13 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/08 16:17:13 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 14:55:46 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ static int	redirect_input(t_redirect *redir)
 	fd = open(redir->file, O_RDONLY);
 	if (fd == -1)
 	{
-		ft_printf_fd(2, "minishell: failed to open '%s': %s\n", redir->file,
-			strerror(errno));
+		ft_printf_fd(2, "minishell: %s: %s\n", redir->file, strerror(errno));
 		return (1);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
@@ -44,8 +43,7 @@ static int	redirect_output(t_redirect *redir)
 	fd = open(redir->file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
 	{
-		ft_printf_fd(2, "minishell: failed to open '%s': %s\n", redir->file,
-			strerror(errno));
+		ft_printf_fd(2, "minishell: %s: %s\n", redir->file, strerror(errno));
 		return (1);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
@@ -67,8 +65,7 @@ static int	redirect_output_append(t_redirect *redir)
 	fd = open(redir->file, O_CREAT | O_WRONLY | O_APPEND, 0644);
 	if (fd == -1)
 	{
-		ft_printf_fd(2, "minishell: failed to open '%s': %s\n", redir->file,
-			strerror(errno));
+		ft_printf_fd(2, "minishell: %s: %s\n", redir->file, strerror(errno));
 		return (1);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
@@ -90,8 +87,7 @@ static int	redirect_heredoc(t_redirect *redir, t_shell *mshell)
 	fd = open(redir->tmp_file, O_RDONLY);
 	if (fd == -1)
 	{
-		ft_printf_fd(2, "minishell: failed to open '%s': %s\n", redir->tmp_file,
-			strerror(errno));
+		ft_printf_fd(2, "minishell: %s: %s\n", redir->tmp_file, strerror(errno));
 		return (1);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)

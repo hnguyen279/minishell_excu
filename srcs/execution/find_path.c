@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/13 23:07:47 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/15 13:11:31 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static char	*try_path_combination(char *path_prefix, char *first_cmd)
 	free(one_path);
 	if (!cmd_path)
 		return (NULL);
-	if (access(cmd_path, F_OK | X_OK) == 0)
+	if (access(cmd_path, F_OK) == 0)
 		return (cmd_path);
 	free(cmd_path);
 	return (NULL);
@@ -74,13 +74,13 @@ static int	check_is_directory(t_shell *mshell, char *cmd)
 	{
 		if (stat(cmd, &statbuf) == 0 && S_ISDIR(statbuf.st_mode))
 		{
-			ft_printf_fd(STDERR_FILENO, "minishell: %s: Is a directory\n", cmd);
+			ft_printf_fd(2, "minishell: %s: Is a directory\n", cmd);
 			mshell->exit_code = 126;
 			return (126);
 		}
 		else if (stat(cmd, &statbuf) == 0 && access(cmd, X_OK) != 0)
 		{
-			ft_printf_fd(STDERR_FILENO, "minishell: %s: Permission denied\n",
+			ft_printf_fd(2, "minishell: %s: Permission denied\n",
 				cmd);
 			mshell->exit_code = 126;
 			return (126);
@@ -92,18 +92,18 @@ static int	check_is_directory(t_shell *mshell, char *cmd)
 			return (127);
 		}
 	}
-	return (EXIT_SUCCESS);
+	return (0);
 }
 
 char	*find_cmd_path(t_shell *mshell, char *cmd)
 {
 	char	*cmd_path;
 
-	//debug
-	//printf("cmd = [%s]\n", cmd); //
+	// //debug
+	// printf("cmd = [%s]\n", cmd); //
 	if (!cmd || cmd[0] == '\0' || !ft_strcmp(cmd, ".") || !ft_strcmp(cmd, ".."))
 		return (mshell->exit_code = display_error_cmd(cmd), NULL);
-	if (check_is_directory(mshell, cmd) != EXIT_SUCCESS)
+	if (check_is_directory(mshell, cmd) != 0)
 		return (NULL);
 	if (ft_strchr(cmd, '/') && access(cmd, F_OK) == 0)
 		return (ft_strdup(cmd));
@@ -112,8 +112,9 @@ char	*find_cmd_path(t_shell *mshell, char *cmd)
 		return (handle_path_error(mshell, cmd, 127));
 	if (access(cmd_path, X_OK) != 0)
 	{
-		// free(cmd_path); // recheck, cmd_path is used after free
-		return (handle_path_error(mshell, cmd_path, 126));
+		handle_path_error(mshell, cmd_path, 126);
+		free(cmd_path); // recheck, cmd_path is used after free --> H was check move here
+		return (NULL);
 	}
 	return (cmd_path);
 }

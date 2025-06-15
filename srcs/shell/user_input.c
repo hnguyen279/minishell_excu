@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user_input.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:58:16 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 19:25:17 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/15 10:21:36 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	process_user_line(char *line, t_shell *mshell)
 
 int	init_and_validate_input(char *line, t_shell *mshell)
 {
-	mshell->heredoc_index = 0;
 	if (validate_quote(line) == FALSE)
 	{
 		mshell->exit_code = 2;

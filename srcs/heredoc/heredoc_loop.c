@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 19:28:47 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 20:01:14 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 10:42:52 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ static int	check_heredoc_line(char *line, const char *delim)
 	}
 	if (!line)
 	{
-		ft_printf_fd(STDERR_FILENO, "minishell: ");
-		ft_printf_fd(STDERR_FILENO,
+		ft_printf_fd(2, "minishell: "
 			"warning: here-document delimited by end-of-file (wanted `%s')\n",
 			delim);
 		return (1);

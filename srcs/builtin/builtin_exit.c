@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:31:27 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/14 21:15:23 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/15 13:52:43 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,6 @@ void	builtin_exit(t_shell *mshell, char **token)
 	}
 	else if (token[1])
 		mshell->exit_code = to_valid_exit_code(code);
-	
-	
 	shell_cleanup(mshell);
-
 	exit(mshell->exit_code);
 }

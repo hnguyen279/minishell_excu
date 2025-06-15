@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:37:56 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/12 20:51:58 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 18:43:53 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,37 @@
 void	update_pwd(t_shell *mshell)
 {
 	char		*cwd;
-	const char	*oldpwd;
 
-	oldpwd = env_find_value(mshell, "PWD");
-	if (oldpwd)
-		env_add(mshell, "OLDPWD", oldpwd);
 	cwd = getcwd(NULL, 0);
-	if (cwd)
+	if (!cwd)
+		cwd = ft_strjoin(mshell->curr_pwd, "/..");
+	if (!cwd)
 	{
-		env_add(mshell, "PWD", cwd);
-		free(cwd);
+		mshell->exit_code = 1;
+		return;
+	}	
+	free(mshell->old_pwd);
+	mshell->old_pwd = ft_strdup(mshell->curr_pwd);
+	free(mshell->curr_pwd);
+	mshell->curr_pwd = ft_strdup(cwd);
+	free(cwd);
+	if (!mshell->old_pwd || !mshell->curr_pwd)
+	{
+		ft_printf_fd(2, "minishell: updated pwd fail\n");
+		mshell->exit_code = 1;
+		return;
 	}
+	if (env_find_value(mshell, "PWD"))
+		env_add(mshell, "OLDPWD", mshell->old_pwd);
+	env_add(mshell, "PWD", mshell->curr_pwd);
+	// //true behavior
+	// if (env_find_value(mshell, "PWD"))
+	// 	env_add(mshell, "PWD", mshell->curr_pwd);
+	// if (env_find_value(mshell, "OLDPWD"))
+	// 	env_add(mshell, "OLDPWD", mshell->old_pwd);
 	mshell->exit_code = 0;
 }
+
 
 int	export_with_equal(t_shell *mshell, const char *arg, char *equal)
 {

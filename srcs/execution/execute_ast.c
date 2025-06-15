@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:04 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/14 03:22:59 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 10:14:52 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int	execute_ast(t_ast *node, t_shell *mshell)
 	}
 	else if (node->type == NODE_CMD)
 	{
-		mshell->has_pipe = 0;
 		return (execute_command(node, mshell));
 	}
 	ft_printf_fd(2, "minishell: unsupported node type\n");

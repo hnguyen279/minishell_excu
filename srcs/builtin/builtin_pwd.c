@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:31:44 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/10 22:13:47 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 18:38:11 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,7 @@
 
 int	builtin_pwd(t_shell *mshell)
 {
-	char	*cwd;
-
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-	{
-		perror("minishell: getcwd");
-		mshell->exit_code = 1;
-		return (1);
-	}
-	printf("%s\n", cwd);
-	free(cwd);
+	printf("%s\n", mshell->curr_pwd);
 	mshell->exit_code = 0;
 	return (0);
 }

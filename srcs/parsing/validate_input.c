@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_input.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 14:01:40 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/15 14:33:58 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	print_token_error(t_token *token)
 		str = "<<";
 	else if (token->type == PIPE)
 		str = "|";
-	ft_printf_fd(2, "Error: syntax error near unexpected token `%s'\n",
+	ft_printf_fd(2, "minishell: syntax error near unexpected token `%s'\n",
 		str);
 }
 
@@ -40,20 +40,26 @@ int	validate_quote(char *line)
 {
 	int	i;
 	int	quote;
+	char mark_quote;
 
 	i = 0;
 	quote = 0;
 	while (line[i])
 	{
 		if ((line[i] == '\'' || line[i] == '\"') && quote == 0)
+		{
+			mark_quote = line[i];
 			quote = line[i];
+		}
 		else if (line[i] == quote)
 			quote = 0;
 		i++;
 	}
 	if (quote != 0)
 	{
-		print_error("Unclosed quote");
+		ft_printf_fd(2, "minishell: unexpected EOF while looking for matching `%c'\n"
+			"minishell: syntax error: unexpected end of file\n", mark_quote);
+		//print_error("Unclosed quote");
 		return (FALSE);
 	}
 	return (TRUE);

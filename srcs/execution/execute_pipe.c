@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:24 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/14 06:15:55 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 13:51:44 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,30 +23,40 @@ static void	setup_pipe_redirection(int pipe_fd_src, int std_fd_dst)
 	close(pipe_fd_src);
 }
 
-static void	execute_child(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
+static t_ast	*prepare_child_execution(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
 {
 	t_ast	*child;
 
-	setup_signals(mshell, MODE_CHILD);
 	if (!node)
+	{
+		shell_cleanup(mshell);
 		exit(1);
+	}
 	if (left)
 		child = node->left;
 	else
 		child = node->right;
 	if (!child)
+	{
+		shell_cleanup(mshell);
 		exit(1);
+	}
 	if (child->redirects && exe_redirection(child->redirects, mshell) != 0)
 	{
-				
-				shell_cleanup(mshell);
-
-
-
-
-				exit(mshell->exit_code);
-
+		safe_close_fds(pipe_fd[FD_READ], pipe_fd[FD_WRITE]);
+		shell_cleanup(mshell);
+		exit(mshell->exit_code);
 	}
+	return (child);
+}
+
+
+static void	execute_child(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
+{
+	t_ast	*child;
+
+	setup_signals(mshell, MODE_CHILD);
+	child = prepare_child_execution(mshell, node, pipe_fd, left);
 	if (left)
 	{
 		close(pipe_fd[FD_READ]);
@@ -58,10 +68,7 @@ static void	execute_child(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
 		setup_pipe_redirection(pipe_fd[FD_READ], STDIN_FILENO);
 	}
 	execute_ast(child, mshell);
-
 	shell_cleanup(mshell);
-
-
 	exit(mshell->exit_code);
 }
 

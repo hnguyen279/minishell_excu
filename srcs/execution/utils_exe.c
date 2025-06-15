@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_exe.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/13 15:25:23 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/15 14:45:18 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,9 @@ int	wait_command(t_shell *mshell, pid_t pid, int *status, int update_exit_code)
 		sig = WTERMSIG(*status);
 		mshell->exit_code = 128 + sig;
 		if (sig == SIGQUIT)
-			write(STDERR_FILENO, "Quit (core dumped)\n", 20);
+			write(2, "Quit (core dumped)\n", 20);
 		else if (sig == SIGINT)
-			write(STDERR_FILENO, "\n", 1);
+			write(2, "\n", 1);
 	}
 	else
 		mshell->exit_code = 1;
@@ -92,24 +92,24 @@ int	display_error_cmd(char *cmd)
 		return (0);
 	if (cmd[0] == '\0')
 	{
-		ft_printf_fd(STDERR_FILENO, "minishell: Command '' not found\n");
+		ft_printf_fd(2, "Command '' not found\n");
 		return (127);
 	}
 	else if (!ft_strcmp(cmd, "."))
 	{
-		ft_printf_fd(STDERR_FILENO,
+		ft_printf_fd(2,
 			"minishell: .: filename argument required\n"
 			".: usage: . filename [arguments]\n");
 		return (2);
 	}
 	else if (!ft_strcmp(cmd, ".."))
 	{
-		ft_printf_fd(STDERR_FILENO, "minishell: ..: command not found\n");
+		ft_printf_fd(2, "..: command not found\n");
 		return (127);
 	}
 	else
 	{
-		ft_printf_fd(STDERR_FILENO, "minishell: %s: command not found\n", cmd);
+		ft_printf_fd(2, "Command '%s' not found\n", cmd);
 		return (127);
 	}
 }

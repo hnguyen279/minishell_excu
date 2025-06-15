@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helper.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 16:04:52 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/15 10:31:01 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,11 @@ void	reset_exp(t_expand exp)
 	// exp.is_expanded = FALSE; //need?? 
 }
 
-void	int_exp(t_expand exp)
-{
-	exp.i = 0;
-	exp.is_expanded = FALSE;
-	exp.line = NULL;
-	exp.ori_value = NULL;
-	exp.result = NULL;
-}
+// void	int_exp(t_expand exp) //--> cannot make if not hide
+// {
+// 	exp.i = 0;
+// 	exp.is_expanded = FALSE;
+// 	exp.line = NULL;
+// 	exp.ori_value = NULL;
+// 	exp.result = NULL;
+// }
