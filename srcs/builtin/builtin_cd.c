@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:30:06 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 18:45:30 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/15 19:28:19 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static int	pwd_manual(t_shell *mshell, const char *fallback_path)
 	if (!mshell->old_pwd || !mshell->curr_pwd)
 		return (1);
 	if (env_find_value(mshell, "PWD"))
-		env_add(mshell, "OLDPWD", mshell->old_pwd);
+		env_add(mshell, "OLDPWD", env_find_value(mshell, "PWD"));
 	env_add(mshell, "PWD", mshell->curr_pwd);
 	// //true behavior
 	// if (env_find_value(mshell, "PWD"))
