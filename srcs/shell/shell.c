@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 13:49:04 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 19:22:49 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,31 +53,6 @@ void shell_cleanup(t_shell *mshell)
 		free(mshell->curr_pwd);
 }
 
-// void shell_cleanup(t_shell *mshell)
-// {
-// 	loop_clean(mshell);
-// 	if (mshell->history_head)
-// 	{
-// 		free_token_list(mshell->history_head); //confirm with Tr, set NULL or not?
-// 		mshell->history_head = NULL;
-// 	}
-// 	if (mshell->envp)
-// 	{
-// 		env_free(mshell);
-// 		mshell->envp = NULL;
-// 	}
-// 	if (mshell->old_pwd)
-// 	{
-// 		free(mshell->old_pwd);
-// 		mshell->old_pwd = NULL;
-// 	}
-// 	if (mshell->curr_pwd)
-// 	{
-// 		free(mshell->curr_pwd);
-// 		mshell->curr_pwd = NULL;
-// 	}
-// }
-
 void	shell_interactive(t_shell *mshell)
 {
 	char	*line;
@@ -97,6 +72,7 @@ void	shell_interactive(t_shell *mshell)
 			status = process_user_line(line, mshell);
 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
 			mshell->heredoc_index = 0;
+			free(line);
 			if (status == FALSE)
 				break;
 		}
@@ -104,6 +80,37 @@ void	shell_interactive(t_shell *mshell)
 	rl_clear_history();
 }
 
+char	*read_user_input(t_shell *mshell)
+{
+	char	*line;
+	
+	g_signum = 0;
+	line = readline("minishell$ ");
+	if (g_signum) // check siganl after readline for Ctrl C in main shell
+		sig_exit_code(mshell);
+	return (line);
+}
+
+void loop_clean(t_shell *mshell)
+{
+	if (!mshell)
+		return ;
+	if (mshell->token_list)
+	{
+		free_token_list(mshell->token_list);	
+		mshell->token_list = NULL;
+	}
+	if (mshell->cmd_list)
+	{
+		free_cmd_list(mshell->cmd_list);
+		mshell->cmd_list = NULL;
+	}
+	if (mshell->tree)
+	{
+		free_ast(mshell->tree);
+		mshell->tree = NULL;
+	}
+}
 
 /////for test
 // void	shell_interactive(t_shell *mshell)
@@ -146,35 +153,3 @@ void	shell_interactive(t_shell *mshell)
 // 	}
 // 	rl_clear_history();
 // }
-
-char	*read_user_input(t_shell *mshell)
-{
-	char	*line;
-	
-	g_signum = 0;
-	line = readline("minishell$ ");
-	if (g_signum) // check siganl after readline for Ctrl C in main shell
-		sig_exit_code(mshell);
-	return (line);
-}
-
-void loop_clean(t_shell *mshell)
-{
-	if (!mshell)
-		return ;
-	if (mshell->token_list)
-	{
-		free_token_list(mshell->token_list);	
-		mshell->token_list = NULL;
-	}
-	if (mshell->cmd_list)
-	{
-		free_cmd_list(mshell->cmd_list);
-		mshell->cmd_list = NULL;
-	}
-	if (mshell->tree)
-	{
-		free_ast(mshell->tree);
-		mshell->tree = NULL;
-	}
-}

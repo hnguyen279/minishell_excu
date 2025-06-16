@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 16:57:41 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 19:24:14 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,18 +112,12 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 	if (!raw)
 		return (FALSE);
 	extracted_str = extract_full_word(line, i, mshell);
-	
 	if (!extracted_str)
 	{
 		free_string(raw);
 		print_error("Can't extract expanded word");
 		return (FALSE);
 	}
-	// if (ft_strchr(raw, '"') || ft_strchr(raw, '\''))
-	// 	extracted_str = ft_strtrim(extracted_str, " \t\n"); //recheck
-	// if (!extracted_str)
-	// 	return (FALSE);
-	// printf("extracted wold [%s]\n", extracted_str); //debug
 	new_token = create_token(extracted_str, raw, WORD);
 	if (!new_token)
 	{

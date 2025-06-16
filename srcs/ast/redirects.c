@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 17:04:13 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 20:00:22 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type,
 int	create_redirect(t_redirect **new_redir, t_token **token_list,
 			t_redirect_type type)
 {
-	
 	if (check_ambiguous_redirect(token_list) == FALSE) //added
 	{
 		print_error("Ambiguous redirect");
@@ -150,11 +149,15 @@ int	check_ambiguous_redirect(t_token **token_list)
 	char	*ori_value;
 	
 	if (!token_list && !*token_list && !(*token_list)->value)
+	{
+		// printf("not exist in ambigous redirect\n"); //debug
 		return (FALSE);
+	}
+	// printf("checking token value %s\n", (*token_list)->value); //debug
 	current = *token_list;
 	if (ft_strcmp((*token_list)->value, "") == 0)
 	{
-		// printf("")
+		
 		return (FALSE);
 	}
 	// if (is_white_spaces_cmd((*token_list)->value))
@@ -166,7 +169,7 @@ int	check_ambiguous_redirect(t_token **token_list)
 	ori_value = current->ori_value;
 	count_redir_file = 1;
 	current = current->next;
-	while (current && (current->type != PIPE || is_redirection(current) == FALSE))
+	while (current && (current->type != PIPE && is_redirection(current) == FALSE))
 	{
 		if (ft_strcmp(current->ori_value, ori_value) == 0)
 			count_redir_file++;

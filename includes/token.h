@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 21:48:19 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 18:49:50 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,6 @@ typedef struct s_token
 	struct s_token		*prev;
 }	t_token;
 
-typedef struct s_expand
-{
-	char	*line;
-	char	*ori_value;
-	char	*result;
-	int		is_expanded;
-	int		i;
-	
-}	t_expand;
-
 
 /* Tokenization */
 // int				tokenization_expansion_validation(char *line, t_shell *mshell,
@@ -69,8 +59,7 @@ char			*handle_double_quote(char *line, int *i, t_shell *mshell);
 char			*extract_unquoted_word(char *line, int *i, t_shell *mshell);
 int				substr_and_move_index(char *line, char **part, int *i,
 					int start_pos);
-void	int_exp(t_expand exp);
-void	reset_exp(t_expand exp);
+
 /* Expansion token */
 char			*expand_token_value(char *str, t_shell	*mshell);
 void			handle_dollar_sign(char *str, t_shell *mshell, char **result,

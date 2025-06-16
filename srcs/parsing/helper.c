@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helper.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 12:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/15 10:31:01 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 18:50:30 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,22 +47,3 @@ int	ft_isspecial(char c)
 		return (TRUE);
 	return (FALSE);
 }
-
-void	reset_exp(t_expand exp)
-{
-	free_string(exp.ori_value);
-	exp.ori_value = NULL;
-	free_string(exp.result);
-	exp.result = NULL;
-	// exp.i = 0; //need??
-	// exp.is_expanded = FALSE; //need?? 
-}
-
-// void	int_exp(t_expand exp) //--> cannot make if not hide
-// {
-// 	exp.i = 0;
-// 	exp.is_expanded = FALSE;
-// 	exp.line = NULL;
-// 	exp.ori_value = NULL;
-// 	exp.result = NULL;
-// }
