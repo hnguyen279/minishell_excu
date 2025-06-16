@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 04:02:10 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 04:23:12 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,6 @@ int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 	{
 		ft_printf_fd(2, "minishell: %s: ambiguous redirect\n",
 			redir->ori_file);
-		mshell->exit_code = 1;
-		return (1);
-	}
-	else if (!redir->file || is_white_spaces_cmd(redir->file))
-	{
-		ft_printf_fd(2, "minishell: %s: ambiguous redirect\n",
-			redir->ori_file);		
 		mshell->exit_code = 1;
 		return (1);
 	}
@@ -132,3 +125,20 @@ void	free_split(char **tab)
 	}
 	free(tab);
 }
+
+
+
+// int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
+// {
+// 	if (redir->type == REDIR_HEREDOC)
+// 		return (0);
+// 	if (!redir->file || redir->file[0] == '\0'
+// 		|| is_white_spaces_cmd(redir->file)
+// 		|| (ft_strchr(redir->file, ' ') && ft_strchr(redir->ori_file, '$')))
+// 	{
+// 		ft_printf_fd(2, "minishell: %s: ambiguous redirect\n", redir->ori_file);
+// 		mshell->exit_code = 1;
+// 		return (1);
+// 	}
+// 	return (0);
+// }
