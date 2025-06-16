@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:28:34 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/12 18:19:18 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 12:23:48 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	print_cmd_list(t_cmd *head)
 	printf("PRINT CMD\n");
 	while (temp)
 	{
-		printf("args : %d\n ", ++i);
+		printf("cmd [%d] \n ", ++i);
 		print_array(temp->args);
 		printf("cmd_name: %s\n", temp->cmd_name);
 		print_redirect_list(temp->redirects);
@@ -69,7 +69,7 @@ void	print_redirect_list(t_redirect *redir_list)
 	temp = redir_list;
 	while (temp)
 	{
-		printf("redirect : %d\n", ++i);
+		printf("redirect [%d] \n", ++i);
 		printf("fd : %d\n", redir_list->fd);
 		printf("file : %s\n", redir_list->file);
 		printf("original path : %s\n", redir_list->ori_file);

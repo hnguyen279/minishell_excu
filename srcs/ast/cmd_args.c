@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_args.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 16:58:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 01:35:29 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 15:36:23 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 	char	**args;
 
 	count = count_args(*token_list);
+	// printf("arg count %d\n", count); //debug
 	args = allocate_arg_array(count);
 	if (!args)
 		return (NULL);
@@ -25,7 +26,7 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 		return (args);
 	if (fill_args_loop(token_list, args, new_cmd) == FALSE)
 	{
-		free_split(args);  //H add, confirm agian with Tr? need or not
+		// free_split(args);  //H add, confirm agian with Tr? need or not
 		return (NULL);
 	}
 	return (args);
@@ -62,6 +63,7 @@ int	fill_args_loop(t_token **token_list, char **args, t_cmd **new_cmd)
 	count = 0;
 	while (*token_list && (*token_list)->type != PIPE)
 	{
+		// printf("token value %s \n", (*token_list)->value);
 		if ((*token_list)->type == WORD)
 		{
 			args[count] = ft_strdup((*token_list)->value);
@@ -89,6 +91,8 @@ int	handle_redirect(t_cmd **new_cmd, t_token **token_list, char **args,
 {
 	if (parse_redirection(new_cmd, token_list) == FALSE)
 	{
+		// printf("segmen here\n"); //debug
+		// print_array(args);
 		free_array(args, count);
 		return (FALSE);
 	}

@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:08:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 21:58:10 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 17:06:40 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ int	retokenizer(t_token **token_list)
 		{
 			if (handle_split_token(&current, &prev_token, &next_token,
 					token_list) == FALSE)
+			{
+				// print_error("Failed in retokenizer\n");	
 				return (FALSE);
+			}
 		}
 		else
 		{
@@ -59,10 +62,17 @@ int	check_split_token_condition(t_token **current, t_token **prev_token)
 		return (FALSE);
 	if ((ft_strchr((*current)->ori_value, '"') || ft_strchr((*current)->ori_value, '\''))
 		&&  has_dollar_outside_quotes((*current)->ori_value) == TRUE)// echo " '$USER' "
+	{
+		// printf("failed 1\n"); //debug	
 		return (FALSE); 
+	}
 	if ((*current)->ori_value && ft_strchr((*current)->ori_value, '$')
 		&& ft_strchr((*current)->value, ' '))
-		return (TRUE);
+		{
+			// printf("not fail\n"); //debug	
+			return (TRUE);
+		}
+	// printf("failed 2\n"); //debug	
 	return (FALSE);
 }
 
@@ -95,7 +105,10 @@ int	handle_split_token(t_token **current, t_token **prev_token,
 	t_token	*temp;
 
 	if (link_split_token(current, prev_token, next_token, token_list) == FALSE)
+	{
+		// print_error("Failed in handle split token\n");	//debug
 		return (FALSE);
+	}
 	temp = *current;
 	*current = (*current)->next;
 	free_token(temp);
@@ -111,11 +124,36 @@ int	link_split_token(t_token **current, t_token **prev_token,
 
 	arr_word = ft_split((*current)->value, ' ');
 	if (!arr_word)
+	{
+		print_error("Failed to split\n");	
 		return (FALSE);
+	}
+	// printf("arr[0] : %s\n", arr_word[0]);
+	// printf("prev token %s\n", (*prev_token)->value );
+	
+	// if (is_redirection(*prev_token) == TRUE && !arr_word[0])
+	// {
+	// 	print_error("Ambiguous redirection");
+	// 	free(arr_word);
+	// 	return (FALSE);
+	// }
 	// print_array(arr_word); //debug
-	temp = replace_token_with_new_arr(*current, arr_word);
-	if (!temp)
-		return (FALSE);
+	if (!arr_word[0])
+	{
+		free(arr_word);
+		temp = create_token("",(*current)->value, WORD);
+	}
+	else
+	{
+		temp = replace_token_with_new_arr(*current, arr_word);
+		if (!temp)
+		{
+			// printf("failed in replace token with new arr\n"); //debug
+			return (FALSE);
+		}
+		
+	}
+	// print_linked_list(temp); //debug
 	if (!*prev_token)
 		*token_list = temp;
 	else
@@ -125,6 +163,7 @@ int	link_split_token(t_token **current, t_token **prev_token,
 		new_last = new_last->next;
 	new_last->next = *next_token;
 	*prev_token = new_last;
+	
 	return (TRUE);
 }
 
@@ -138,6 +177,7 @@ t_token	*replace_token_with_new_arr(t_token *current, char **arr)
 	i = 0;
 	while (arr[i])
 	{
+		// printf("arr[%s] : \n", arr[i]);
 		new_token = create_token(arr[i], current->ori_value, WORD);
 		if (!new_token)
 			return (NULL);

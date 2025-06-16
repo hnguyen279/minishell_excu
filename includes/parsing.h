@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:15:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 03:49:52 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 15:16:14 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ t_redirect_type	token_to_redirect_type(t_token_type token_type);
 int				parse_redirection(t_cmd **new_cmd, t_token **token_list);
 int				handle_redirect(t_cmd **new_cmd, t_token **token_list,
 					char **args, int count);
+int	check_ambiguous_redirect(t_token **token_list);
+
 
 /* Abstract Syntax Tree */
 t_ast			*create_ast_node(int type);

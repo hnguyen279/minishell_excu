@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 13:26:58 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:49:04 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,12 +98,8 @@ void	shell_interactive(t_shell *mshell)
 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
 			mshell->heredoc_index = 0;
 			if (status == FALSE)
-			{
-				free(line);
 				break;
-			}
 		}
-		free(line);
 	}
 	rl_clear_history();
 }
@@ -141,13 +137,12 @@ void	shell_interactive(t_shell *mshell)
 // 			store_history(line, &mshell->history_head);
 // 			status = process_user_line(line, mshell);
 // 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
+// 			free(line);
 // 			if (status == FALSE)
 // 			{
-// 				free(line);
 // 				break;
 // 			}
 // 		}
-// 		free(line);
 // 	}
 // 	rl_clear_history();
 // }

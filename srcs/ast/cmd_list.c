@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 10:26:18 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 17:42:27 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int	add_and_update_cmd_node(t_token **temp_token_list, t_cmd **cmd_list)
 	new_cmd = create_cmd();
 	if (!new_cmd || update_command_node(&new_cmd, temp_token_list) == FALSE)
 	{
+		if (new_cmd)
+			free(new_cmd);
 		free_cmd_list(*cmd_list);
 		return (FALSE);
 	}

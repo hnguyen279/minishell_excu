@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_input.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/15 14:33:58 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 16:34:40 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,12 @@ int	is_valid_redirection(t_token *token_list)
 	{
 		if (is_redirection(current) == TRUE)
 		{
-			if (!current->next || current->next->type != WORD)
+			if (!current->next)
+			{
+				print_error("Ambiguous redirect");
+				return (FALSE);
+			}
+			else if (current->next->type != WORD)
 			{
 				print_token_error(current->next);
 				return (FALSE);

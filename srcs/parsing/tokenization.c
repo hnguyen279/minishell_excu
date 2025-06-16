@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 21:46:24 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 16:57:41 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,10 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 	}
 	// print_linked_list(token_list); //debug
 	if (retokenizer(&token_list) == FALSE)
+	{
+		free_token_list(token_list);
 		return (NULL);
+	}
 	// print_linked_list(token_list); //debug
 	return (token_list);
 }
