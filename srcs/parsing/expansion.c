@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 13:37:07 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 21:10:24 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:20:40 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	handle_dollar_sign(char *str, t_shell *mshell, char **result, int *i)
 	{
 		*i += 2;
 		// *result = char_join_result_and_free(result, str[(*i)]); //recheck, if not failed then can remove
-		// if (str[*i]) //test echo 6546 $6 353rthth
+		// if (str[*i]) //test bebe
 		// (*i)++;
 	}
 	else
@@ -95,6 +95,8 @@ char	*handle_env_variable(char **str, t_shell *mshell, int *i, char *result)
 	return (result);
 }
 
+
+/* variable name in bash has first char == underscore or isalpha, after that can be alnum or _ */
 char	*extract_variable_name(char **str, char **var_name, int *i,
 			char **result)
 {
@@ -120,14 +122,15 @@ char	*extract_variable_name(char **str, char **var_name, int *i,
 		print_error("Substr failed in handle_env_variables");
 		return (NULL);
 	}
-	else if (ft_strcmp(*var_name, "EMPTY") == 0)
-	{
-		free_string(*result);
-		*result = ft_strdup("");
-		if (!*result)
-			return (NULL);
-		free_string(*var_name);
-		return (*result);
-	}
+	(void)*result;
+	// else if (ft_strcmp(*var_name, "EMPTY") == 0)
+	// {
+	// 	free_string(*result);
+	// 	*result = ft_strdup("");
+	// 	if (!*result)
+	// 		return (NULL);
+	// 	free_string(*var_name);
+	// 	return (*result);
+	// }
 	return (*var_name);
 }

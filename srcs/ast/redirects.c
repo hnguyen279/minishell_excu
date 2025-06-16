@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 17:04:13 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:25:37 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type,
 		print_error("Empty file name in redirection");
 		return (FALSE);
 	}
-	// printf("parsing after redirection %s\n", (*token_list)->value); //debug
 	if (create_redirect(&new_redir, token_list, type) == FALSE)
 		return (FALSE);
 	if (!*redir_list)
@@ -93,7 +92,6 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type,
 int	create_redirect(t_redirect **new_redir, t_token **token_list,
 			t_redirect_type type)
 {
-	
 	if (check_ambiguous_redirect(token_list) == FALSE) //added
 	{
 		print_error("Ambiguous redirect");
@@ -150,11 +148,15 @@ int	check_ambiguous_redirect(t_token **token_list)
 	char	*ori_value;
 	
 	if (!token_list && !*token_list && !(*token_list)->value)
+	{
+		// printf("not exist in ambigous redirect\n"); //debug
 		return (FALSE);
+	}
+	// printf("checking token value %s\n", (*token_list)->value); //debug
 	current = *token_list;
 	if (ft_strcmp((*token_list)->value, "") == 0)
 	{
-		// printf("")
+		
 		return (FALSE);
 	}
 	// if (is_white_spaces_cmd((*token_list)->value))
@@ -166,7 +168,7 @@ int	check_ambiguous_redirect(t_token **token_list)
 	ori_value = current->ori_value;
 	count_redir_file = 1;
 	current = current->next;
-	while (current && (current->type != PIPE || is_redirection(current) == FALSE))
+	while (current && (current->type != PIPE && is_redirection(current) == FALSE))
 	{
 		if (ft_strcmp(current->ori_value, ori_value) == 0)
 			count_redir_file++;
@@ -176,28 +178,3 @@ int	check_ambiguous_redirect(t_token **token_list)
 		return (FALSE);
 	return (TRUE);
 }
-
-// int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
-// {
-// 	// if (!redir || !redir->file || !redir->ori_file) 
-// 	// 	return (0);
-// 	if (redir->file[0] == '\0' && redir->ori_file[0] != '\0'
-// 		&& ft_strchr(redir->ori_file, '$') && !is_fully_quoted(redir->ori_file)
-// 		&& redir->type != REDIR_HEREDOC)
-// 	{
-// 		ft_printf_fd(2, "minishell: %s: ambiguous redirect\n",
-// 			redir->ori_file);
-// 		mshell->exit_code = 1;
-// 		return (1);  //check exxport $T="     "  cat < $T--> leak****
-// 	}
-// 	else if (ft_strchr(redir->file, ' ') && ft_strchr(redir->ori_file, '$')
-// 		&& !is_fully_quoted(redir->ori_file)
-// 		&& !is_white_spaces_cmd(redir->file) && redir->type != REDIR_HEREDOC)
-// 	{
-// 		ft_printf_fd(2, "minishell: %s: ambiguous redirect\n",
-// 			redir->ori_file);
-// 		mshell->exit_code = 1;
-// 		return (1);
-// 	}
-// 	return (0);
-// }

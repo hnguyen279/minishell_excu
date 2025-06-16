@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 17:43:42 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:22:21 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	process_valid_line(t_shell *mshell)
 {
 	// print_linked_list(mshell->token_list); //debug
 	mshell->cmd_list = parse_tokens_to_commands(mshell->token_list);
-	// *cmd_list = NULL;
 	if (!mshell->cmd_list)
 	{
 		mshell->exit_code = 0; // yes return 0 -> true

@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 13:49:04 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:23:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,31 +53,6 @@ void shell_cleanup(t_shell *mshell)
 		free(mshell->curr_pwd);
 }
 
-// void shell_cleanup(t_shell *mshell)
-// {
-// 	loop_clean(mshell);
-// 	if (mshell->history_head)
-// 	{
-// 		free_token_list(mshell->history_head); //confirm with Tr, set NULL or not?
-// 		mshell->history_head = NULL;
-// 	}
-// 	if (mshell->envp)
-// 	{
-// 		env_free(mshell);
-// 		mshell->envp = NULL;
-// 	}
-// 	if (mshell->old_pwd)
-// 	{
-// 		free(mshell->old_pwd);
-// 		mshell->old_pwd = NULL;
-// 	}
-// 	if (mshell->curr_pwd)
-// 	{
-// 		free(mshell->curr_pwd);
-// 		mshell->curr_pwd = NULL;
-// 	}
-// }
-
 void	shell_interactive(t_shell *mshell)
 {
 	char	*line;
@@ -93,59 +68,21 @@ void	shell_interactive(t_shell *mshell)
 		}
 		if (line[0] != '\0') // Ctrl+C → empty str//need?
 		{
-			store_history(line, &mshell->history_head);
+			if (store_history(line, &mshell->history_head) == FALSE)
+			{
+				free(line);
+				break;
+			}
 			status = process_user_line(line, mshell);
 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
 			mshell->heredoc_index = 0;
+			free(line);
 			if (status == FALSE)
 				break;
 		}
 	}
 	rl_clear_history();
 }
-
-
-/////for test
-// void	shell_interactive(t_shell *mshell)
-// {
-// 	char	*line;
-// 	int		status;
-
-// 	while (1)
-// 	{
-// 		// line = read_user_input(mshell);
-// 		// //for test
-// 		if (isatty(fileno(stdin)))
-// 			line = readline("");
-// 		else
-// 		{
-// 			char *raw_line = get_next_line(fileno(stdin)); 
-
-// 			if (!raw_line)
-// 				break ;
-// 			line = ft_strtrim(raw_line, "\n");
-// 			free(raw_line);
-// 		}
-// 		///////////
-// 		if (!line) // Ctrl+D
-// 		{
-// 			printf("exit\n");
-// 			break ;
-// 		}
-// 		if (line[0] != '\0') // Ctrl+C → empty str//need?
-// 		{
-// 			store_history(line, &mshell->history_head);
-// 			status = process_user_line(line, mshell);
-// 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
-// 			free(line);
-// 			if (status == FALSE)
-// 			{
-// 				break;
-// 			}
-// 		}
-// 	}
-// 	rl_clear_history();
-// }
 
 char	*read_user_input(t_shell *mshell)
 {
@@ -178,3 +115,42 @@ void loop_clean(t_shell *mshell)
 		mshell->tree = NULL;
 	}
 }
+
+/////for test
+// void	shell_interactive(t_shell *mshell)
+// {
+// 	char	*line;
+// 	int		status;
+
+// 	while (1)
+// 	{
+// 		// //for test
+// 		if (isatty(fileno(stdin)))
+// 			line = readline("");
+// 		else
+// 		{
+// 			char *raw_line = get_next_line(fileno(stdin)); 
+
+// 			if (!raw_line)
+// 				break ;
+// 			line = ft_strtrim(raw_line, "\n");
+// 			free(raw_line);
+// 		}
+// 		///////////
+// 		if (line[0] != '\0') // Ctrl+C → empty str//need?
+// 		{
+// 			if (store_history(line, &mshell->history_head) == FALSE)
+// 			{
+// 				free(line);
+// 				break;
+// 			}
+// 			status = process_user_line(line, mshell);
+// 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
+// 			mshell->heredoc_index = 0;
+// 			free(line);
+// 			if (status == FALSE)
+// 				break;
+// 		}
+// 	}
+// 	rl_clear_history();
+// }

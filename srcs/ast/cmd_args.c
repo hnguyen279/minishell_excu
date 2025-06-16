@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 16:58:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 15:36:23 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:24:51 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 		return (args);
 	if (fill_args_loop(token_list, args, new_cmd) == FALSE)
 	{
-		// free_split(args);  //H add, confirm agian with Tr? need or not
+		// free_split(args);  //H add, confirm agian with Tr? invalid free for export x="  ", cat < $x
 		return (NULL);
 	}
 	return (args);
@@ -63,7 +63,6 @@ int	fill_args_loop(t_token **token_list, char **args, t_cmd **new_cmd)
 	count = 0;
 	while (*token_list && (*token_list)->type != PIPE)
 	{
-		// printf("token value %s \n", (*token_list)->value);
 		if ((*token_list)->type == WORD)
 		{
 			args[count] = ft_strdup((*token_list)->value);

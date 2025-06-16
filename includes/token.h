@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 21:48:19 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:04:16 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,6 @@ typedef struct s_token
 	struct s_token		*prev;
 }	t_token;
 
-typedef struct s_expand
-{
-	char	*line;
-	char	*ori_value;
-	char	*result;
-	int		is_expanded;
-	int		i;
-	
-}	t_expand;
-
 
 /* Tokenization */
 // int				tokenization_expansion_validation(char *line, t_shell *mshell,
@@ -54,6 +44,8 @@ int				skip_expanded_empty_var(t_token **token_list);
 void			skip_middle_empty_vars(t_token **token_list);
 void			skip_first_empty_vars(t_token **token_list);
 t_token			*create_token(char *s, char *ori_s, t_token_type i);
+int	handle_token_type(char *line, t_token **token_list, int *i, t_shell *mshell);
+int	create_word_token(t_token **token_list, char **extracted_str, char **raw);
 int				handle_pipe(t_token **token_list, int *i);
 int				handle_in_heredoc(char *line, t_token **token_list, int *i);
 int				handle_out_append(char *line, t_token **token_list, int *i);
@@ -69,8 +61,7 @@ char			*handle_double_quote(char *line, int *i, t_shell *mshell);
 char			*extract_unquoted_word(char *line, int *i, t_shell *mshell);
 int				substr_and_move_index(char *line, char **part, int *i,
 					int start_pos);
-void	int_exp(t_expand exp);
-void	reset_exp(t_expand exp);
+
 /* Expansion token */
 char			*expand_token_value(char *str, t_shell	*mshell);
 void			handle_dollar_sign(char *str, t_shell *mshell, char **result,
@@ -86,6 +77,8 @@ int				retokenizer(t_token **token_list);
 t_token			*replace_token_with_new_arr(t_token *current, char **arr);
 int				link_split_token(t_token **current, t_token **prev_token,
 					t_token **next_token, t_token **token_list);
+void	link_token_list(t_token **temp, t_token **prev_token,
+		t_token **next_token, t_token **token_list);
 int				check_split_token_condition(t_token **current, t_token **prev_token);
 int				handle_split_token(t_token **current, t_token **prev_token,
 					t_token **next_token, t_token **token_list);

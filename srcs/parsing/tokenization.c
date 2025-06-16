@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 16:57:41 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 21:53:28 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,25 +25,32 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 	{
 		if (ft_isspace(line[i]) == TRUE)
 			i++;
-		else if (line[i] == '|')
-			is_token_list = handle_pipe(&token_list, &i);
-		else if (line[i] == '<')
-			is_token_list = handle_in_heredoc(line, &token_list, &i);
-		else if (line[i] == '>')
-			is_token_list = handle_out_append(line, &token_list, &i);
 		else
-			is_token_list = handle_word(line, &token_list, &i, mshell);
+			is_token_list = handle_token_type(line, &token_list, &i, mshell);
 		if (is_token_list == FALSE)
 			return (NULL);
 	}
-	// print_linked_list(token_list); //debug
 	if (retokenizer(&token_list) == FALSE)
 	{
 		free_token_list(token_list);
 		return (NULL);
 	}
-	// print_linked_list(token_list); //debug
 	return (token_list);
+}
+
+int	handle_token_type(char *line, t_token **token_list, int *i, t_shell *mshell)
+{
+	int	is_token_list;
+	
+	if (line[*i] == '|')
+		is_token_list = handle_pipe(token_list, i);
+	else if (line[*i] == '<')
+		is_token_list = handle_in_heredoc(line, token_list, i);
+	else if (line[*i] == '>')
+		is_token_list = handle_out_append(line, token_list, i);
+	else
+		is_token_list = handle_word(line, token_list, i, mshell);
+	return (is_token_list);
 }
 
 int	handle_pipe(t_token **token_list, int *i)
@@ -105,35 +112,38 @@ int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
 {
 	char	*extracted_str;
 	char	*raw;
-	t_token	*new_token;
-
-	new_token = NULL;
+	
 	raw = extract_ori_word(line, i);
 	if (!raw)
 		return (FALSE);
 	extracted_str = extract_full_word(line, i, mshell);
-	
 	if (!extracted_str)
 	{
 		free_string(raw);
 		print_error("Can't extract expanded word");
 		return (FALSE);
 	}
-	// if (ft_strchr(raw, '"') || ft_strchr(raw, '\''))
-	// 	extracted_str = ft_strtrim(extracted_str, " \t\n"); //recheck
-	// if (!extracted_str)
-	// 	return (FALSE);
-	// printf("extracted wold [%s]\n", extracted_str); //debug
-	new_token = create_token(extracted_str, raw, WORD);
-	if (!new_token)
-	{
-		free_string(raw);
-		free_string(extracted_str);
+	if (create_word_token(token_list, &extracted_str, &raw) == FALSE)
 		return (FALSE);
-	}
-	add_token(token_list, new_token);
-	free_string(raw);
-	free_string(extracted_str);
 	return (TRUE);
 }
 
+int	create_word_token(t_token **token_list, char **extracted_str, char **raw)
+{
+	t_token	*new_token;
+
+	new_token = NULL;
+	new_token = create_token(*extracted_str, *raw, WORD);
+	if (!new_token)
+	{
+		free_string(*raw);
+		free_string(*extracted_str);
+		return (FALSE);
+	}
+	add_token(token_list, new_token);
+	free_string(*raw);
+	free_string(*extracted_str);
+	raw = NULL;
+	extracted_str = NULL;
+	return (TRUE);
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:38:32 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 03:47:05 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 22:24:38 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ t_ast	*convert_cmd_to_ast(t_cmd *cmd_list)
 // 	free(node);
 // }
 
-void	free_ast(t_ast *node)
+void	free_ast(t_ast *node) //recheck
 {
 	t_redirect	*redir;
 	t_redirect	*next;
@@ -90,7 +90,6 @@ void	free_ast(t_ast *node)
 	}
 	free(node);
 }
-
 
 t_ast	*create_ast_node(int type)
 {
