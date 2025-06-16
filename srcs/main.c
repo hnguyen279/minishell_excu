@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 13:57:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 12:31:12 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 00:42:49 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,28 +31,4 @@ int	main(int ac, char *av[], char *env[])
 	shell_interactive(&mshell);
 	shell_cleanup(&mshell);
 	return (mshell.exit_code);
-}
-
-void	cleanup_heredoc_tempfiles(t_ast *tree)
-{
-	t_redirect	*redir;
-
-	if (!tree)
-		return ;
-	if (tree->redirects)
-	{
-		redir = tree->redirects;
-		while (redir)
-		{
-			if (redir->type == REDIR_HEREDOC && redir->tmp_file)
-			{
-				unlink(redir->tmp_file);
-				free(redir->tmp_file);
-				redir->tmp_file = NULL;
-			}
-			redir = redir->next;
-		}
-	}
-	cleanup_heredoc_tempfiles(tree->left);
-	cleanup_heredoc_tempfiles(tree->right);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_input.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 13:50:02 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 00:42:08 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,28 @@ void run_ast_pipeline(t_shell *mshell)
 
 	if (tree->cmd && tree->cmd[0] && !mshell->has_pipe)
 		env_set_last_argument(mshell, tree->cmd);
+}
+
+void	cleanup_heredoc_tempfiles(t_ast *tree)
+{
+	t_redirect	*redir;
+
+	if (!tree)
+		return ;
+	if (tree->redirects)
+	{
+		redir = tree->redirects;
+		while (redir)
+		{
+			if (redir->type == REDIR_HEREDOC && redir->tmp_file)
+			{
+				unlink(redir->tmp_file);
+				free(redir->tmp_file);
+				redir->tmp_file = NULL;
+			}
+			redir = redir->next;
+		}
+	}
+	cleanup_heredoc_tempfiles(tree->left);
+	cleanup_heredoc_tempfiles(tree->right);
 }

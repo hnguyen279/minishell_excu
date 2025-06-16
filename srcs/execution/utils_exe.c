@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 22:20:08 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 04:02:10 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,23 +39,30 @@ char	**find_path(char **env)
 
 int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
 {
-	if (!redir || !redir->file || !redir->ori_file)
-		return (0);
+	// if (!redir || !redir->file || !redir->ori_file) 
+	// 	return (0);
 	if (redir->file[0] == '\0' && redir->ori_file[0] != '\0'
 		&& ft_strchr(redir->ori_file, '$') && !is_fully_quoted(redir->ori_file)
 		&& redir->type != REDIR_HEREDOC)
 	{
-		ft_printf_fd(2, "minishell: ambiguous redirect: `%s`\n",
+		ft_printf_fd(2, "minishell: %s: ambiguous redirect\n",
+			redir->ori_file);
+		mshell->exit_code = 1;
+		return (1);  //check exxport $T="     "  cat < $T--> leak****
+	}
+	else if (ft_strchr(redir->file, ' ') && ft_strchr(redir->ori_file, '$')
+		&& !is_fully_quoted(redir->ori_file)
+		&& !is_white_spaces_cmd(redir->file) && redir->type != REDIR_HEREDOC)
+	{
+		ft_printf_fd(2, "minishell: %s: ambiguous redirect\n",
 			redir->ori_file);
 		mshell->exit_code = 1;
 		return (1);
 	}
-	if (ft_strchr(redir->file, ' ') && ft_strchr(redir->ori_file, '$')
-		&& !is_fully_quoted(redir->ori_file)
-		&& !is_white_spaces_cmd(redir->file) && redir->type != REDIR_HEREDOC)
+	else if (!redir->file || is_white_spaces_cmd(redir->file))
 	{
-		ft_printf_fd(2, "minishell: ambiguous redirect: `%s`\n",
-			redir->ori_file);
+		ft_printf_fd(2, "minishell: %s: ambiguous redirect\n",
+			redir->ori_file);		
 		mshell->exit_code = 1;
 		return (1);
 	}

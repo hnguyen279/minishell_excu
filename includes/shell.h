@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/15 18:37:16 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 04:05:11 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct s_shell
 	char				**envp;
 	int					heredoc_index;
 	int					has_pipe;
+	int					check_ambig;
 	t_ast				*tree;
 	t_token				*token_list;
 	t_cmd				*cmd_list;
@@ -67,7 +68,6 @@ int				init_shell(t_shell *mshell, char **envp);
 void			shell_interactive(t_shell *mshell);
 void			shell_cleanup(t_shell *mshell);
 void loop_clean(t_shell *mshell);
-void			cleanup_heredoc_tempfiles(t_ast *tree);
 
 /* Handle user input */
 char			*read_user_input(t_shell *mshell);
@@ -85,6 +85,7 @@ int	init_and_validate_input(char *line, t_shell *mshell);
 void	process_valid_line(t_shell *mshell);
 
 void			run_ast_pipeline(t_shell *mshell);
+void			cleanup_heredoc_tempfiles(t_ast *tree);
 
 /* Validate input */
 int				validate_token(t_token *token);

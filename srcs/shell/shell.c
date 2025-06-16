@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 18:36:06 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 03:54:54 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,6 @@ int	init_shell(t_shell *mshell, char **envp)
 		mshell->exit_code = 1;
 		return (1);
 	}
-	mshell->curr_pwd = getcwd(NULL, 0);
-	if (!mshell->curr_pwd)
-		return (error_msg(mshell, "init_shell: failed to getcwd", 1));
-	mshell->old_pwd = ft_strdup(mshell->curr_pwd);
-	if (!mshell->old_pwd)
-		return (error_msg(mshell, "init_shell: failed to strdup", 0));
 	mshell->exit_code = 0;
 	return (0);
 }
@@ -59,6 +53,31 @@ void shell_cleanup(t_shell *mshell)
 		free(mshell->curr_pwd);
 }
 
+// void shell_cleanup(t_shell *mshell)
+// {
+// 	loop_clean(mshell);
+// 	if (mshell->history_head)
+// 	{
+// 		free_token_list(mshell->history_head); //confirm with Tr, set NULL or not?
+// 		mshell->history_head = NULL;
+// 	}
+// 	if (mshell->envp)
+// 	{
+// 		env_free(mshell);
+// 		mshell->envp = NULL;
+// 	}
+// 	if (mshell->old_pwd)
+// 	{
+// 		free(mshell->old_pwd);
+// 		mshell->old_pwd = NULL;
+// 	}
+// 	if (mshell->curr_pwd)
+// 	{
+// 		free(mshell->curr_pwd);
+// 		mshell->curr_pwd = NULL;
+// 	}
+// }
+
 void	shell_interactive(t_shell *mshell)
 {
 	char	*line;
@@ -77,6 +96,8 @@ void	shell_interactive(t_shell *mshell)
 			store_history(line, &mshell->history_head);
 			status = process_user_line(line, mshell);
 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
+			mshell->heredoc_index = 0;
+			mshell->has_pipe = 0; 
 			if (status == FALSE)
 			{
 				free(line);
@@ -162,7 +183,4 @@ void loop_clean(t_shell *mshell)
 		free_ast(mshell->tree);
 		mshell->tree = NULL;
 	}
-	mshell->heredoc_index = 0; //need it
-	mshell->has_pipe = 0; //need it
-	return ;
 }

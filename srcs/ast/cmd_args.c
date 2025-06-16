@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_args.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 16:58:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/13 14:07:17 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 01:35:29 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 	if (count == 0)
 		return (args);
 	if (fill_args_loop(token_list, args, new_cmd) == FALSE)
+	{
+		free_split(args);  //H add, confirm agian with Tr? need or not
 		return (NULL);
+	}
 	return (args);
 }
 

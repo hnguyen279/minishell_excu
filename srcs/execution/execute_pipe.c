@@ -6,18 +6,19 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:24 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 22:23:17 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 03:48:31 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-static void	setup_pipe_redirection(int pipe_fd_src, int std_fd_dst)
+static void	setup_pipe_redirection(t_shell *mshell, int pipe_fd_src, int std_fd_dst)
 {
 	if (dup2(pipe_fd_src, std_fd_dst) == -1)
 	{
 		ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
 		close(pipe_fd_src);
+		shell_cleanup(mshell);
 		exit(1);
 	}
 	close(pipe_fd_src);
@@ -60,12 +61,12 @@ static void	execute_child(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
 	if (left)
 	{
 		close(pipe_fd[FD_READ]);
-		setup_pipe_redirection(pipe_fd[FD_WRITE], STDOUT_FILENO);
+		setup_pipe_redirection(mshell, pipe_fd[FD_WRITE], STDOUT_FILENO);
 	}
 	else
 	{
 		close(pipe_fd[FD_WRITE]);
-		setup_pipe_redirection(pipe_fd[FD_READ], STDIN_FILENO);
+		setup_pipe_redirection(mshell, pipe_fd[FD_READ], STDIN_FILENO);
 	}
 	execute_ast(child, mshell);
 	shell_cleanup(mshell);
