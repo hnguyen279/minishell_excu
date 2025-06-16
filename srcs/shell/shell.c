@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 20:41:57 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:23:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ void	shell_interactive(t_shell *mshell)
 			if (status == FALSE)
 				break;
 		}
-		
 	}
 	rl_clear_history();
 }

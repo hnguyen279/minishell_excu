@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 20:00:22 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:25:37 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type,
 		print_error("Empty file name in redirection");
 		return (FALSE);
 	}
-	// printf("parsing after redirection %s\n", (*token_list)->value); //debug
 	if (create_redirect(&new_redir, token_list, type) == FALSE)
 		return (FALSE);
 	if (!*redir_list)
@@ -179,28 +178,3 @@ int	check_ambiguous_redirect(t_token **token_list)
 		return (FALSE);
 	return (TRUE);
 }
-
-// int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
-// {
-// 	// if (!redir || !redir->file || !redir->ori_file) 
-// 	// 	return (0);
-// 	if (redir->file[0] == '\0' && redir->ori_file[0] != '\0'
-// 		&& ft_strchr(redir->ori_file, '$') && !is_fully_quoted(redir->ori_file)
-// 		&& redir->type != REDIR_HEREDOC)
-// 	{
-// 		ft_printf_fd(2, "minishell: %s: ambiguous redirect\n",
-// 			redir->ori_file);
-// 		mshell->exit_code = 1;
-// 		return (1);  //check exxport $T="     "  cat < $T--> leak****
-// 	}
-// 	else if (ft_strchr(redir->file, ' ') && ft_strchr(redir->ori_file, '$')
-// 		&& !is_fully_quoted(redir->ori_file)
-// 		&& !is_white_spaces_cmd(redir->file) && redir->type != REDIR_HEREDOC)
-// 	{
-// 		ft_printf_fd(2, "minishell: %s: ambiguous redirect\n",
-// 			redir->ori_file);
-// 		mshell->exit_code = 1;
-// 		return (1);
-// 	}
-// 	return (0);
-// }

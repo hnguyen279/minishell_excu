@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:08:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 21:55:15 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:06:53 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,7 @@ int	handle_split_token(t_token **current, t_token **prev_token,
 	t_token	*temp;
 
 	if (link_split_token(current, prev_token, next_token, token_list) == FALSE)
-	{
-		// print_error("Failed in handle split token\n");	//debug
 		return (FALSE);
-	}
 	temp = *current;
 	*current = (*current)->next;
 	free_token(temp);
@@ -103,7 +100,6 @@ int	link_split_token(t_token **current, t_token **prev_token,
 {
 	t_token	*temp;
 	char	**arr_word;
-	t_token	*new_last;
 
 	arr_word = ft_split((*current)->value, ' ');
 	if (!arr_word)
@@ -122,16 +118,24 @@ int	link_split_token(t_token **current, t_token **prev_token,
 		if (!temp)
 			return (FALSE);
 	}
+	link_token_list(&temp, prev_token, next_token, token_list);
+	return (TRUE);
+}
+
+void	link_token_list(t_token **temp, t_token **prev_token,
+		t_token **next_token, t_token **token_list)
+{
+	t_token	*new_last;
+	
 	if (!*prev_token)
-		*token_list = temp;
+		*token_list = *temp;
 	else
-		(*prev_token)->next = temp;
-	new_last = temp;
+		(*prev_token)->next = *temp;
+	new_last = *temp;
 	while (new_last->next)
 		new_last = new_last->next;
 	new_last->next = *next_token;
 	*prev_token = new_last;
-	return (TRUE);
 }
 
 t_token	*replace_token_with_new_arr(t_token *current, char **arr)

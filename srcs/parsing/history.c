@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:47:20 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 20:34:50 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:23:05 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	store_history(char *line, t_token **history_head)
 
 	add_history(line);
 	new_hist = create_token(line, line, WORD);
-	// new_hist = NULL; //deb
 	if (!new_hist)
 	{
 		free(new_hist);

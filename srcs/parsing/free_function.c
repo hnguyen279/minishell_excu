@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:29:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 20:27:54 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:21:59 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,7 @@ void	free_cmd_list(t_cmd *head)
 
 void	free_token(t_token *token)
 {
-	// if (token->value)
-		free_string(token->value);
-	// if (token->ori_value)
-		free_string(token->ori_value);
+	free_string(token->value);
+	free_string(token->ori_value);
 	free(token);
-	// token = NULL; //not set null here?
 }

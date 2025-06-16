@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 21:47:28 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 22:04:16 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ int				retokenizer(t_token **token_list);
 t_token			*replace_token_with_new_arr(t_token *current, char **arr);
 int				link_split_token(t_token **current, t_token **prev_token,
 					t_token **next_token, t_token **token_list);
+void	link_token_list(t_token **temp, t_token **prev_token,
+		t_token **next_token, t_token **token_list);
 int				check_split_token_condition(t_token **current, t_token **prev_token);
 int				handle_split_token(t_token **current, t_token **prev_token,
 					t_token **next_token, t_token **token_list);
