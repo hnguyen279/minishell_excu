@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 19:22:49 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 20:41:57 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,11 @@ void	shell_interactive(t_shell *mshell)
 		}
 		if (line[0] != '\0') // Ctrl+C → empty str//need?
 		{
-			store_history(line, &mshell->history_head);
+			if (store_history(line, &mshell->history_head) == FALSE)
+			{
+				free(line);
+				break;
+			}
 			status = process_user_line(line, mshell);
 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
 			mshell->heredoc_index = 0;
@@ -76,6 +80,7 @@ void	shell_interactive(t_shell *mshell)
 			if (status == FALSE)
 				break;
 		}
+		
 	}
 	rl_clear_history();
 }
@@ -120,7 +125,6 @@ void loop_clean(t_shell *mshell)
 
 // 	while (1)
 // 	{
-// 		// line = read_user_input(mshell);
 // 		// //for test
 // 		if (isatty(fileno(stdin)))
 // 			line = readline("");
@@ -134,21 +138,19 @@ void loop_clean(t_shell *mshell)
 // 			free(raw_line);
 // 		}
 // 		///////////
-// 		if (!line) // Ctrl+D
-// 		{
-// 			printf("exit\n");
-// 			break ;
-// 		}
 // 		if (line[0] != '\0') // Ctrl+C → empty str//need?
 // 		{
-// 			store_history(line, &mshell->history_head);
-// 			status = process_user_line(line, mshell);
-// 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
-// 			free(line);
-// 			if (status == FALSE)
+// 			if (store_history(line, &mshell->history_head) == FALSE)
 // 			{
+// 				free(line);
 // 				break;
 // 			}
+// 			status = process_user_line(line, mshell);
+// 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
+// 			mshell->heredoc_index = 0;
+// 			free(line);
+// 			if (status == FALSE)
+// 				break;
 // 		}
 // 	}
 // 	rl_clear_history();

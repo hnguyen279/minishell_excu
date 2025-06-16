@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 13:26:45 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 20:20:35 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int				validate_quote(char *line);
 int				is_operator(t_token *token);
 
 /* Working history functions */
-void			store_history(char *line, t_token **history_head);
+int			store_history(char *line, t_token **history_head);
 void			print_working_history(t_token *history_head);
 void			clear_working_history(t_token **history_head);
 

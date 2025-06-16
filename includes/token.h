@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 18:49:50 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 21:47:28 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int				skip_expanded_empty_var(t_token **token_list);
 void			skip_middle_empty_vars(t_token **token_list);
 void			skip_first_empty_vars(t_token **token_list);
 t_token			*create_token(char *s, char *ori_s, t_token_type i);
+int	handle_token_type(char *line, t_token **token_list, int *i, t_shell *mshell);
+int	create_word_token(t_token **token_list, char **extracted_str, char **raw);
 int				handle_pipe(t_token **token_list, int *i);
 int				handle_in_heredoc(char *line, t_token **token_list, int *i);
 int				handle_out_append(char *line, t_token **token_list, int *i);

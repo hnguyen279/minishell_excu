@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:47:20 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/14 13:00:59 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/16 20:34:50 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,19 @@
 /*
 Using a linked list to maintain history list
 */
-void	store_history(char *line, t_token **history_head)
+int	store_history(char *line, t_token **history_head)
 {
 	t_token	*new_hist;
 	t_token	*temp;
 
 	add_history(line);
 	new_hist = create_token(line, line, WORD);
+	// new_hist = NULL; //deb
 	if (!new_hist)
 	{
-		print_error("Failed to create token");
-		return ;
+		free(new_hist);
+		print_error("Failed to create working history");
+		return (FALSE);
 	}
 	if (!*history_head)
 		*history_head = new_hist;
@@ -38,6 +40,7 @@ void	store_history(char *line, t_token **history_head)
 		}
 		temp->next = new_hist;
 	}
+	return (TRUE);
 }
 
 void	print_working_history(t_token *history_head)
