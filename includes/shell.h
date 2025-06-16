@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 04:21:57 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:26:45 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ typedef struct s_shell
 	int					exit_code;
 	char				**envp;
 	int					heredoc_index;
-	int					has_pipe;
 	t_ast				*tree;
 	t_token				*token_list;
 	t_cmd				*cmd_list;

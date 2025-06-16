@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:30:52 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/13 00:42:29 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:17:28 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	builtin_env(t_shell *mshell, char **token)
 		ft_printf_fd(2, "minishell: builtin_env: Invalid parameter(s)\n");
 		return (1);
 	}
-	env_add(mshell, "_", token[0]);
 	if (token[1])
 	{
 		if (token[1][0] == '-')

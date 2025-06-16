@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 03:50:50 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:21:19 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,6 @@ static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
 	}
 	if (is_builtin)
 		mshell->exit_code = execute_builtin(mshell, node->cmd);
-	if (!mshell->has_pipe && node->cmd && node->cmd[0])
-		env_set_last_argument(mshell, node->cmd);
 	if (node->redirects)
 	{
 		if ((dup2(in_fd, 0) == -1) || (dup2(out_fd, 1) == -1))
@@ -96,6 +94,7 @@ int	execute_command(t_ast *node, t_shell *mshell)
 		mshell->exit_code = display_error_cmd(NULL);
 		return (mshell->exit_code);
 	}
+	env_set_last_argument(mshell, node->cmd);
 	if (is_builtin(node->cmd[0]))
 	{
 		return (execute_with_redirect(node, mshell, 1));
@@ -104,8 +103,6 @@ int	execute_command(t_ast *node, t_shell *mshell)
 	if (!cmd_path)
 		return (mshell->exit_code);
 	mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
-	if (!mshell->has_pipe && node->cmd && node->cmd[0])
-		env_set_last_argument(mshell, node->cmd);
 	return (mshell->exit_code);
 }
 

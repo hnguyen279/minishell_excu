@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 03:54:54 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:26:58 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ void	shell_interactive(t_shell *mshell)
 			status = process_user_line(line, mshell);
 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
 			mshell->heredoc_index = 0;
-			mshell->has_pipe = 0; 
 			if (status == FALSE)
 			{
 				free(line);

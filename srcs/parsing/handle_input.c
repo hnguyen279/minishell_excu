@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 00:42:08 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:24:06 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,6 @@ void run_ast_pipeline(t_shell *mshell)
 	}
 	execute_ast(tree, mshell); //start execution use current node = root tree
 	cleanup_heredoc_tempfiles(tree);
-
-	if (tree->cmd && tree->cmd[0] && !mshell->has_pipe)
-		env_set_last_argument(mshell, tree->cmd);
 }
 
 void	cleanup_heredoc_tempfiles(t_ast *tree)
