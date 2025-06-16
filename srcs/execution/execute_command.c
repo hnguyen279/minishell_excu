@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_command.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 13:21:19 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/16 16:50:37 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static int	fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
 	pid_t	pid;
 	int		status;
 
+	// printf("fork exec \n"); //debug
 	pid = fork();
 	if (pid == -1)
 	{
@@ -85,6 +86,7 @@ int	execute_command(t_ast *node, t_shell *mshell)
 {
 	char	*cmd_path;
 
+	// printf("execute command func \n"); //debug
 	if (!node->cmd || !node->cmd[0])
 	{
 		if (node->redirects)
@@ -100,6 +102,7 @@ int	execute_command(t_ast *node, t_shell *mshell)
 		return (execute_with_redirect(node, mshell, 1));
 	}
 	cmd_path = find_cmd_path(mshell, node->cmd[0]);
+	// printf("find cmd_path %s\n", cmd_path);
 	if (!cmd_path)
 		return (mshell->exit_code);
 	mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
