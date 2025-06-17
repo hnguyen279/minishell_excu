@@ -29,7 +29,8 @@ void	execute_ast(t_ast *node, t_shell *mshell)
 		execute_ast(node->left, mshell);
 	else if (node->right)
 		execute_ast(node->right, mshell);
+	else
+		mshell->exit_code = 1;
 	while (wait(NULL) > 0)
 		;
-	mshell->exit_code = 1;
 }
