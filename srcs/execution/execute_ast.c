@@ -6,25 +6,30 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:04 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 00:50:35 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 20:00:30 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-int	execute_ast(t_ast *node, t_shell *mshell)
+void	execute_ast(t_ast *node, t_shell *mshell)
 {
 	if (!node)
-		return (0);
+		return ;
 	if (node->type == NODE_PIPE)
 	{
 		mshell->has_pipe = 1;
-		return (execute_pipe(node, mshell));
+		execute_pipe(node, mshell);
 	}
 	else if (node->type == NODE_CMD)
 	{
-		return (execute_command(node, mshell));
+		execute_command(node, mshell);
 	}
-	ft_printf_fd(2, "minishell: unsupported node type\n");
-	return (mshell->exit_code = 1);
+	else if (node->left)
+		execute_ast(node->left, mshell);
+	else if (node->right)
+		execute_ast(node->right, mshell);
+	while (wait(NULL) > 0)
+		;
+	mshell->exit_code = 1;
 }

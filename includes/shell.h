@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 19:08:56 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 22:38:49 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,15 +134,15 @@ char			*find_cmd_path(t_shell *mshell, char *cmd);
 int				exe_redirection(t_redirect *redir, t_shell *mshell);
 int				execute_pipe(t_ast *node, t_shell *mshell);
 int				execute_command(t_ast *node, t_shell *mshell);
-int				execute_ast(t_ast *node, t_shell *mshell);
+void			execute_ast(t_ast *node, t_shell *mshell);
 int				handle_single_redirection(t_shell *mshell, t_redirect *redir);
 int				execute_builtin(t_shell *mshell, char **token);
 int				is_builtin(char *cmd);
-char			*handle_path_error(t_shell *mshell, char *path, int code);
+char			*handle_path_error(t_shell *mshell, char *path, int code, int check_redir);
 char			**find_path(char **env);
 int				is_fully_quoted(const char *str);
 void			safe_close_fds(int in_fd, int out_fd);
-int 			redirect_and_backup_fds(t_ast *node, t_shell *mshell, int *in_fd, int *out_fd);
+//int 			redirect_and_backup_fds(t_ast *node, t_shell *mshell, int *in_fd, int *out_fd);
 int				wait_command(t_shell *mshell, pid_t pid, int *status,
 					int update_exit_code);
 int				error_msg(t_shell *mshell, const char *msg,
@@ -184,6 +184,7 @@ int	handle_equal_case(t_shell *mshell, const char *arg, char *equal);
 /* Signal functions */
 void			setup_signals(t_shell *mshell, int mode);
 void			sig_exit_code(t_shell *mshell);
+int				child_default_signals(void);
 
 /* To remove block before submiting */
 void			print_cmd_list(t_cmd *head);

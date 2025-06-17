@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:30:52 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 00:53:27 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 19:43:08 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,6 @@ int	builtin_env(t_shell *mshell, char **token)
 	{
 		ft_printf_fd(2, "minishell: builtin_env: Invalid parameter(s)\n");
 		return (1);
-	}
-	if (!token[1] && !env_find_value(mshell, "PATH"))
-	{
-		ft_printf_fd(2, "minishell: env: No such file or directory\n");
-		return (127);
 	}
 	if (token[1])
 	{

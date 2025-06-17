@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:48 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 00:56:50 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 22:38:13 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,14 @@ int	error_msg(t_shell *mshell, const char *msg, int use_errno)
 	return (1);
 }
 
-char	*handle_path_error(t_shell *mshell, char *path, int code)
+char	*handle_path_error(t_shell *mshell, char *path, int code, int check_redir)
 {
-	if (code == 126)
+	if (code == 126 && check_redir == 0)
 		ft_printf_fd(2, "minishell: %s: Permission denied\n", path);
-	else if (code == 127)
+	else if (code == 127 && check_redir == 0)
 		ft_printf_fd(2, "%s: command not found\n", path);
+	else if (code == 127 && check_redir == 1)
+		ft_printf_fd(2, "minishell: %s: No such file or directory\n", path);
 	mshell->exit_code = code;
 	return (NULL);
 }

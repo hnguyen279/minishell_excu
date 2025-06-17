@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_command.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 16:50:37 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 21:38:28 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,6 @@
 static void	run_command_child(t_ast *node, t_shell *mshell, char *cmd_path)
 {
 	setup_signals(mshell, MODE_CHILD);
-	if (node->redirects && exe_redirection(node->redirects, mshell) != 0)
-	{
-		free(cmd_path);
-		shell_cleanup(mshell);
-		exit(mshell->exit_code);
-	}
 	if (execve(cmd_path, node->cmd, mshell->envp) == -1)
 	{
 		ft_printf_fd(2, "minishell: %s: %s\n", node->cmd[0], strerror(errno));
@@ -29,7 +23,7 @@ static void	run_command_child(t_ast *node, t_shell *mshell, char *cmd_path)
 		if (errno == ENOENT)
 			exit(127);
 		if (errno == EACCES)
-			exit(126); // recheck
+			exit(126);
 		exit(1);
 	}
 }
@@ -44,7 +38,6 @@ static int	fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
 	if (pid == -1)
 	{
 		free(cmd_path);
-		//loop_clean(mshell);  // free ///check again?? > not need?
 		ft_printf_fd(2, "minishell: fork: %s\n", strerror(errno));
 		mshell->exit_code = 1;
 		return (1);
@@ -55,71 +48,75 @@ static int	fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
 	return (wait_command(mshell, pid, &status, 1));
 }
 
-static int	execute_with_redirect(t_ast *node, t_shell *mshell, int is_builtin)
+static int	restore_stdio(t_shell *mshell, int in_fd, int out_fd)
 {
-	int	in_fd;
-	int	out_fd;
-
-	in_fd = -1;
-	out_fd = -1;
-	if (node->redirects && redirect_and_backup_fds(node, mshell, &in_fd, &out_fd) != 0)
+	if ((dup2(in_fd, STDIN_FILENO) == -1) || (dup2(out_fd, STDOUT_FILENO) == -1))
 	{
-		//loop_clean(mshell);  // free ///check again ?????> not need?
-		return (mshell->exit_code);
-	}
-	if (is_builtin)
-		mshell->exit_code = execute_builtin(mshell, node->cmd);
-	if (node->redirects)
-	{
-		if ((dup2(in_fd, 0) == -1) || (dup2(out_fd, 1) == -1))
-		{
-			safe_close_fds(in_fd, out_fd);
-			//loop_clean(mshell); // free ///check again?????-> not need?
-			return (error_msg(mshell, "dup failed", 1));
-		}
 		safe_close_fds(in_fd, out_fd);
+		return error_msg(mshell, "dup2 restore failed", 1);
 	}
-	return (mshell->exit_code);
+	safe_close_fds(in_fd, out_fd);
+	return 0;
+}
+
+static int	prepare_redirection(t_shell *mshell, t_ast *node, int *in_fd, int *out_fd)
+{
+	*in_fd = dup(STDIN_FILENO);
+	*out_fd = dup(STDOUT_FILENO);
+	if (*in_fd == -1 || *out_fd == -1)
+	{
+		safe_close_fds(*in_fd, *out_fd);
+		return error_msg(mshell, "dup failed", 1);
+	}
+	if (exe_redirection(node->redirects, mshell) != 0)
+	{
+		if (restore_stdio(mshell, *in_fd, *out_fd) != 0)
+			return 1;
+		return mshell->exit_code;
+	}
+	return 0;
+}
+
+static void	execute_with_cmd(t_shell *mshell, t_ast *node)
+{
+	char	*cmd_path;
+
+	env_set_last_argument(mshell, node->cmd);
+	if (is_builtin(node->cmd[0]))
+		mshell->exit_code = execute_builtin(mshell, node->cmd);
+	else
+	{
+		cmd_path = find_cmd_path(mshell, node->cmd[0]);
+		if (!cmd_path)
+			return ;
+		mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
+	}
 }
 
 int	execute_command(t_ast *node, t_shell *mshell)
 {
-	char	*cmd_path;
+	int		in_fd;
+	int		out_fd;
 
-	// printf("execute command func \n"); //debug
-	if (!node->cmd || !node->cmd[0])
+	in_fd = -1;
+	out_fd = -1;
+	if (node->redirects)
 	{
-		if (node->redirects)
-		{
-			return (execute_with_redirect(node, mshell, 0));
-		}
-		mshell->exit_code = display_error_cmd(NULL);
-		return (mshell->exit_code);
+		if (prepare_redirection(mshell, node, &in_fd, &out_fd) != 0)
+			return mshell->exit_code;
 	}
-	env_set_last_argument(mshell, node->cmd);
-	if (is_builtin(node->cmd[0]))
+	if ((!node->cmd || !node->cmd[0]) && node->redirects)
 	{
-		return (execute_with_redirect(node, mshell, 1));
+		if (restore_stdio(mshell, in_fd, out_fd) != 0)
+			return 1;
+		mshell->exit_code = 0;
+		return mshell->exit_code;
 	}
-	cmd_path = find_cmd_path(mshell, node->cmd[0]);
-	// printf("find cmd_path %s\n", cmd_path);
-	if (!cmd_path)
-		return (mshell->exit_code);
-	mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
-	return (mshell->exit_code);
+	execute_with_cmd(mshell, node);
+	if (node->redirects)
+	{
+		if (restore_stdio(mshell, in_fd, out_fd) != 0)
+			return 1;
+	}
+	return mshell->exit_code;
 }
-
-
-// int handle_dup_and_cleanup(int in_fd, int out_fd, t_shell *mshell)
-// {
-// 	if (dup2(in_fd, 0) == -1 || dup2(out_fd, 1) == -1)
-// 	{
-// 		safe_close_fds(in_fd, out_fd);
-// 		loop_clean(mshell);
-// 		return error_msg(mshell, "dup failed", 1);
-// 	}
-// 	safe_close_fds(in_fd, out_fd);
-// 	return 0;
-// }
-// if (node->redirects && handle_dup_and_cleanup(in_fd, out_fd, mshell))
-// 	return mshell->exit_code;

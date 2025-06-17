@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:24 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 03:48:31 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 22:04:50 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,57 +18,28 @@ static void	setup_pipe_redirection(t_shell *mshell, int pipe_fd_src, int std_fd_
 	{
 		ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
 		close(pipe_fd_src);
-		shell_cleanup(mshell);
+		shell_cleanup(mshell); ////check agian have leak or not
 		exit(1);
 	}
 	close(pipe_fd_src);
 }
 
-static t_ast	*prepare_child_execution(t_shell *mshell, t_ast *node,
-										int *pipe_fd, int left)
-{
-	t_ast	*child;
-
-	if (!node)
-	{
-		shell_cleanup(mshell);
-		exit(1);
-	}
-	if (left)
-		child = node->left;
-	else
-		child = node->right;
-	if (!child)
-	{
-		shell_cleanup(mshell);
-		exit(1);
-	}
-	if (child->redirects && exe_redirection(child->redirects, mshell) != 0)
-	{
-		safe_close_fds(pipe_fd[FD_READ], pipe_fd[FD_WRITE]);
-		shell_cleanup(mshell);
-		exit(mshell->exit_code);
-	}
-	return (child);
-}
-
 static void	execute_child(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
 {
-	t_ast	*child;
 
-	setup_signals(mshell, MODE_CHILD);
-	child = prepare_child_execution(mshell, node, pipe_fd, left);
+	child_default_signals();	
 	if (left)
 	{
 		close(pipe_fd[FD_READ]);
 		setup_pipe_redirection(mshell, pipe_fd[FD_WRITE], STDOUT_FILENO);
+		execute_ast(node->left, mshell);
 	}
 	else
 	{
 		close(pipe_fd[FD_WRITE]);
 		setup_pipe_redirection(mshell, pipe_fd[FD_READ], STDIN_FILENO);
+		execute_ast(node->right, mshell);
 	}
-	execute_ast(child, mshell);
 	shell_cleanup(mshell);
 	exit(mshell->exit_code);
 }

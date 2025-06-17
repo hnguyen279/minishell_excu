@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:32 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 03:27:43 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 20:04:53 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,26 +45,26 @@ void	safe_close_fds(int in_fd, int out_fd)
 		close(out_fd);
 }
 
-int	redirect_and_backup_fds(t_ast *node, t_shell *mshell, int *in_fd,
-		int *out_fd)
-{
-	*in_fd = dup(STDIN_FILENO);
-	*out_fd = dup(STDOUT_FILENO);
-	if (*in_fd == -1 || *out_fd == -1)
-	{
-		safe_close_fds(*in_fd, *out_fd);
-		return (error_msg(mshell, "dup failed", 1));
-	}
-	if (exe_redirection(node->redirects, mshell) != 0)
-	{
-		if ((dup2(*in_fd, STDIN_FILENO) == -1)
-			|| (dup2(*out_fd, STDOUT_FILENO) == -1))
-		{
-			safe_close_fds(*in_fd, *out_fd);
-			return (error_msg(mshell, "dup failed", 1));
-		}
-		safe_close_fds(*in_fd, *out_fd);
-		return (mshell->exit_code);
-	}
-	return (0);
-}
+// int	redirect_and_backup_fds(t_ast *node, t_shell *mshell, int *in_fd,
+// 		int *out_fd)
+// {
+// 	*in_fd = dup(STDIN_FILENO);
+// 	*out_fd = dup(STDOUT_FILENO);
+// 	if (*in_fd == -1 || *out_fd == -1)
+// 	{
+// 		safe_close_fds(*in_fd, *out_fd);
+// 		return (error_msg(mshell, "dup failed", 1));
+// 	}
+// 	if (exe_redirection(node->redirects, mshell) != 0)
+// 	{
+// 		if ((dup2(*in_fd, STDIN_FILENO) == -1)
+// 			|| (dup2(*out_fd, STDOUT_FILENO) == -1))
+// 		{
+// 			safe_close_fds(*in_fd, *out_fd);
+// 			return (error_msg(mshell, "dup failed", 1));
+// 		}
+// 		safe_close_fds(*in_fd, *out_fd);
+// 		return (mshell->exit_code);
+// 	}
+// 	return (0);
+// }
