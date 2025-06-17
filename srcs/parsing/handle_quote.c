@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_quote.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:22:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/15 14:30:35 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 13:02:40 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ char	*handle_double_quote(char *line, int *i, t_shell *mshell)
 	return (part);
 }
 
-
 char	*extract_unquoted_word(char *line, int *i, t_shell *mshell)
 {
 	int		start_pos;
@@ -119,7 +118,6 @@ char	*extract_unquoted_word(char *line, int *i, t_shell *mshell)
 	free_string(tmp);
 	return (part);
 }
-
 
 int	substr_and_move_index(char *line, char **part, int *i, int start_pos)
 {

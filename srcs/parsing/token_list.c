@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:27:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 20:34:24 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 14:03:35 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,6 @@ void	add_token(t_token **tokenized_input_list, t_token *new_token)
 {
 	t_token	*temp;
 
-	// if (!new_token)
-	// {
-	// 	print_error("Invalid token");
-	// 	return ;
-	// }
 	if (*tokenized_input_list == NULL)
 		*tokenized_input_list = new_token;
 	else
@@ -79,28 +74,34 @@ char	*extract_ori_word(char *line, int *i)
 {
 	int		start;
 	int		index;
-	char	quote;
 	char	*word;
 
 	start = *i;
 	index = *i;
-	while (line[index])
-	{
-		if (line[index] == '\'' || line[index] == '"')
-		{
-			quote = line[index++];
-			while (line[index] && line[index] != quote)
-				index++;
-			if (line[index])
-				index++;
-		}
-		else if (!ft_isspace(line[index]) || !ft_isspecial(line[index]))
-			break ;
-		else
-			index++;
-	}
+	find_ori_position(line, &index);
 	word = ft_substr(line, start, index - start);
 	if (!word)
 		return (NULL);
 	return (word);
+}
+
+void	find_ori_position(char *line, int *index)
+{
+	char	quote;
+
+	while (line[(*index)])
+	{
+		if (line[(*index)] == '\'' || line[(*index)] == '"')
+		{
+			quote = line[(*index)++];
+			while (line[(*index)] && line[(*index)] != quote)
+				(*index)++;
+			if (line[(*index)])
+				(*index)++;
+		}
+		else if (!ft_isspace(line[(*index)]) || !ft_isspecial(line[(*index)]))
+			break ;
+		else
+			(*index)++;
+	}
 }

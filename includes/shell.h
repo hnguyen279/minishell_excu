@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 00:49:13 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 11:13:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void loop_clean(t_shell *mshell);
 char			*read_user_input(t_shell *mshell);
 int	process_user_line(char *line, t_shell *mshell);
 // int				process_user_line(char *line, t_token **history_head, t_shell *mshell);
-int				handle_special_command_line(char *line, t_token **history_head);
+// int				handle_special_command_line(char *line, t_token **history_head);
 // void			handle_line(char *line, t_shell *mshell);
 int	init_and_validate_input(char *line, t_shell *mshell);
 // int				init_and_validate_input(char *line, t_shell *mshell,
@@ -109,7 +109,7 @@ int				linked_list_size(t_token *head);
 
 /* Helper functions to free */
 void			free_string(char *s);
-void			free_array(char **arr, int i);
+// void			free_array(char **arr, int i);
 void			free_token(t_token *token);
 void			free_token_list(t_token *tokens);
 void			free_cmd_list(t_cmd *head);
