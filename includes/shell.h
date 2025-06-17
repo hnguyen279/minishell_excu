@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 11:13:45 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 19:08:56 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef struct s_shell
 	t_ast				*tree;
 	t_token				*token_list;
 	t_cmd				*cmd_list;
-	t_token				*history_head; //--> dont know??
+	t_token				*history_head;
 	char				*curr_pwd;       // internal PWD
     char				*old_pwd;   // internal OLDPWD
 }	t_shell;
@@ -70,6 +70,7 @@ void loop_clean(t_shell *mshell);
 
 /* Handle user input */
 char			*read_user_input(t_shell *mshell);
+int	process_non_empty_input(char *line, t_shell *mshell);
 int	process_user_line(char *line, t_shell *mshell);
 // int				process_user_line(char *line, t_token **history_head, t_shell *mshell);
 // int				handle_special_command_line(char *line, t_token **history_head);

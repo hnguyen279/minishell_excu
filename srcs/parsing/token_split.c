@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:08:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 13:11:16 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 18:50:30 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ void	link_token_list(t_token **temp, t_token **prev_token,
 	*prev_token = new_last;
 }
 
-/* need to initiaize to null or not? */
 t_token	*replace_token_with_new_arr(t_token *current, char **arr)
 {
 	t_token	*new_head;
@@ -77,23 +76,31 @@ t_token	*replace_token_with_new_arr(t_token *current, char **arr)
 	int		i;
 
 	i = 0;
+	new_head = NULL;
+	prev = NULL;
+	new_token = NULL;
 	while (arr[i])
 	{
 		new_token = create_token(arr[i], current->ori_value, WORD);
 		if (!new_token)
 			return (NULL);
-		if (!prev)
-		{
-			new_head = new_token;
-			prev = new_head;
-		}
-		else
-		{
-			prev->next = new_token;
-			prev = prev->next;
-		}
+		token_list_from_arr(&new_head, &prev, &new_token);
 		i++;
 	}
 	free_array_null(&arr);
 	return (new_head);
+}
+
+void	token_list_from_arr(t_token **new_head, t_token **prev, t_token **new_token)
+{
+	if (!(*prev))
+	{
+		*new_head = *new_token;
+		*prev = *new_head;
+	}
+	else
+	{
+		(*prev)->next = *new_token;
+		*prev = (*prev)->next;
+	}
 }

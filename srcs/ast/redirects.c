@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 12:01:59 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 18:24:42 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,11 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type,
 int	create_redirect(t_redirect **new_redir, t_token **token_list,
 			t_redirect_type type)
 {
-	if (check_ambiguous_redirect(token_list) == FALSE)
-	{
-		print_error("Ambiguous redirect");
-		return (FALSE);
-	}
+	// if (check_ambiguous_redirect(token_list) == FALSE)
+	// {
+	// 	print_error("Ambiguous redirect");
+	// 	return (FALSE);
+	// }
 	*new_redir = malloc(sizeof(t_redirect));
 	if (!*new_redir)
 	{
