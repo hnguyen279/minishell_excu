@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 00:51:31 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 14:17:12 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	init_shell(t_shell *mshell, char **envp)
 	return (0);
 }
 
-void shell_cleanup(t_shell *mshell)
+void	shell_cleanup(t_shell *mshell)
 {
 	if (!mshell)
 		return ;
@@ -61,25 +61,23 @@ void	shell_interactive(t_shell *mshell)
 	while (1)
 	{
 		line = read_user_input(mshell);
-		if (!line) // Ctrl+D
+		if (!line)
 		{
 			printf("exit\n");
 			break ;
 		}
-		if (line[0] != '\0') // Ctrl+C → empty str//need?
+		if (line[0] != '\0')
 		{
 			if (store_history(line, &mshell->history_head) == FALSE)
 			{
 				free(line);
-				break;
+				break ;
 			}
 			status = process_user_line(line, mshell);
-			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
-			mshell->heredoc_index = 0;
-			mshell->has_pipe = 0;
+			loop_clean(mshell);
 			free(line);
 			if (status == FALSE)
-				break;
+				break ;
 		}
 	}
 	rl_clear_history();
@@ -88,7 +86,7 @@ void	shell_interactive(t_shell *mshell)
 char	*read_user_input(t_shell *mshell)
 {
 	char	*line;
-	
+
 	g_signum = 0;
 	line = readline("minishell$ ");
 	if (g_signum) // check siganl after readline for Ctrl C in main shell
@@ -96,13 +94,13 @@ char	*read_user_input(t_shell *mshell)
 	return (line);
 }
 
-void loop_clean(t_shell *mshell)
+void	loop_clean(t_shell *mshell)
 {
 	if (!mshell)
 		return ;
 	if (mshell->token_list)
 	{
-		free_token_list(mshell->token_list);	
+		free_token_list(mshell->token_list);
 		mshell->token_list = NULL;
 	}
 	if (mshell->cmd_list)
@@ -115,6 +113,8 @@ void loop_clean(t_shell *mshell)
 		free_ast(mshell->tree);
 		mshell->tree = NULL;
 	}
+	mshell->heredoc_index = 0;
+	mshell->has_pipe = 0;
 }
 
 /////for test
@@ -146,7 +146,7 @@ void loop_clean(t_shell *mshell)
 // 				break;
 // 			}
 // 			status = process_user_line(line, mshell);
-// 			loop_clean(mshell); ///check again need or not --> clean loop before the new input line
+// 			loop_clean(mshell); ///check agai
 // 			mshell->heredoc_index = 0;
 // 			free(line);
 // 			if (status == FALSE)

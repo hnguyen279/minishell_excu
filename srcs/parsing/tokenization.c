@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:47:59 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 21:53:28 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 13:13:35 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 	int		is_token_list;
 
 	token_list = NULL;
-	is_token_list = TRUE;   //retest "minishell$         echo $ABC"""""" -n" before submit
+	is_token_list = TRUE;
 	i = 0;
 	while (line[i])
 	{
@@ -41,7 +41,7 @@ t_token	*convert_user_input_to_token(char *line, t_shell *mshell)
 int	handle_token_type(char *line, t_token **token_list, int *i, t_shell *mshell)
 {
 	int	is_token_list;
-	
+
 	if (line[*i] == '|')
 		is_token_list = handle_pipe(token_list, i);
 	else if (line[*i] == '<')
@@ -105,45 +105,5 @@ int	handle_out_append(char *line, t_token **token_list, int *i)
 	if (!new_token)
 		return (FALSE);
 	add_token(token_list, new_token);
-	return (TRUE);
-}
-
-int	handle_word(char *line, t_token **token_list, int *i, t_shell *mshell)
-{
-	char	*extracted_str;
-	char	*raw;
-	
-	raw = extract_ori_word(line, i);
-	if (!raw)
-		return (FALSE);
-	extracted_str = extract_full_word(line, i, mshell);
-	if (!extracted_str)
-	{
-		free_string(raw);
-		print_error("Can't extract expanded word");
-		return (FALSE);
-	}
-	if (create_word_token(token_list, &extracted_str, &raw) == FALSE)
-		return (FALSE);
-	return (TRUE);
-}
-
-int	create_word_token(t_token **token_list, char **extracted_str, char **raw)
-{
-	t_token	*new_token;
-
-	new_token = NULL;
-	new_token = create_token(*extracted_str, *raw, WORD);
-	if (!new_token)
-	{
-		free_string(*raw);
-		free_string(*extracted_str);
-		return (FALSE);
-	}
-	add_token(token_list, new_token);
-	free_string(*raw);
-	free_string(*extracted_str);
-	raw = NULL;
-	extracted_str = NULL;
 	return (TRUE);
 }

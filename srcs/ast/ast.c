@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:38:32 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 22:24:38 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 11:18:49 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,34 +37,7 @@ t_ast	*convert_cmd_to_ast(t_cmd *cmd_list)
 	return (pipe_node);
 }
 
-// void	free_ast(t_ast *node, t_shell *mshell)
-// {
-// 	t_redirect	*redir;
-// 	t_redirect	*next;
-
-// 	if (!node)
-// 		return ;
-// 	if (node->type == NODE_PIPE)
-// 	{
-// 		free_ast(node->left, mshell);
-// 		free_ast(node->right, mshell);
-// 	}
-// 	if (node->type == NODE_CMD && node->cmd)
-// 		free_array_null(&node->cmd);
-// 	redir = node->redirects;
-// 	while (redir)
-// 	{
-// 		next = redir->next;
-// 		free_string(redir->file);
-// 		free_string(redir->tmp_file);
-// 		free_string(redir->ori_file);
-// 		free(redir);
-// 		redir = next;
-// 	}
-// 	free(node);
-// }
-
-void	free_ast(t_ast *node) //recheck
+void	free_ast(t_ast *node)
 {
 	t_redirect	*redir;
 	t_redirect	*next;

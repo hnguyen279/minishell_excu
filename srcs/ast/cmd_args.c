@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 16:58:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 22:24:51 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 12:58:55 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 	char	**args;
 
 	count = count_args(*token_list);
-	// printf("arg count %d\n", count); //debug
 	args = allocate_arg_array(count);
 	if (!args)
 		return (NULL);
@@ -26,7 +25,7 @@ char	**fill_args(t_cmd **new_cmd, t_token **token_list)
 		return (args);
 	if (fill_args_loop(token_list, args, new_cmd) == FALSE)
 	{
-		// free_split(args);  //H add, confirm agian with Tr? invalid free for export x="  ", cat < $x
+		free_array_null(&args);
 		return (NULL);
 	}
 	return (args);
@@ -47,7 +46,7 @@ char	**allocate_arg_array(int count)
 		args[0] = NULL;
 		return (args);
 	}
-	args = (char **)malloc(sizeof(char *) * (count + 1));
+	args = ft_calloc((count + 1), sizeof(char *));
 	if (!args)
 	{
 		print_error("Malloc failed");
@@ -69,7 +68,7 @@ int	fill_args_loop(t_token **token_list, char **args, t_cmd **new_cmd)
 			if (!args[count])
 			{
 				print_error("Strdup malloc error");
-				free_array(args, count);
+				free_array_null(&args);
 				return (FALSE);
 			}
 			count++;
@@ -77,23 +76,10 @@ int	fill_args_loop(t_token **token_list, char **args, t_cmd **new_cmd)
 		}
 		else if (is_redirection(*token_list) == TRUE)
 		{
-			if (handle_redirect(new_cmd, token_list, args, count) == FALSE)
+			if (parse_redirection(new_cmd, token_list) == FALSE)
 				return (FALSE);
 		}
 	}
 	args[count] = NULL;
-	return (TRUE);
-}
-
-int	handle_redirect(t_cmd **new_cmd, t_token **token_list, char **args,
-		int count)
-{
-	if (parse_redirection(new_cmd, token_list) == FALSE)
-	{
-		// printf("segmen here\n"); //debug
-		// print_array(args);
-		free_array(args, count);
-		return (FALSE);
-	}
 	return (TRUE);
 }

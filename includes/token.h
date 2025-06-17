@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 22:04:16 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 13:56:47 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ void			add_token(t_token **tokenized_input_list, t_token *new_token);
 t_token			*convert_user_input_to_token(char *line, t_shell *mshell);
 int				handle_word(char *line, t_token **token_list, int *i,
 					t_shell *mshell);
-// int	reset_exp(t_expand exp);
 char			*extract_ori_word(char *line, int *i);
 char			*extract_full_word(char *line, int *i, t_shell *mshell);
+void	find_ori_position(char *line, int *index);
 char			*handle_single_quote(char *line, int *i);
 char			*handle_double_quote(char *line, int *i, t_shell *mshell);
 char			*extract_unquoted_word(char *line, int *i, t_shell *mshell);

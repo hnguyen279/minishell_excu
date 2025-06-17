@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:47:20 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 22:23:05 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 13:02:52 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,4 @@ void	clear_working_history(t_token **hist_head)
 		free(temp);
 	}
 	*hist_head = NULL;
-	// printf("clean wokring history\n"); //debug
-	// rl_clear_history();
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:57:09 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 01:43:36 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 14:06:45 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ static int	calculate_next_shlvl(t_shell *mshell)
 		lvl = 1;
 	if (lvl > 999)
 	{
-		ft_printf_fd(2, "minishell: warning: shell level (%d) too high, resetting to 1\n", lvl);
+		ft_printf_fd(2, "minishell: warning: shell level (%d) too high,"
+			" resetting to 1\n", lvl);
 		lvl = 1;
 	}
 	return (lvl);

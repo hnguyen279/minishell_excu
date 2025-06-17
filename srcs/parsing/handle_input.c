@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 22:22:21 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 14:03:15 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,12 @@
 
 void	process_valid_line(t_shell *mshell)
 {
-	// print_linked_list(mshell->token_list); //debug
 	mshell->cmd_list = parse_tokens_to_commands(mshell->token_list);
 	if (!mshell->cmd_list)
 	{
 		mshell->exit_code = 0; // yes return 0 -> true
 		return ;
 	}
-	// print_cmd_list(mshell->cmd_list); //debug
 	mshell->tree = convert_cmd_to_ast(mshell->cmd_list);
 	if (!mshell->tree)
 	{
@@ -31,9 +29,9 @@ void	process_valid_line(t_shell *mshell)
 	run_ast_pipeline(mshell);
 }
 
-void run_ast_pipeline(t_shell *mshell)
+void	run_ast_pipeline(t_shell *mshell)
 {
-	t_ast *tree;
+	t_ast	*tree;
 
 	tree = mshell->tree;
 	if (!tree)
@@ -42,7 +40,7 @@ void run_ast_pipeline(t_shell *mshell)
 	{
 		cleanup_heredoc_tempfiles(tree);
 		mshell->exit_code = 130;
-		return;
+		return ;
 	}
 	execute_ast(tree, mshell); //start execution use current node = root tree
 	cleanup_heredoc_tempfiles(tree);

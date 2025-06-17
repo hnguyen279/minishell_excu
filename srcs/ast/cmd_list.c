@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 15:29:53 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 17:42:27 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 11:21:21 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,7 @@ t_cmd	*parse_tokens_to_commands(t_token *tokenized_list)
 		if (add_and_update_cmd_node(&temp_token_list, &cmd_list) == FALSE)
 			return (NULL);
 		if (temp_token_list)
-		{
 			temp_token_list = temp_token_list->next;
-		}
 	}
 	return (cmd_list);
 }
@@ -80,9 +78,7 @@ t_cmd	*create_cmd(void)
 int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 {
 	if (!*new_cmd)
-	{
 		return (FALSE);
-	}
 	else if (!*temp_token_list)
 	{
 		print_error("Not exist temp token list");
@@ -90,14 +86,10 @@ int	update_command_node(t_cmd **new_cmd, t_token **temp_token_list)
 	}
 	(*new_cmd)->args = fill_args(new_cmd, temp_token_list);
 	if (!(*new_cmd)->args)
-	{
 		return (FALSE);
-	}
 	if ((*new_cmd)->args[0])
 		(*new_cmd)->cmd_name = ft_strdup((*new_cmd)->args[0]);
 	else
-	{
 		(*new_cmd)->cmd_name = NULL;
-	}
 	return (TRUE);
 }

@@ -1,86 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   retokenization_split.c                             :+:      :+:    :+:   */
+/*   token_split.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:08:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/16 22:06:53 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 13:11:16 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
-
-int	retokenizer(t_token **token_list)
-{
-	t_token	*current;
-	t_token	*next_token;
-	t_token	*prev_token;
-
-	current = *token_list;
-	prev_token = NULL;
-	next_token = NULL;
-	while (current)
-	{
-		next_token = current->next;
-		if (check_split_token_condition(&current, &prev_token) == TRUE)
-		{
-			if (handle_split_token(&current, &prev_token, &next_token,
-					token_list) == FALSE)
-				return (FALSE);
-		}
-		else
-		{
-			prev_token = current;
-			current = current->next;
-		}
-	}
-	return (TRUE);
-}
-
-/* bash doesn't perform split on quoted token */
-int	check_split_token_condition(t_token **current, t_token **prev_token)
-{
-	if ((*current)->type != WORD)
-		return (FALSE);
-	if (*prev_token && (*prev_token)->type == REDIR_HEREDOC_TOKEN)
-		return (FALSE);
-	if ((ft_strchr((*current)->ori_value, '"') || ft_strchr((*current)->ori_value, '\''))
-		&&  has_dollar_outside_quotes((*current)->ori_value) == TRUE)// echo " '$USER' "
-	{
-		return (FALSE); 
-	}
-	if ((*current)->ori_value && ft_strchr((*current)->ori_value, '$')
-		&& ft_strchr((*current)->value, ' '))
-		{
-			return (TRUE);
-		}
-	return (FALSE);
-}
-
-// echo $X"2" -->recheck condition
-int	has_dollar_outside_quotes(char *str)
-{
-	int		i = 0;
-	char	quote = '\0';
-
-	while (str[i])
-	{
-		if ((str[i] == '\'' || str[i] == '"'))
-		{
-			if (quote == 0)
-				quote = str[i];
-			else if (quote == str[i])
-				quote = 0;
-		}
-		else if (str[i] == '$' && quote == 0)
-			return (FALSE);
-		i++;
-	}
-	return (TRUE);
-}
-
 
 int	handle_split_token(t_token **current, t_token **prev_token,
 		t_token **next_token, t_token **token_list)
@@ -104,13 +34,13 @@ int	link_split_token(t_token **current, t_token **prev_token,
 	arr_word = ft_split((*current)->value, ' ');
 	if (!arr_word)
 	{
-		print_error("Failed to split token\n");	
+		print_error("Failed to split token\n");
 		return (FALSE);
 	}
 	if (!arr_word[0])
 	{
 		free(arr_word);
-		temp = create_token("",(*current)->value, WORD);
+		temp = create_token("", (*current)->value, WORD);
 	}
 	else
 	{
@@ -126,7 +56,7 @@ void	link_token_list(t_token **temp, t_token **prev_token,
 		t_token **next_token, t_token **token_list)
 {
 	t_token	*new_last;
-	
+
 	if (!*prev_token)
 		*token_list = *temp;
 	else
@@ -138,11 +68,12 @@ void	link_token_list(t_token **temp, t_token **prev_token,
 	*prev_token = new_last;
 }
 
+/* need to initiaize to null or not? */
 t_token	*replace_token_with_new_arr(t_token *current, char **arr)
 {
-	t_token	*new_head = NULL;
-	t_token	*prev = NULL;
-	t_token	*new_token = NULL;
+	t_token	*new_head;
+	t_token	*prev;
+	t_token	*new_token;
 	int		i;
 
 	i = 0;
@@ -163,6 +94,6 @@ t_token	*replace_token_with_new_arr(t_token *current, char **arr)
 		}
 		i++;
 	}
-	free_array(arr, i);
+	free_array_null(&arr);
 	return (new_head);
 }
