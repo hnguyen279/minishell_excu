@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:04 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 13:26:52 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 00:50:35 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	execute_ast(t_ast *node, t_shell *mshell)
 		return (0);
 	if (node->type == NODE_PIPE)
 	{
+		mshell->has_pipe = 1;
 		return (execute_pipe(node, mshell));
 	}
 	else if (node->type == NODE_CMD)

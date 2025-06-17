@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:31:27 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 14:49:01 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 00:50:01 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	builtin_exit(t_shell *mshell, char **token)
 	long	code;
 
 	code = 0;
-	if (mshell->token_list->type == PIPE)
+	if (!mshell->has_pipe)
 		ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (token[1] && !ft_atol_check(token[1], &code))
 	{

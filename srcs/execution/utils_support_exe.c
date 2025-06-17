@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:48 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 14:39:27 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/17 00:56:50 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*handle_path_error(t_shell *mshell, char *path, int code)
 	if (code == 126)
 		ft_printf_fd(2, "minishell: %s: Permission denied\n", path);
 	else if (code == 127)
-		ft_printf_fd(2, "Command '%s' not found\n", path);
+		ft_printf_fd(2, "%s: command not found\n", path);
 	mshell->exit_code = code;
 	return (NULL);
 }

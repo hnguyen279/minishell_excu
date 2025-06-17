@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 17:45:58 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 00:55:02 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,9 +111,15 @@ char	*find_cmd_path(t_shell *mshell, char *cmd)
 		return (handle_path_error(mshell, cmd, 127));
 	if (access(cmd_path, X_OK) != 0)
 	{
-		handle_path_error(mshell, cmd_path, 126);
-		free(cmd_path); // recheck, cmd_path is used after free-- > H was check move here
-		return (NULL);
+		if (access(cmd_path, F_OK) != 0)
+		{
+			ft_printf_fd(2, "minishell: %s: No such file or directory\n", cmd);
+			mshell->exit_code = 127;
+			free(cmd_path);
+			return (NULL);
+		}
+		free(cmd_path);
+		return (handle_path_error(mshell, cmd, 126));
 	}
 	return (cmd_path);
 }

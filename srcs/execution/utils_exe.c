@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_exe.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/16 18:15:47 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 00:56:25 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ int	display_error_cmd(char *cmd)
 	}
 	else
 	{
-		ft_printf_fd(2, "Command '%s' not found\n", cmd);
+		ft_printf_fd(2, "%s: command not found\n", cmd);
 		return (127);
 	}
 }
