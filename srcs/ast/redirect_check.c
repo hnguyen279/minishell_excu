@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 11:23:14 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 12:59:28 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 18:24:32 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,30 +47,30 @@ t_redirect_type	token_to_redirect_type(t_token_type token_type)
 	return (REDIR_INVALID);
 }
 
-int	check_ambiguous_redirect(t_token **token_list)
-{
-	t_token	*current;
-	int		count_redir_file;
-	char	*ori_value;
+// int	check_ambiguous_redirect(t_token **token_list)
+// {
+// 	t_token	*current;
+// 	int		count_redir_file;
+// 	char	*ori_value;
 
-	if (!token_list && !*token_list && !(*token_list)->value)
-		return (FALSE);
-	current = *token_list;
-	if (ft_strcmp((*token_list)->value, "") == 0)
-		return (FALSE);
-	if (is_white_spaces_cmd((*token_list)->value))
-		return (FALSE);
-	ori_value = current->ori_value;
-	count_redir_file = 1;
-	current = current->next;
-	while (current && current->type != PIPE
-		&& is_redirection(current) == FALSE)
-	{
-		if (ft_strcmp(current->ori_value, ori_value) == 0)
-			count_redir_file++;
-		current = current->next;
-	}
-	if (count_redir_file != 1)
-		return (FALSE);
-	return (TRUE);
-}
+// 	if (!token_list && !*token_list && !(*token_list)->value)
+// 		return (FALSE);
+// 	current = *token_list;
+// 	if (ft_strcmp((*token_list)->value, "") == 0)
+// 		return (FALSE);
+// 	if (is_white_spaces_cmd((*token_list)->value))
+// 		return (FALSE);
+// 	ori_value = current->ori_value;
+// 	count_redir_file = 1;
+// 	current = current->next;
+// 	while (current && current->type != PIPE
+// 		&& is_redirection(current) == FALSE)
+// 	{
+// 		if (ft_strcmp(current->ori_value, ori_value) == 0)
+// 			count_redir_file++;
+// 		current = current->next;
+// 	}
+// 	if (count_redir_file != 1)
+// 		return (FALSE);
+// 	return (TRUE);
+// }

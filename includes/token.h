@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:38 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 13:56:47 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 18:49:23 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ int				check_split_token_condition(t_token **current, t_token **prev_token);
 int				handle_split_token(t_token **current, t_token **prev_token,
 					t_token **next_token, t_token **token_list);
 int	has_dollar_outside_quotes(char *str);
-
-					
+void	token_list_from_arr(t_token **new_head, t_token **prev, t_token **new_token);
 
 #endif

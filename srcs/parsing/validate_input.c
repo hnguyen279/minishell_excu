@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 13:15:22 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 18:25:12 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,11 +114,11 @@ int	is_valid_redirection(t_token *token_list)
 	{
 		if (is_redirection(current) == TRUE)
 		{
-			if (!current->next)
-			{
-				print_error("Ambiguous redirect");
-				return (FALSE);
-			}
+			// if (!current->next)
+			// {
+			// 	print_error("Ambiguous redirect");
+			// 	return (FALSE);
+			// }
 			if (current->next->type != WORD)
 			{
 				print_token_error(current->next);

@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:15:54 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 12:56:51 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 18:25:59 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int				parse_redirection(t_cmd **new_cmd, t_token **token_list);
 // int				handle_redirect(t_cmd **new_cmd, t_token **token_list);
 int	add_value_to_redirect(t_redirect **new_redir, t_token **token_list,
 		t_redirect_type type);
-int	check_ambiguous_redirect(t_token **token_list);
+// int	check_ambiguous_redirect(t_token **token_list);
 
 
 /* Abstract Syntax Tree */

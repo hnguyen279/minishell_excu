@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 14:17:12 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 19:13:42 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ void	shell_cleanup(t_shell *mshell)
 void	shell_interactive(t_shell *mshell)
 {
 	char	*line;
-	int		status;
 
 	while (1)
 	{
@@ -66,21 +65,32 @@ void	shell_interactive(t_shell *mshell)
 			printf("exit\n");
 			break ;
 		}
-		if (line[0] != '\0')
+		if (line[0] == '\0')
 		{
-			if (store_history(line, &mshell->history_head) == FALSE)
-			{
-				free(line);
-				break ;
-			}
-			status = process_user_line(line, mshell);
-			loop_clean(mshell);
 			free(line);
-			if (status == FALSE)
-				break ;
+			break ;
 		}
+		if (process_non_empty_input(line, mshell) == FALSE)
+		{
+			free(line);
+			loop_clean(mshell);
+			break;
+		}
+		loop_clean(mshell);
+		free(line);
 	}
 	rl_clear_history();
+}
+
+int	process_non_empty_input(char *line, t_shell *mshell)
+{
+	if (store_history(line, &mshell->history_head) == FALSE
+		|| process_user_line(line, mshell) == FALSE)
+	{
+		return (FALSE);
+	}
+	loop_clean(mshell);
+	return (TRUE);
 }
 
 char	*read_user_input(t_shell *mshell)
@@ -118,14 +128,14 @@ void	loop_clean(t_shell *mshell)
 }
 
 /////for test
+
 // void	shell_interactive(t_shell *mshell)
 // {
 // 	char	*line;
-// 	int		status;
 
 // 	while (1)
 // 	{
-// 		// //for test
+// 		/// /// test
 // 		if (isatty(fileno(stdin)))
 // 			line = readline("");
 // 		else
@@ -137,21 +147,25 @@ void	loop_clean(t_shell *mshell)
 // 			line = ft_strtrim(raw_line, "\n");
 // 			free(raw_line);
 // 		}
-// 		///////////
-// 		if (line[0] != '\0') // Ctrl+C → empty str//need?
+// 		////////
+// 		if (!line)
 // 		{
-// 			if (store_history(line, &mshell->history_head) == FALSE)
-// 			{
-// 				free(line);
-// 				break;
-// 			}
-// 			status = process_user_line(line, mshell);
-// 			loop_clean(mshell); ///check agai
-// 			mshell->heredoc_index = 0;
-// 			free(line);
-// 			if (status == FALSE)
-// 				break;
+// 			printf("exit\n");
+// 			break ;
 // 		}
+// 		if (line[0] == '\0')
+// 		{
+// 			free(line);
+// 			break ;
+// 		}
+// 		if (process_non_empty_input(line, mshell) == FALSE)
+// 		{
+// 			free(line);
+// 			loop_clean(mshell);
+// 			break;
+// 		}
+// 		loop_clean(mshell);
+// 		free(line);
 // 	}
 // 	rl_clear_history();
 // }
