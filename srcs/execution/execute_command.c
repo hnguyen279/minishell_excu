@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 21:38:28 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/18 01:58:37 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ static int	fork_and_exec(t_ast *node, t_shell *mshell, char *cmd_path)
 
 static int	restore_stdio(t_shell *mshell, int in_fd, int out_fd)
 {
+	if (in_fd < 0 || out_fd < 0)
+		return error_msg(mshell, "restore_stdio: invalid fd", 0);
 	if ((dup2(in_fd, STDIN_FILENO) == -1) || (dup2(out_fd, STDOUT_FILENO) == -1))
 	{
 		safe_close_fds(in_fd, out_fd);
@@ -70,9 +72,8 @@ static int	prepare_redirection(t_shell *mshell, t_ast *node, int *in_fd, int *ou
 	}
 	if (exe_redirection(node->redirects, mshell) != 0)
 	{
-		if (restore_stdio(mshell, *in_fd, *out_fd) != 0)
-			return 1;
-		return mshell->exit_code;
+		safe_close_fds(*in_fd, *out_fd);
+		return (1); 
 	}
 	return 0;
 }

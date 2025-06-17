@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:17:13 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 14:55:46 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/18 02:09:08 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,7 @@ static int	redirect_heredoc(t_redirect *redir, t_shell *mshell)
 int	handle_single_redirection(t_shell *mshell, t_redirect *redir)
 {
 	if (is_ambiguous_redirect(mshell, redir) != 0)
-	{
-		ft_printf_fd(2, "minishell: ambiguous redirect: %s\n", redir->file);
 		return (1);
-	}
 	if (redir->type == REDIR_IN)
 		return (redirect_input(redir));
 	else if (redir->type == REDIR_OUT)
@@ -118,8 +115,7 @@ int	handle_single_redirection(t_shell *mshell, t_redirect *redir)
 		return (redirect_heredoc(redir, mshell));
 	else
 	{
-		ft_printf_fd(2, "minishell: invalid redirection type: %d\n",
-			redir->type);
+		ft_printf_fd(2, "minishell: invalid redirection type\n");
 		return (1);
 	}
 }
