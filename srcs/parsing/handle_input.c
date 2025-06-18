@@ -6,13 +6,13 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:19:11 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 14:03:15 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/17 19:50:38 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-void	process_valid_line(t_shell *mshell)
+void		process_valid_line(t_shell *mshell)
 {
 	mshell->cmd_list = parse_tokens_to_commands(mshell->token_list);
 	if (!mshell->cmd_list)
