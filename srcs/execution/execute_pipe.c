@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:24 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 22:04:50 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/18 15:25:55 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,29 @@ static void	setup_pipe_redirection(t_shell *mshell, int pipe_fd_src, int std_fd_
 
 static void	execute_child(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
 {
+	t_ast *child;
 
-	child_default_signals();	
+	child_default_signals();
+	if (left)
+		child = node->left;
+	else
+		child = node->right;
+	if (!child)
+	{
+		shell_cleanup(mshell);
+		exit (1);
+	}	
 	if (left)
 	{
 		close(pipe_fd[FD_READ]);
 		setup_pipe_redirection(mshell, pipe_fd[FD_WRITE], STDOUT_FILENO);
-		execute_ast(node->left, mshell);
 	}
 	else
 	{
 		close(pipe_fd[FD_WRITE]);
 		setup_pipe_redirection(mshell, pipe_fd[FD_READ], STDIN_FILENO);
-		execute_ast(node->right, mshell);
 	}
+	execute_ast(child, mshell);
 	shell_cleanup(mshell);
 	exit(mshell->exit_code);
 }
