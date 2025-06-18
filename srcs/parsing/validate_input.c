@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_input.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/18 20:44:42 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/19 02:48:52 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,6 @@ int	is_valid_redirection(t_token *token_list)
 				print_token_error(current->next);
 				return (FALSE);
 			}
-			// current = current->next;
 		}
 		current = current->next;
 	}

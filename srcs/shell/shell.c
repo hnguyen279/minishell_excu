@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/18 15:07:23 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/19 02:50:36 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	shell_cleanup(t_shell *mshell)
 {
 	if (!mshell)
 		return ;
-	if (mshell->history_head) //check again free every when out?
-		free_token_list(mshell->history_head); // set NULL?
+	if (mshell->history_head)
+		free_token_list(mshell->history_head);
 	if (mshell->token_list)
 		free_token_list(mshell->token_list);
 	if (mshell->cmd_list)
@@ -74,7 +74,7 @@ void	shell_interactive(t_shell *mshell)
 		{
 			free(line);
 			loop_clean(mshell);
-			break;
+			break ;
 		}
 		loop_clean(mshell);
 		free(line);
@@ -102,29 +102,6 @@ char	*read_user_input(t_shell *mshell)
 	if (g_signum) // check siganl after readline for Ctrl C in main shell
 		sig_exit_code(mshell);
 	return (line);
-}
-
-void	loop_clean(t_shell *mshell)
-{
-	if (!mshell)
-		return ;
-	if (mshell->token_list)
-	{
-		free_token_list(mshell->token_list);
-		mshell->token_list = NULL;
-	}
-	if (mshell->cmd_list)
-	{
-		free_cmd_list(mshell->cmd_list);
-		mshell->cmd_list = NULL;
-	}
-	if (mshell->tree)
-	{
-		free_ast(mshell->tree);
-		mshell->tree = NULL;
-	}
-	mshell->heredoc_index = 0;
-	mshell->has_pipe = 0;
 }
 
 /////for test

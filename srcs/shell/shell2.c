@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:57:09 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/18 19:58:53 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/19 02:50:26 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,27 @@ int	init_pwd_env(t_shell *mshell)
 	}
 	mshell->old_pwd = ft_strdup(mshell->curr_pwd);
 	return (0);
+}
+
+void	loop_clean(t_shell *mshell)
+{
+	if (!mshell)
+		return ;
+	if (mshell->token_list)
+	{
+		free_token_list(mshell->token_list);
+		mshell->token_list = NULL;
+	}
+	if (mshell->cmd_list)
+	{
+		free_cmd_list(mshell->cmd_list);
+		mshell->cmd_list = NULL;
+	}
+	if (mshell->tree)
+	{
+		free_ast(mshell->tree);
+		mshell->tree = NULL;
+	}
+	mshell->heredoc_index = 0;
+	mshell->has_pipe = 0;
 }

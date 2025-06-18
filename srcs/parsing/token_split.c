@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:08:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/18 14:19:21 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/19 02:48:40 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,8 @@ t_token	*replace_token_with_new_arr(t_token *current, char **arr)
 	return (new_head);
 }
 
-void	token_list_from_arr(t_token **new_head, t_token **prev, t_token **new_token)
+void	token_list_from_arr(t_token **new_head, t_token **prev,
+			t_token **new_token)
 {
 	if (!(*prev))
 	{

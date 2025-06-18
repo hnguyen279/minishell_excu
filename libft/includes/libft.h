@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 18:54:33 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/07 11:53:53 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/19 02:45:02 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@
 #  define BUFFER_SIZE 42
 
 # endif
+
+typedef struct s_list
+{
+	void			*content;
+	struct s_list	*next;
+}				t_list;
 
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
@@ -48,11 +54,13 @@ char	*ft_strdup(const char *s);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 char	*ft_strtrim(char const *s1, char const *set);
+
 // if s1 or s2 null return null or  non-null string
 char	*ft_strjoin(char const *s1, char const *s2);
 void	*ft_memset(void *s, int c, size_t n);
 void	ft_bzero(void *s, size_t n);
 void	*ft_memchr(const void *s, int c, size_t n);
+
 // recheck if we need to check either of them is null striing? memcpy
 void	*ft_memcpy(void *dest, const void *src, size_t n);
 void	*ft_memmove(void *dest, const void *src, size_t n);
@@ -70,12 +78,6 @@ void	ft_putnbr_fd(int n, int fd);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 
-typedef struct s_list
-{
-	void			*content;
-	struct s_list	*next;
-}	t_list;
-
 t_list	*ft_lstnew(void *content);
 void	ft_lstadd_front(t_list **lst, t_list *new);
 void	ft_lstadd_back(t_list **lst, t_list *new);
@@ -92,12 +94,12 @@ char	*extract_line(char	*buffer);
 char	*extract_remaining(char *buffer);
 char	*update_buffer(char **buffer, int fd);
 
-int	ft_printf_fd(int fd, const char	*str, ...);
-int	ft_putchar_printf(char c, int fd);
-int	ft_putstr_printf(char *s, int fd);
-int	ft_putnbr_printf(int n, int fd);
-int	ft_putnbr_unsigned(unsigned int n, int fd);
-int	ft_puthex_fd(unsigned long nbr, int fd, char b);
-int	ft_putptr_fd(void *ptr, int fd);
+int		ft_printf_fd(int fd, const char	*str, ...);
+int		ft_putchar_printf(char c, int fd);
+int		ft_putstr_printf(char *s, int fd);
+int		ft_putnbr_printf(int n, int fd);
+int		ft_putnbr_unsigned(unsigned int n, int fd);
+int		ft_puthex_fd(unsigned long nbr, int fd, char b);
+int		ft_putptr_fd(void *ptr, int fd);
 
 #endif
