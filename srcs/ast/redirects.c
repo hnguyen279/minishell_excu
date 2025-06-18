@@ -6,14 +6,12 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 05:28:39 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 18:24:42 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/19 02:46:10 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-// remove !*token_list condition,
-//	cause that's when the token_list reaching the end, not an error
 int	parse_redirection(t_cmd **new_cmd, t_token **token_list)
 {
 	t_redirect_type	redir_type;
@@ -63,11 +61,6 @@ int	add_redirects(t_redirect **redir_list, t_redirect_type type,
 int	create_redirect(t_redirect **new_redir, t_token **token_list,
 			t_redirect_type type)
 {
-	// if (check_ambiguous_redirect(token_list) == FALSE)
-	// {
-	// 	print_error("Ambiguous redirect");
-	// 	return (FALSE);
-	// }
 	*new_redir = malloc(sizeof(t_redirect));
 	if (!*new_redir)
 	{
