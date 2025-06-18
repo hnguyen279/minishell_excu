@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:30:52 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 19:43:08 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/18 20:47:23 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,12 @@ int	builtin_env(t_shell *mshell, char **token)
 	{
 		if (token[1][0] == '-')
 		{
-			ft_printf_fd(2, "minishell: env: unrecognized option '%s'\n", token[1]);
+			ft_printf_fd(2, "minishell: env: unrecognized option '%s'\n",
+				token[1]);
 			return (125);
 		}
-		ft_printf_fd(2, "minishell: env: '%s': No such file or directory\n", token[1]);
+		ft_printf_fd(2, "minishell: env: '%s': No such file or directory\n",
+			token[1]);
 		return (127);
 	}
 	env_print(mshell->envp);

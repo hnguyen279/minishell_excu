@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:48 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 22:38:13 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/18 20:52:57 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ int	error_msg(t_shell *mshell, const char *msg, int use_errno)
 	return (1);
 }
 
-char	*handle_path_error(t_shell *mshell, char *path, int code, int check_redir)
+char	*handle_path_error(t_shell *mshell, char *path, int code,
+		int check_redir)
 {
 	if (code == 126 && check_redir == 0)
 		ft_printf_fd(2, "minishell: %s: Permission denied\n", path);

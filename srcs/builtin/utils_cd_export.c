@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:37:56 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/15 19:33:18 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/18 20:40:40 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,6 @@ void	update_pwd(t_shell *mshell)
 	if (env_find_value(mshell, "PWD"))
 		env_add(mshell, "OLDPWD", env_find_value(mshell, "PWD"));
 	env_add(mshell, "PWD", mshell->curr_pwd);
-	// //true behavior
-	// if (env_find_value(mshell, "PWD"))
-	// 	env_add(mshell, "PWD", mshell->curr_pwd);
-	// if (env_find_value(mshell, "OLDPWD"))
-	// 	env_add(mshell, "OLDPWD", mshell->old_pwd);
 	mshell->exit_code = 0;
 }
 

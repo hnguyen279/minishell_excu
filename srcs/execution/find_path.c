@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 22:37:27 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/18 20:38:51 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,6 @@ char	*find_cmd_path(t_shell *mshell, char *cmd)
 {
 	char	*cmd_path;
 
-	// //debug
-	// printf("cmd = [%s]\n", cmd); //
 	if (!cmd || cmd[0] == '\0' || !ft_strcmp(cmd, ".") || !ft_strcmp(cmd, ".."))
 		return (mshell->exit_code = display_error_cmd(cmd), NULL);
 	else if (check_is_directory(mshell, cmd) != 0)
@@ -121,34 +119,3 @@ char	*find_cmd_path(t_shell *mshell, char *cmd)
 	}
 	return (cmd_path);
 }
-
-
-// char	*find_cmd_path(t_shell *mshell, char *cmd)
-// {
-// 	char	*cmd_path;
-
-// 	// //debug
-// 	// printf("cmd = [%s]\n", cmd); //
-// 	if (!cmd || cmd[0] == '\0' || !ft_strcmp(cmd, ".") || !ft_strcmp(cmd, ".."))
-// 		return (mshell->exit_code = display_error_cmd(cmd), NULL);
-// 	else if (check_is_directory(mshell, cmd) != 0)
-// 		return (NULL);
-// 	if (ft_strchr(cmd, '/') && access(cmd, F_OK) == 0)
-// 		return (ft_strdup(cmd));
-// 	cmd_path = get_path(cmd, mshell->envp);
-// 	if (!cmd_path && access(cmd, F_OK) == 0)
-// 		cmd_path = ft_strdup(cmd);
-// 	if (!cmd_path)
-// 		return (handle_path_error(mshell, cmd, 127, 0));
-// 	if (access(cmd_path, F_OK) != 0)
-// 	{
-// 		free(cmd_path);
-// 		return (handle_path_error(mshell, cmd, 127, 1));
-// 	}
-// 	else if (access(cmd_path, X_OK) != 0)
-// 	{
-// 		free(cmd_path);
-// 		return (handle_path_error(mshell, cmd, 126, 0));
-// 	}
-// 	return (cmd_path);
-// }

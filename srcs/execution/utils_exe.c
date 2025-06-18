@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:11:40 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/18 02:08:29 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/18 20:51:45 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ int	display_error_cmd(char *cmd)
 	}
 	else if (!ft_strcmp(cmd, "."))
 	{
-		ft_printf_fd(2, "minishell: .: filename argument required\n"
+		ft_printf_fd(2,
+			"minishell: .: filename argument required\n"
 			".: usage: . filename [arguments]\n");
 		return (2);
 	}
@@ -99,34 +100,4 @@ void	free_split(char **tab)
 		i++;
 	}
 	free(tab);
-}
-
-static int	ambiguous_redirect_error(t_shell *mshell, const char *ori_file)
-{
-	ft_printf_fd(2, "minishell: %s: ambiguous redirect\n", ori_file);
-	mshell->exit_code = 1;
-	return (1);
-}
-
-int	is_ambiguous_redirect(t_shell *mshell, t_redirect *redir)
-{
-	if (!redir || !redir->file || !redir->ori_file)
-		return (0);
-	if (redir->type == REDIR_HEREDOC)
-		return (0);
-	if (redir->file[0] == '\0' && redir->ori_file[0] != '\0'
-		&& ft_strchr(redir->ori_file, '$')
-		&& !is_fully_quoted(redir->ori_file))
-		return ambiguous_redirect_error(mshell, redir->ori_file);
-	if (redir->file[0] != '\0' && redir->ori_file[0] != '\0'
-		&& ft_strchr(redir->ori_file, '$')
-		&& !is_fully_quoted(redir->ori_file)
-		&& is_white_spaces_cmd(redir->file))
-		return ambiguous_redirect_error(mshell, redir->ori_file);
-	if (ft_strchr(redir->file, ' ')
-		&& ft_strchr(redir->ori_file, '$')
-		&& !is_fully_quoted(redir->ori_file)
-		&& !is_white_spaces_cmd(redir->file))
-		return ambiguous_redirect_error(mshell, redir->ori_file); //*** * case $T="   a  " wrong
-	return (0);
 }

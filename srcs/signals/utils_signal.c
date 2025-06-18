@@ -19,9 +19,10 @@ void	sig_exit_code(t_shell *mshell)
 	g_signum = 0;
 }
 
-int child_default_signals(void)
+int	child_default_signals(void)
 {
-    if (signal(SIGINT, SIG_IGN) == SIG_ERR || signal(SIGQUIT, SIG_IGN) == SIG_ERR)
-        return (1);
-    return (0);
+	if (signal(SIGINT, SIG_IGN) == SIG_ERR || signal(SIGQUIT,
+			SIG_IGN) == SIG_ERR)
+		return (1);
+	return (0);
 }

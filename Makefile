@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
+#    By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/06/17 13:13:20 by trpham           ###   ########.fr        #
+#    Updated: 2025/06/18 20:40:04 by thi-huon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,6 +48,7 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/execution/utils_exe.c \
 		$(SRCS_DIR)/execution/utils_support_exe.c \
 		$(SRCS_DIR)/execution/utils_redirection.c \
+		$(SRCS_DIR)/execution/check_ambiguous.c \
 		$(SRCS_DIR)/environment/env_add.c \
 		$(SRCS_DIR)/environment/utils_env.c \
       	$(SRCS_DIR)/environment/env_init.c \

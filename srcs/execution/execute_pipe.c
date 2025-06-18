@@ -6,19 +6,20 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:24 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/18 15:25:55 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/18 20:52:05 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/shell.h"
 
-static void	setup_pipe_redirection(t_shell *mshell, int pipe_fd_src, int std_fd_dst)
+static void	setup_pipe_redirection(t_shell *mshell, int pipe_fd_src,
+		int std_fd_dst)
 {
 	if (dup2(pipe_fd_src, std_fd_dst) == -1)
 	{
 		ft_printf_fd(2, "minishell: dup2: %s\n", strerror(errno));
 		close(pipe_fd_src);
-		shell_cleanup(mshell); ////check agian have leak or not
+		shell_cleanup(mshell);
 		exit(1);
 	}
 	close(pipe_fd_src);
@@ -26,7 +27,7 @@ static void	setup_pipe_redirection(t_shell *mshell, int pipe_fd_src, int std_fd_
 
 static void	execute_child(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
 {
-	t_ast *child;
+	t_ast	*child;
 
 	child_default_signals();
 	if (left)
@@ -36,8 +37,8 @@ static void	execute_child(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
 	if (!child)
 	{
 		shell_cleanup(mshell);
-		exit (1);
-	}	
+		exit(1);
+	}
 	if (left)
 	{
 		close(pipe_fd[FD_READ]);

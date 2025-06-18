@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_input.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:25:27 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/18 15:15:23 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/18 20:44:42 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	validate_quote(char *line)
 	if (quote != 0)
 	{
 		ft_printf_fd(2, "minishell: unexpected EOF while looking for "
-			"matching `%c'\n minishell: syntax error: "
+			"matching `%c'\nminishell: syntax error: "
 			"unexpected end of file\n", mark_quote);
 		return (FALSE);
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:57:09 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/17 14:06:45 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/18 19:58:53 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,5 +74,6 @@ int	init_pwd_env(t_shell *mshell)
 		ft_printf_fd(2, "minishell: init_shell: failed to set PWD\n");
 		return (1);
 	}
+	mshell->old_pwd = ft_strdup(mshell->curr_pwd);
 	return (0);
 }
