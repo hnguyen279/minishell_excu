@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 18:46:42 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/17 19:13:42 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/18 15:07:23 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	shell_interactive(t_shell *mshell)
 		if (line[0] == '\0')
 		{
 			free(line);
-			break ;
+			continue ;
 		}
 		if (process_non_empty_input(line, mshell) == FALSE)
 		{
