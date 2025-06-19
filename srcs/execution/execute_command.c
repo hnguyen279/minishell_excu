@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:16 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/18 20:43:25 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/19 05:19:20 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,9 @@ int	execute_command(t_ast *node, t_shell *mshell)
 	cmd_path = find_cmd_path(mshell, node->cmd[0]);
 	if (!cmd_path)
 		return (mshell->exit_code);
-	mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
+	if (mshell->has_pipe)
+		run_command_child(node, mshell, cmd_path);
+	else
+		mshell->exit_code = fork_and_exec(node, mshell, cmd_path);
 	return (mshell->exit_code);
 }

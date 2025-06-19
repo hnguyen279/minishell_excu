@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:04 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/18 15:17:16 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/19 05:20:10 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,4 @@ void	execute_ast(t_ast *node, t_shell *mshell)
 	}
 	else
 		mshell->exit_code = 1;
-	while (wait(NULL) > 0)
-		;
 }

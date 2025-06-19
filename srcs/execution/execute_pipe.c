@@ -6,7 +6,7 @@
 /*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 16:06:24 by thi-huon          #+#    #+#             */
-/*   Updated: 2025/06/18 20:52:05 by thi-huon         ###   ########.fr       */
+/*   Updated: 2025/06/19 05:18:11 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ static void	execute_child(t_shell *mshell, t_ast *node, int *pipe_fd, int left)
 {
 	t_ast	*child;
 
-	child_default_signals();
 	if (left)
 		child = node->left;
 	else

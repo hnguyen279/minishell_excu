@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 06:09:47 by trpham            #+#    #+#             */
-/*   Updated: 2025/06/19 02:41:38 by trpham           ###   ########.fr       */
+/*   Updated: 2025/06/19 05:16:47 by thi-huon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,6 @@ int		handle_equal_case(t_shell *mshell, const char *arg, char *equal);
 /* Signal functions */
 void	setup_signals(t_shell *mshell, int mode);
 void	sig_exit_code(t_shell *mshell);
-int		child_default_signals(void);
 
 /* To remove block before submiting */
 void	print_cmd_list(t_cmd *head);
