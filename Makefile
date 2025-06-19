@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: thi-huon <thi-huon@student.hive.fi>        +#+  +:+       +#+         #
+#    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/13 10:30:26 by trpham            #+#    #+#              #
-#    Updated: 2025/06/18 20:40:04 by thi-huon         ###   ########.fr        #
+#    Updated: 2025/06/19 11:52:25 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,8 +68,7 @@ SRCS = $(SRCS_DIR)/main.c \
 		$(SRCS_DIR)/signals/utils_signal.c \
 		$(SRCS_DIR)/shell/shell.c \
 		$(SRCS_DIR)/shell/shell2.c \
-		$(SRCS_DIR)/shell/user_input.c \
-		$(SRCS_DIR)/parsing/to_delete_file.c
+		$(SRCS_DIR)/shell/user_input.c
 
 OBJS = $(SRCS:%.c=%.o)
 
